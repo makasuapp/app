@@ -8,6 +8,7 @@
 
 ```
   flutter pub get
+  flutter packages pub run build_runner build
 ```
 
 Then in Visual Studio Code do Run -> Start Debugging
