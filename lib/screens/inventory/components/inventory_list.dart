@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
+import '../../../scoped_models/scoped_inventory.dart';
 import '../../../models/ingredient.dart';
 
 class InventoryList extends StatelessWidget {
-  final List<Ingredient> ingredients;
-
-  InventoryList(this.ingredients);
-
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: this.ingredients.length,
-      itemBuilder: _inventoryListBuilder,
+    return ScopedModelDescendant<ScopedInventory>(
+      builder: (context, child, scopedInventory) => ListView(
+        children: scopedInventory.ingredients
+          .map((i) => _inventoryListItem(i))
+          .toList()
+      )
     );
   }
 
-  Widget _inventoryListBuilder(BuildContext context, int index) {
-    final ingredient = this.ingredients[index];
+  Widget _inventoryListItem(Ingredient ingredient) {
     return Container(
       child: Text(ingredient.name)
     );
