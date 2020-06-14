@@ -28,5 +28,5 @@ class WebApi {
     return resp.body;
   }
   static Future<String> fetchRecipesJson() => WebApi._fetchJson('/recipes');
-  static Future<String> fetchIngredientsJson() => WebApi._fetchJson('/ingredients');
+  static Future<String> fetchInventoryJson() => WebApi._fetchJson('/inventory');
 }

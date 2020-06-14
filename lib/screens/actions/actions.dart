@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../inventory/inventory.dart';
+import 'package:kitchen/styles.dart';
 
 class Action {
   final String title;
@@ -32,7 +33,7 @@ class ActionsPage extends StatelessWidget {
   }
 
   Widget _actionTitle(Action action) {
-    return Text(action.title);
+    return Text(action.title, style: Styles.headerLarge);
   }
 
   void _navToActionPage(BuildContext context, Action action) {
