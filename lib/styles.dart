@@ -2,25 +2,29 @@ import 'package:flutter/material.dart';
 
 class Styles {
   static const horizontalPaddingDefault = 20.0;
-  static const verticalPaddingDefault = 10.0;
+  static const verticalPaddingDefault = 8.0;
+  static const defaultPaddings = EdgeInsets.symmetric(
+    vertical: verticalPaddingDefault,
+    horizontal: horizontalPaddingDefault
+  );
 
-  static const _textSizeLarge = 22.0;
-  static const _textSizeDefault = 16.0;
-  static const _textSizeSmall = 12.0; 
+  static const textSizeLarge = 22.0;
+  static const textSizeDefault = 16.0;
+  static const textSizeSmall = 12.0; 
 
-  static final Color _textColorStrong = _hexToColor('000000');
-  static final Color _textColorDefault = _hexToColor('111111');
-  static final Color _textColorFaint = _hexToColor('999999');
+  static final Color textColorStrong = _hexToColor('000000');
+  static final Color textColorDefault = _hexToColor('111111');
+  static final Color textColorFaint = _hexToColor('999999');
   static final Color textColorBright = _hexToColor('FFFFFF');
 
   static final headerLarge = TextStyle(
-    fontSize: _textSizeLarge,
-    color: _textColorStrong,
+    fontSize: textSizeLarge,
+    color: textColorStrong,
   );
 
   static final textDefault = TextStyle(
-    fontSize: _textSizeDefault,
-    color: _textColorDefault,
+    fontSize: textSizeDefault,
+    color: textColorDefault,
     height: 1.2,
   );
 
