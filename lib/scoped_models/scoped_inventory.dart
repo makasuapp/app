@@ -14,4 +14,19 @@ class ScopedInventory extends Model {
     this.isLoading = false;
     notifyListeners();
   }
+
+  void updateIngredientQty(DayIngredient ingredient, double qty) {
+    final updatedIngredients = this.ingredients.map((i) {
+      if (i.id == ingredient.id) {
+        return DayIngredient(i.id, i.name, i.expectedQty, hadQty: qty, unit: i.unit);
+      } else {
+        return i;
+      }
+    }).toList();
+
+    this.ingredients = updatedIngredients;
+    notifyListeners();
+
+    //TODO: make api call and save locally
+  }
 }

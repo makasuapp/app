@@ -28,4 +28,6 @@ class InventoryStyles {
     fontSize: Styles.textSizeLarge,
     color: Styles.textColorDefault,
   );
+  static final Color inventorySwipeRightColor = Colors.green;
+  static final Color inventorySwipeLeftColor = Colors.red;
 }
