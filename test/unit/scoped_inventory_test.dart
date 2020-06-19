@@ -24,8 +24,8 @@ void main() {
     var updates = List<IngredientUpdate>();
     updates.add(IngredientUpdate.withDate(1, 2.1, now));
 
-    final inventory = ScopedInventory();
-    await inventory.saveQty(updates);
+    final inventory = ScopedInventory(unsavedUpdates: updates);
+    await inventory.saveUnsavedQty();
   }, skip: 'run manually for sanity checks');
 
   test('loadInventory merges unsavedUpdates with data from API call based on what is updated later', () async {
@@ -137,6 +137,7 @@ void main() {
 
       final inventory = ScopedInventory(api: api, ingredients: init, unsavedUpdates: updates);
       expect(inventory.unsavedUpdates.length, equals(2));
+      expect(inventory.retryCount, equals(0));
 
       when(api.postInventorySaveQty(any)).thenThrow(Error());
 
@@ -145,6 +146,9 @@ void main() {
 
       expect(inventory.unsavedUpdates.length, equals(3));
       expect(inventory.savingAtSec, isNull);
+      expect(inventory.retryCount, equals(1));
     });
+
+    //TODO: test saving when already mid-save - should not run and retry later
   });
 }

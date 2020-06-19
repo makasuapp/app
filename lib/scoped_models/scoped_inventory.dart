@@ -6,6 +6,8 @@ import '../models/ingredient_update.dart';
 import 'package:meta/meta.dart';
 
 const SAVE_BUFFER_SECONDS = 15;
+const RETRY_WAIT_SECONDS = 2;
+const NUM_RETRIES = 3;
 
 class ScopedInventory extends Model {
   List<DayIngredient> ingredients; 
@@ -16,6 +18,8 @@ class ScopedInventory extends Model {
   List<IngredientUpdate> unsavedUpdates; 
   @visibleForTesting
   int savingAtSec;
+  @visibleForTesting
+  int retryCount = 0;
   int _lastUpdateAtSec;
 
   ScopedInventory({ingredients, api, unsavedUpdates}) {
@@ -51,6 +55,49 @@ class ScopedInventory extends Model {
     _persistIngredient(updatedIngredient, bufferMs: bufferMs);
   }
 
+  @visibleForTesting
+  Future<void> saveUnsavedQty() async {
+    if (this.savingAtSec == null) {
+      final savingAtSec = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+      this.savingAtSec = savingAtSec;
+
+      try {
+        if (this.unsavedUpdates.length > 0) {
+          await this.api.postInventorySaveQty(this.unsavedUpdates);
+        }
+
+        this.savingAtSec = null;
+        this.retryCount = 0;
+        this.unsavedUpdates = this.unsavedUpdates.where((u) {
+          return u.timeSec > savingAtSec;
+        }).toList();
+      } catch(err) {
+        //TODO: log to sentry?
+        this.savingAtSec = null;
+        this._retryLater();    
+      }
+    } else {
+      this._retryLater();
+    }
+  }
+
+  //TODO: should there be a mechanism to end the retries if it's not needed anymore?
+  //currently it's okay if it retries unnecessarily, no harm done
+  Future<void> _retryLater() async {
+    final retryCount = this.retryCount + 1;
+    this.retryCount = retryCount;
+
+    final waitTime = RETRY_WAIT_SECONDS * retryCount;
+    await Future.delayed(Duration(seconds: waitTime));
+
+    if (retryCount <= NUM_RETRIES) {
+      this.saveUnsavedQty();
+    } else {
+      //TODO: log to sentry?
+      print("hit max retries");
+    }
+  }
+
   //for now just returns ingredients
   Future<List<DayIngredient>> _fetchInventory() async {
     final ingredientsJson = await this.api.fetchInventoryJson();
@@ -61,10 +108,6 @@ class ScopedInventory extends Model {
     }
 
     return ingredients;
-  }
-
-  Future<void> saveQty(List<IngredientUpdate> updates) {
-    return this.api.postInventorySaveQty(updates);
   }
 
   //if we want to persist to db, then we'll also want to merge db entries here
@@ -102,23 +145,6 @@ class ScopedInventory extends Model {
       return;
     }
 
-    //if saving already, ignore this save? probably better to queue it
-    if (this.savingAtSec == null) {
-      final savingAtSec = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-      this.savingAtSec = savingAtSec;
-
-      try {
-        await saveQty(this.unsavedUpdates);
-
-        //list may have changed after the await
-        this.savingAtSec = null;
-        this.unsavedUpdates = this.unsavedUpdates.where((u) {
-          return u.timeSec > savingAtSec;
-        }).toList();
-      } catch(err) {
-        this.savingAtSec = null;
-        //TODO: log to sentry?
-      }
-    }
+    await this.saveUnsavedQty();
   }
 }
