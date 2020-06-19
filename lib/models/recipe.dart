@@ -26,7 +26,7 @@ class Recipe {
   factory Recipe.fromJson(Map<String, dynamic> json) => _$RecipeFromJson(json);
 
   static Future<List<Recipe>> fetchAll() async {
-    final recipesJson = await WebApi.fetchRecipesJson();
+    final recipesJson = await WebApi().fetchRecipesJson();
     List<Recipe> recipes = new List<Recipe>();
     for (var jsonItem in json.decode(recipesJson)) {
       recipes.add(Recipe.fromJson(jsonItem));

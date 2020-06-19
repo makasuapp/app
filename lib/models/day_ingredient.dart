@@ -1,7 +1,4 @@
-import 'dart:async';
-import 'dart:convert';
 import 'package:json_annotation/json_annotation.dart';
-import '../services/web_api.dart';
 
 part 'day_ingredient.g.dart';
 
@@ -12,23 +9,16 @@ class DayIngredient {
   @JsonKey(name: "expected_qty")
   final double expectedQty;
   @JsonKey(name: "had_qty", nullable: true)
-  final double hadQty;
+  double hadQty;
+  @JsonKey(name: "qty_updated_at", nullable: true)
+  int qtyUpdatedAtSec;
   @JsonKey(name: "unit", nullable: true)
   final String unit;
 
-  DayIngredient(this.id, this.name, this.expectedQty, {this.hadQty, this.unit});
+  DayIngredient(this.id, this.name, this.expectedQty, {this.hadQty, this.qtyUpdatedAtSec, this.unit});
 
   factory DayIngredient.fromJson(Map<String, dynamic> json) => _$DayIngredientFromJson(json);
-
-  static Future<List<DayIngredient>> fetchAll() async {
-    final ingredientsJson = await WebApi.fetchInventoryJson();
-    List<DayIngredient> ingredients = new List<DayIngredient>();
-    for (var jsonItem in json.decode(ingredientsJson)) {
-      ingredients.add(DayIngredient.fromJson(jsonItem));
-    }
-
-    return ingredients;
-  }
+  Map<String, dynamic> toJson() => _$DayIngredientToJson(this);
 
   String expectedQtyWithUnit() {
     final isInteger = this.expectedQty == this.expectedQty.toInt();
@@ -39,5 +29,12 @@ class DayIngredient {
     } else {
       return "$qty ${this.unit}";
     }
+  }
+
+  DateTime qtyUpdatedAt() {
+    if (this.qtyUpdatedAtSec == null) {
+      return null;
+    }
+    return DateTime.fromMillisecondsSinceEpoch(this.qtyUpdatedAtSec * 1000);
   }
 }

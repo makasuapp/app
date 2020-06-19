@@ -30,5 +30,5 @@ void main() {
     final recipes = await Recipe.fetchAll();
     final recipe = recipes[0];
     expect(recipe.name, isNotNull);
-  }, skip: 'just run manually for sanity checks');
+  }, skip: 'run manually for sanity checks');
 }

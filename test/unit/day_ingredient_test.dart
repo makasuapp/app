@@ -16,10 +16,4 @@ void main() {
     expect(ingredient.hadQty, equals(null));
     expect(ingredient.unit, equals(null));
   });
-
-  test('ingredient API', () async {
-    final ingredients = await DayIngredient.fetchAll();
-    final ingredient = ingredients[0];
-    expect(ingredient.name, isNotNull);
-  }, skip: 'just run manually for sanity checks');
 }
