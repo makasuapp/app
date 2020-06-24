@@ -28,6 +28,24 @@ class InventoryStyles {
     fontSize: Styles.textSizeLarge,
     color: Styles.textColorDefault,
   );
+  static final unexpectedItemText = TextStyle(
+    fontSize: Styles.textSizeLarge,
+    color: Colors.red,
+  );
+  static final expectedItemText = TextStyle(
+    fontSize: Styles.textSizeLarge,
+    color: Styles.textColorFaint,
+    decoration: TextDecoration.lineThrough
+  );
   static final Color inventorySwipeRightColor = Colors.green;
   static final Color inventorySwipeLeftColor = Colors.red;
+
+  static final quantityPickerText = TextStyle(
+    fontSize: 40.0,
+    color: Styles.textColorDefault,
+  );
+  static final quantityPickerPadding = EdgeInsets.symmetric(
+    vertical: 20.0,
+    horizontal: 0
+  );
 }

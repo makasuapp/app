@@ -20,14 +20,14 @@ class DayIngredient {
   factory DayIngredient.fromJson(Map<String, dynamic> json) => _$DayIngredientFromJson(json);
   Map<String, dynamic> toJson() => _$DayIngredientToJson(this);
 
-  String expectedQtyWithUnit() {
-    final isInteger = this.expectedQty == this.expectedQty.toInt();
-    final qty = isInteger ? this.expectedQty.toInt().toString() : this.expectedQty.toStringAsPrecision(2);
+  String qtyWithUnit(double qty) {
+    final isInteger = qty == qty.toInt();
+    final shownQty = isInteger ? qty.toInt().toString() : qty.toStringAsPrecision(2);
 
     if (this.unit == null) {
-      return qty;
+      return shownQty;
     } else {
-      return "$qty ${this.unit}";
+      return "$shownQty ${this.unit}";
     }
   }
 

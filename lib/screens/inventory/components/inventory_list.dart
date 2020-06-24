@@ -4,7 +4,7 @@ import 'package:kitchen/styles.dart';
 import 'package:scoped_model/scoped_model.dart';
 import '../../../scoped_models/scoped_inventory.dart';
 import '../../../models/day_ingredient.dart';
-import './adjust_quantity.dart';
+import '../adjust_quantity.dart';
 import '../inventory_styles.dart';
 
 class InventoryList extends StatelessWidget {
@@ -29,7 +29,7 @@ class InventoryList extends StatelessWidget {
     scopedInventory.ingredients.forEach((ingredient) => {
       if (ingredient.hadQty == null) {
         uncheckedIngredients.add(ingredient)
-      } else if (ingredient.expectedQty > ingredient.hadQty) {
+      } else if (ingredient.expectedQty != ingredient.hadQty) {
         missingIngredients.add(ingredient)
       } else {
         checkedIngredients.add(ingredient)
@@ -76,7 +76,7 @@ class InventoryList extends StatelessWidget {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (_) => AdjustQuantityView(ingredient, 
+            MaterialPageRoute(builder: (_) => AdjustQuantityPage(ingredient, 
               (double setQty, BuildContext qtyViewContext) {
                 final originalQty = ingredient.hadQty;
                 scopedInventory.updateIngredientQty(ingredient, setQty);
@@ -86,10 +86,28 @@ class InventoryList extends StatelessWidget {
             ))
           );
         },
-        child: Container(
-          padding: InventoryStyles.inventoryItemPadding,
-          child: Text("${ingredient.expectedQtyWithUnit()} ${ingredient.name}", style: InventoryStyles.inventoryItemText)
-        )
+        child: _renderInventoryItemText(ingredient)
+      )
+    );
+  }
+
+  Widget _renderInventoryItemText(DayIngredient ingredient) {
+    final expectedText = ingredient.qtyWithUnit(ingredient.expectedQty);
+    List<Widget> textWidgets = List();
+
+    if (ingredient.hadQty != null && ingredient.hadQty != ingredient.expectedQty) {
+      final hadText = ingredient.qtyWithUnit(ingredient.hadQty);
+      textWidgets.add(Text("$hadText ", style: InventoryStyles.unexpectedItemText));
+      textWidgets.add(Text(expectedText, style: InventoryStyles.expectedItemText));
+    } else {
+      textWidgets.add(Text(expectedText, style: InventoryStyles.inventoryItemText));
+    }
+    textWidgets.add(Text(" ${ingredient.name}", style: InventoryStyles.inventoryItemText));
+
+    return Container(
+      padding: InventoryStyles.inventoryItemPadding,
+      child: Wrap(
+        children: textWidgets
       )
     );
   }
