@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import '../inventory_styles.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:kitchen/styles.dart';
 import 'package:scoped_model/scoped_model.dart';
 import '../../../scoped_models/scoped_inventory.dart';
 import '../../../models/day_ingredient.dart';
+import './adjust_quantity.dart';
+import '../inventory_styles.dart';
 
 class InventoryList extends StatelessWidget {
   @override
@@ -70,9 +72,24 @@ class InventoryList extends StatelessWidget {
       confirmDismiss: (direction) => _canDismissItem(direction, ingredient),
       key: UniqueKey(),
       onDismissed: (direction) => _onItemDismissed(direction, context, ingredient, scopedInventory),
-      child: Container(
-        padding: InventoryStyles.inventoryItemPadding,
-        child: Text("${ingredient.expectedQtyWithUnit()} ${ingredient.name}", style: InventoryStyles.inventoryItemText)
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => AdjustQuantityView(ingredient, 
+              (double setQty, BuildContext qtyViewContext) {
+                final originalQty = ingredient.hadQty;
+                scopedInventory.updateIngredientQty(ingredient, setQty);
+                Navigator.pop(qtyViewContext);
+                _notifyQtyUpdate("Ingredient updated", context, ingredient, scopedInventory, originalQty);
+              }
+            ))
+          );
+        },
+        child: Container(
+          padding: InventoryStyles.inventoryItemPadding,
+          child: Text("${ingredient.expectedQtyWithUnit()} ${ingredient.name}", style: InventoryStyles.inventoryItemText)
+        )
       )
     );
   }
@@ -93,38 +110,32 @@ class InventoryList extends StatelessWidget {
   }
 
   void _onItemDismissed(DismissDirection direction, BuildContext context, DayIngredient ingredient, ScopedInventory scopedInventory) {
+    final originalQty = ingredient.hadQty;
     //swipe right 
     if (direction == DismissDirection.startToEnd) {
       scopedInventory.updateIngredientQty(ingredient, ingredient.expectedQty);
-      Scaffold
-        .of(context)
-        .showSnackBar(SnackBar(content: 
-          _renderUndoButton("Ingredient checked", context, ingredient, scopedInventory, ingredient.hadQty)));
+      _notifyQtyUpdate("Ingredient checked", context, ingredient, scopedInventory, originalQty);
     //swipe right
     } else if (direction == DismissDirection.endToStart) {
       scopedInventory.updateIngredientQty(ingredient, null);
-      Scaffold
-        .of(context)
-        .showSnackBar(SnackBar(content: 
-          _renderUndoButton("Ingredient unchecked", context, ingredient, scopedInventory, ingredient.hadQty)));
+      _notifyQtyUpdate("Ingredient unchecked", context, ingredient, scopedInventory, originalQty);
     } 
   }
 
-  Widget _renderUndoButton(String text, BuildContext context, DayIngredient ingredient, 
+  void _notifyQtyUpdate(String notificationText, BuildContext context, DayIngredient ingredient,
     ScopedInventory scopedInventory, double originalQty) {
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        Text(text, style: Styles.textBrightDefault),
-        InkWell(
-          onTap: () {
-            scopedInventory.updateIngredientQty(ingredient, originalQty);
-            Scaffold.of(context).hideCurrentSnackBar();
-          },
-          child: Text("Undo", style: Styles.textHyperlink)
-        )
-      ]
-    );
+    Flushbar flush;
+    flush = Flushbar(
+      message: notificationText,
+      duration: Duration(seconds: 3),
+      isDismissible: true,
+      mainButton: InkWell(
+        onTap: () {
+          scopedInventory.updateIngredientQty(ingredient, originalQty);
+          flush.dismiss(); 
+        },
+        child: Text("Undo", style: Styles.textHyperlink)
+      )
+    )..show(context);
   }
 }

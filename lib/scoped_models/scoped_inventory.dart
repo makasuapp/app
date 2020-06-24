@@ -141,7 +141,7 @@ class ScopedInventory extends Model {
     final buffer = bufferMs ?? SAVE_BUFFER_SECONDS * 1000;
     await Future.delayed(Duration(milliseconds: buffer));
 
-    if (this.unsavedUpdates.last.timeSec != this._lastUpdateAtSec) {
+    if (this.unsavedUpdates.length > 0 && this.unsavedUpdates.last.timeSec != this._lastUpdateAtSec) {
       return;
     }
 

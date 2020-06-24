@@ -45,6 +45,18 @@ class Styles {
     color: Colors.lightBlue
   );
 
+  static final cancelBtnColor = Colors.grey;
+  static final submitBtnColor = Colors.blue;
+  static final submitBtnTextColor = Colors.white;
+  static const defaultBtnPadding = EdgeInsets.symmetric(
+    vertical: 10,
+    horizontal: 20
+  );
+  static final defaultBtnText = TextStyle(
+    fontSize: textSizeDefault
+  );
+
+
   static Color hexToColor(String code) {
     return Color(int.parse(code.substring(0, 6), radix: 16) + 0xFF000000);
   }
