@@ -1,6 +1,8 @@
 import 'package:scoped_model/scoped_model.dart';
 import 'dart:convert';
+import '../models/op_day.dart';
 import '../models/day_ingredient.dart';
+import '../models/day_prep.dart';
 import '../services/web_api.dart';
 import '../models/ingredient_update.dart';
 import 'package:meta/meta.dart';
@@ -11,6 +13,7 @@ const NUM_RETRIES = 3;
 
 class ScopedOpDay extends Model {
   List<DayIngredient> ingredients; 
+  List<DayPrep> prep; 
   bool isLoading = false;
   WebApi api;
 
@@ -21,21 +24,34 @@ class ScopedOpDay extends Model {
   @visibleForTesting
   int retryCount = 0;
   int _lastUpdateAtSec;
+  DateTime _lastLoaded;
 
-  ScopedOpDay({ingredients, api, unsavedUpdates}) {
+  ScopedOpDay({ingredients, prep, api, unsavedUpdates}) {
     this.unsavedUpdates = unsavedUpdates ?? []; 
     this.ingredients = ingredients ?? [];
+    this.prep = prep ?? [];
     this.api = api ?? WebApi();
   }
 
   Future<void> loadOpDay() async {
-    this.isLoading = true;
-    notifyListeners();
+    final now = DateTime.now();
+    final lastMidnight = new DateTime(now.year, now.month, now.day);
 
-    final ingredients = await _fetchOpDay();
-    this.ingredients = _mergeIngredients(ingredients);
-    this.isLoading = false;
-    notifyListeners();
+    if (this._lastLoaded == null ||
+      this._lastLoaded.millisecondsSinceEpoch < lastMidnight.millisecondsSinceEpoch
+    ) {
+      this.isLoading = true;
+      notifyListeners();
+
+      final opDay = await _fetchOpDay();
+      this.ingredients = _mergeIngredients(opDay.ingredients);
+      //TODO: merge
+      this.prep = opDay.prep;
+      this.isLoading = false;
+      notifyListeners();
+
+      this._lastLoaded = now;
+    }
   }
 
   void updateIngredientQty(DayIngredient ingredient, double qty, {int bufferMs}) {
@@ -99,15 +115,10 @@ class ScopedOpDay extends Model {
   }
 
   //for now just returns ingredients
-  Future<List<DayIngredient>> _fetchOpDay() async {
-    final ingredientsJson = await this.api.fetchOpDayJson();
+  Future<OpDay> _fetchOpDay() async {
+    final opDayJson = await this.api.fetchOpDayJson();
 
-    List<DayIngredient> ingredients = new List<DayIngredient>();
-    for (var jsonItem in json.decode(ingredientsJson)) {
-      ingredients.add(DayIngredient.fromJson(jsonItem));
-    }
-
-    return ingredients;
+    return OpDay.fromJson(json.decode(opDayJson));
   }
 
   //if we want to persist to db, then we'll also want to merge db entries here

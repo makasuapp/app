@@ -9,6 +9,7 @@ part of 'recipe_step.dart';
 RecipeStep _$RecipeStepFromJson(Map<String, dynamic> json) {
   return RecipeStep(
     json['id'] as int,
+    json['recipe_id'] as int,
     json['number'] as int,
     json['instruction'] as String,
     (json['tools'] as List)
@@ -29,6 +30,7 @@ RecipeStep _$RecipeStepFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$RecipeStepToJson(RecipeStep instance) =>
     <String, dynamic>{
       'id': instance.id,
+      'recipe_id': instance.recipeId,
       'number': instance.number,
       'instruction': instance.instruction,
       'duration_sec': instance.durationSec,

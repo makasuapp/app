@@ -11,11 +11,13 @@ Recipe _$RecipeFromJson(Map<String, dynamic> json) {
     json['id'] as int,
     json['name'] as String,
     (json['prep_steps'] as List)
-        .map((e) => RecipeStep.fromJson(e as Map<String, dynamic>))
-        .toList(),
+        ?.map((e) =>
+            e == null ? null : RecipeStep.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
     (json['cook_steps'] as List)
-        .map((e) => RecipeStep.fromJson(e as Map<String, dynamic>))
-        .toList(),
+        ?.map((e) =>
+            e == null ? null : RecipeStep.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
     outputQty: (json['output_qty'] as num)?.toDouble(),
     unit: json['unit'] as String,
     publish: json['publish'] as bool,

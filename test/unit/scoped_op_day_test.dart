@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:kitchen/models/ingredient_update.dart';
 import 'package:kitchen/models/day_ingredient.dart';
+import 'package:kitchen/models/op_day.dart';
 import 'package:kitchen/scoped_models/scoped_op_day.dart';
 import 'package:kitchen/services/web_api.dart';
 import 'package:mockito/mockito.dart';
@@ -12,11 +13,16 @@ void main() {
   test('fetch op day API', () async {
     final opDay = ScopedOpDay();
     expect(opDay.ingredients.length, equals(0));
+    expect(opDay.prep.length, equals(0));
     await opDay.loadOpDay();
     expect(opDay.ingredients.length, greaterThan(0));
+    expect(opDay.prep.length, greaterThan(0));
 
     final ingredient = opDay.ingredients[0];
     expect(ingredient.name, isNotNull);
+
+    final prep = opDay.prep[0];
+    expect(prep.recipeStep.id, isNotNull);
   }, skip: 'run manually for sanity checks');
 
   test('save qty API', () async {
@@ -42,10 +48,11 @@ void main() {
     var fetched = List<DayIngredient>();
     fetched.add(DayIngredient(1, "test", 2));
     fetched.add(DayIngredient(2, "test", 2, hadQty: 1.8, qtyUpdatedAtSec: hourAgo.millisecondsSinceEpoch ~/ 1000));
+    final fetchedOpDay = OpDay(fetched, List(), List());
 
     final api = MockApi();
     final opDay = ScopedOpDay(api: api, unsavedUpdates: updates);
-    when(api.fetchOpDayJson()).thenAnswer((_) async => Future.value(jsonEncode(fetched)));
+    when(api.fetchOpDayJson()).thenAnswer((_) async => Future.value(jsonEncode(fetchedOpDay)));
 
     await opDay.loadOpDay();
     final loaded = opDay.ingredients;

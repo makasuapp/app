@@ -16,9 +16,9 @@ class Recipe {
   @JsonKey(nullable: true)
   final String unit;
 
-  @JsonKey(name: "prep_steps")
+  @JsonKey(name: "prep_steps", nullable: true)
   List<RecipeStep> prepSteps;
-  @JsonKey(name: "cook_steps")
+  @JsonKey(name: "cook_steps", nullable: true)
   List<RecipeStep> cookSteps;
 
   Recipe(this.id, this.name, this.prepSteps, this.cookSteps, {this.outputQty, this.unit, this.publish = false});
