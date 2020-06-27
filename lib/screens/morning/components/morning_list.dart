@@ -39,18 +39,18 @@ class MorningList extends StatelessWidget {
     var viewItems = List<Widget>();
     viewItems.add(_headerText("Unchecked Ingredients"));
     viewItems.addAll(uncheckedIngredients.map((i) => 
-      _listListItem(context, i, scopedOpDay)).toList());
+      _renderListItem(context, i, scopedOpDay)).toList());
 
     if (missingIngredients.length > 0) {
       viewItems.add(_headerText("Missing Ingredients"));
       viewItems.addAll(missingIngredients.map((i) => 
-        _listListItem(context, i, scopedOpDay)).toList());
+        _renderListItem(context, i, scopedOpDay)).toList());
     }
 
     if (checkedIngredients.length > 0) {
       viewItems.add(_headerText("Checked Ingredients"));
       viewItems.addAll(checkedIngredients.map((i) => 
-        _listListItem(context, i, scopedOpDay)).toList());
+        _renderListItem(context, i, scopedOpDay)).toList());
     }
 
     viewItems.add(Container(padding: Styles.spacerPadding));
@@ -65,7 +65,7 @@ class MorningList extends StatelessWidget {
     );
   }
 
-  Widget _listListItem(BuildContext context, DayIngredient ingredient, ScopedOpDay scopedOpDay) {
+  Widget _renderListItem(BuildContext context, DayIngredient ingredient, ScopedOpDay scopedOpDay) {
     return Dismissible(
       background: Container(color: Styles.swipeRightColor),
       secondaryBackground: Container(color: Styles.swipeLeftColor),
@@ -86,12 +86,12 @@ class MorningList extends StatelessWidget {
             ))
           );
         },
-        child: _renderOpDayItemText(ingredient)
+        child: _renderItemText(ingredient)
       )
     );
   }
 
-  Widget _renderOpDayItemText(DayIngredient ingredient) {
+  Widget _renderItemText(DayIngredient ingredient) {
     final expectedText = ingredient.qtyWithUnit(ingredient.expectedQty);
     List<Widget> textWidgets = List();
 
