@@ -2,6 +2,7 @@ import 'dart:core';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/ingredient_update.dart';
+import '../models/prep_update.dart';
 
 class WebApi {
   String apiScheme;
@@ -57,5 +58,9 @@ class WebApi {
   Future<void> postOpDaySaveIngredientsQty(List<IngredientUpdate> updates) async {
     final body = jsonEncode({'updates': updates});
     return this._postJson('/op_days/save_ingredients_qty', body);
+  }
+  Future<void> postOpDaySavePrepQty(List<PrepUpdate> updates) async {
+    final body = jsonEncode({'updates': updates});
+    return this._postJson('/op_days/save_prep_qty', body);
   }
 }

@@ -11,6 +11,7 @@ const SAVE_BUFFER_SECONDS = 15;
 const RETRY_WAIT_SECONDS = 2;
 const NUM_RETRIES = 3;
 
+//TODO: might make more sense to separately do scoped ingredients and prep?
 class ScopedOpDay extends Model {
   List<DayIngredient> ingredients; 
   List<DayPrep> prep; 
@@ -37,6 +38,7 @@ class ScopedOpDay extends Model {
     final now = DateTime.now();
     final lastMidnight = new DateTime(now.year, now.month, now.day);
 
+    //TODO: pull to refresh should force this to happen
     if (this._lastLoaded == null ||
       this._lastLoaded.millisecondsSinceEpoch < lastMidnight.millisecondsSinceEpoch
     ) {
@@ -45,7 +47,7 @@ class ScopedOpDay extends Model {
 
       final opDay = await _fetchOpDay();
       this.ingredients = _mergeIngredients(opDay.ingredients);
-      //TODO: merge
+      //TODO: merge between unsaved and loaded, sort by dependencies / timing
       this.prep = opDay.prep;
       this.isLoading = false;
       notifyListeners();

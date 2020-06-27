@@ -5,6 +5,7 @@ import 'package:scoped_model/scoped_model.dart';
 import '../../../scoped_models/scoped_op_day.dart';
 import '../../../models/day_prep.dart';
 import '../prep_styles.dart';
+import './prep_item.dart';
 
 class PrepList extends StatelessWidget {
   @override
@@ -75,21 +76,7 @@ class PrepList extends StatelessWidget {
         onTap: () {
           //TODO: on tap
         },
-        child: _renderItemContent(prep)
-      )
-    );
-  }
-
-  Widget _renderItemContent(DayPrep prep) {
-    List<Widget> textWidgets = List();
-
-    //TODO: populate content - instructions, inputs, tools
-    textWidgets.add(Text(prep.recipeStep.instruction));
-
-    return Container(
-      padding: PrepStyles.listItemPadding,
-      child: Wrap(
-        children: textWidgets
+        child: PrepItem(prep)
       )
     );
   }

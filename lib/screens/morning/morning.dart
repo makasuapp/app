@@ -10,6 +10,7 @@ class MorningChecklistPage extends StatefulWidget {
 }
 
 class _MorningChecklistPageState extends State<MorningChecklistPage> {
+  //TODO: this should be shared with prep
   final opDay = ScopedOpDay();
 
   @override
