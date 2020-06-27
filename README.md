@@ -6,10 +6,8 @@
 
 # Running
 
-```
-  flutter pub get
-  flutter packages pub run build_runner build
-```
+1. Install any new packages: `flutter pub get`
+2. Re-serialize any changed JSON models: `flutter packages pub run build_runner build`
 
 Then in Visual Studio Code do Run -> Start Debugging
 

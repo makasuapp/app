@@ -9,7 +9,7 @@ const SAVE_BUFFER_SECONDS = 15;
 const RETRY_WAIT_SECONDS = 2;
 const NUM_RETRIES = 3;
 
-class ScopedInventory extends Model {
+class ScopedOpDay extends Model {
   List<DayIngredient> ingredients; 
   bool isLoading = false;
   WebApi api;
@@ -22,17 +22,17 @@ class ScopedInventory extends Model {
   int retryCount = 0;
   int _lastUpdateAtSec;
 
-  ScopedInventory({ingredients, api, unsavedUpdates}) {
+  ScopedOpDay({ingredients, api, unsavedUpdates}) {
     this.unsavedUpdates = unsavedUpdates ?? []; 
     this.ingredients = ingredients ?? [];
     this.api = api ?? WebApi();
   }
 
-  Future<void> loadInventory() async {
+  Future<void> loadOpDay() async {
     this.isLoading = true;
     notifyListeners();
 
-    final ingredients = await _fetchInventory();
+    final ingredients = await _fetchOpDay();
     this.ingredients = _mergeIngredients(ingredients);
     this.isLoading = false;
     notifyListeners();
@@ -63,7 +63,7 @@ class ScopedInventory extends Model {
 
       try {
         if (this.unsavedUpdates.length > 0) {
-          await this.api.postInventorySaveQty(this.unsavedUpdates);
+          await this.api.postOpDaySaveIngredientsQty(this.unsavedUpdates);
         }
 
         this.savingAtSec = null;
@@ -99,8 +99,8 @@ class ScopedInventory extends Model {
   }
 
   //for now just returns ingredients
-  Future<List<DayIngredient>> _fetchInventory() async {
-    final ingredientsJson = await this.api.fetchInventoryJson();
+  Future<List<DayIngredient>> _fetchOpDay() async {
+    final ingredientsJson = await this.api.fetchOpDayJson();
 
     List<DayIngredient> ingredients = new List<DayIngredient>();
     for (var jsonItem in json.decode(ingredientsJson)) {

@@ -35,7 +35,7 @@ class WebApi {
     return resp.body;
   }
   Future<String> fetchRecipesJson() => this._fetchJson('/recipes');
-  Future<String> fetchInventoryJson() => this._fetchJson('/inventory');
+  Future<String> fetchOpDayJson() => this._fetchJson('/op_days');
 
   Future<dynamic> _postJson(String endpoint, dynamic body) async {
     final uri = this.uri(endpoint);
@@ -54,8 +54,8 @@ class WebApi {
     return resp.body;
   }
 
-  Future<void> postInventorySaveQty(List<IngredientUpdate> updates) async {
+  Future<void> postOpDaySaveIngredientsQty(List<IngredientUpdate> updates) async {
     final body = jsonEncode({'updates': updates});
-    return this._postJson('/inventory/save_qty', body);
+    return this._postJson('/op_days/save_ingredients_qty', body);
   }
 }

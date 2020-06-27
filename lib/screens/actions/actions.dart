@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../inventory/inventory.dart';
+import '../morning/morning.dart';
 import 'package:kitchen/styles.dart';
 
 class Action {
@@ -10,7 +10,7 @@ class Action {
 
 class ActionsPage extends StatelessWidget {
   final List<Action> actions = [
-    Action("Inventory Checklist", () => InventoryPage())
+    Action("Morning Checklist", () => MorningChecklistPage())
   ];
 
   @override

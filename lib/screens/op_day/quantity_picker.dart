@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_picker/flutter_picker.dart';
-import '../inventory_styles.dart';
+import './op_day_styles.dart';
 
 class QuantityPicker extends StatelessWidget {
   final int maxQty;
@@ -17,8 +17,8 @@ class QuantityPicker extends StatelessWidget {
         picker.showDialog(context);
       },
       child: Container(
-        padding: InventoryStyles.quantityPickerPadding,
-        child: Text(this.qty.toString(), style: InventoryStyles.quantityPickerText)
+        padding: OpDayStyles.quantityPickerPadding,
+        child: Text(this.qty.toString(), style: OpDayStyles.quantityPickerText)
       )
     );
   }

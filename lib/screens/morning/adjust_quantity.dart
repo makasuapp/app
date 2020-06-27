@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import './components/quantity_picker.dart';
+import '../op_day/quantity_picker.dart';
 import '../common/cancel_button.dart';
 import '../common/submit_button.dart';
 import '../../models/day_ingredient.dart';
-import './inventory_styles.dart';
+import './morning_styles.dart';
 
 class AdjustQuantityPage extends StatefulWidget {
   final DayIngredient ingredient;
@@ -34,10 +34,10 @@ class _AdjustQuantityPageState extends State<AdjustQuantityPage> {
     return Scaffold(
       appBar: AppBar(title: Text("Adjust Quantity")),
       body: Container(
-        padding: InventoryStyles.quantityPickerPadding,
+        padding: MorningStyles.adjustQuantityTopPadding,
         child: Column(
           children: [
-            Text(this.widget.ingredient.name, style: InventoryStyles.inventoryItemText),
+            Text(this.widget.ingredient.name, style: MorningStyles.listItemText),
             _renderPickers(),
             _renderButtons(context)
           ]
@@ -55,7 +55,7 @@ class _AdjustQuantityPageState extends State<AdjustQuantityPage> {
 
     if (ingredient.unit != null) {
       //TODO(unit_conversion): convert to picker
-      pickers.add(Text(" ${ingredient.unit}", style: InventoryStyles.quantityPickerText));
+      pickers.add(Text(" ${ingredient.unit}", style: MorningStyles.adjustQuantityUnitText));
     }
 
     return Row(

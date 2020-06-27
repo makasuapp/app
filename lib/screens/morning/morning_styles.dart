@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:kitchen/styles.dart';
 
-class InventoryStyles {
+class MorningStyles {
   static const _headerTopPadding = 30.0;
   static const _headerBottomPadding = 10.0;
-  static final headerPadding = EdgeInsets.fromLTRB(
+  static final listHeaderPadding = EdgeInsets.fromLTRB(
     Styles.horizontalPaddingDefault,
     _headerTopPadding,
     Styles.horizontalPaddingDefault,
@@ -19,12 +19,12 @@ class InventoryStyles {
     letterSpacing: _headerSpacing
   );
 
-  static const inventoryItemVerticalPadding = 15.0;
-  static final inventoryItemPadding = EdgeInsets.symmetric(
-    vertical: inventoryItemVerticalPadding,
+  static const listItemVerticalPadding = 15.0;
+  static final listItemPadding = EdgeInsets.symmetric(
+    vertical: listItemVerticalPadding,
     horizontal: Styles.horizontalPaddingDefault
   );
-  static final inventoryItemText = TextStyle(
+  static final listItemText = TextStyle(
     fontSize: Styles.textSizeLarge,
     color: Styles.textColorDefault,
   );
@@ -37,15 +37,13 @@ class InventoryStyles {
     color: Styles.textColorFaint,
     decoration: TextDecoration.lineThrough
   );
-  static final Color inventorySwipeRightColor = Colors.green;
-  static final Color inventorySwipeLeftColor = Colors.red;
 
-  static final quantityPickerText = TextStyle(
-    fontSize: 40.0,
-    color: Styles.textColorDefault,
-  );
-  static final quantityPickerPadding = EdgeInsets.symmetric(
+  static final adjustQuantityTopPadding = EdgeInsets.symmetric(
     vertical: 20.0,
     horizontal: 0
+  );
+  static final adjustQuantityUnitText = TextStyle(
+    fontSize: 40.0,
+    color: Styles.textColorDefault,
   );
 }

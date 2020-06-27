@@ -2,31 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:kitchen/styles.dart';
 import 'package:scoped_model/scoped_model.dart';
-import '../../../scoped_models/scoped_inventory.dart';
+import '../../../scoped_models/scoped_op_day.dart';
 import '../../../models/day_ingredient.dart';
 import '../adjust_quantity.dart';
-import '../inventory_styles.dart';
+import '../morning_styles.dart';
 
-class InventoryList extends StatelessWidget {
+class MorningList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant<ScopedInventory>(
-      builder: (context, child, scopedInventory) => SingleChildScrollView(
+    return ScopedModelDescendant<ScopedOpDay>(
+      builder: (context, child, scopedOpDay) => SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: _renderView(context, scopedInventory)
+          children: _renderView(context, scopedOpDay)
         )
       )
     );
   }
 
-  List<Widget> _renderView(BuildContext context, ScopedInventory scopedInventory) {
+  List<Widget> _renderView(BuildContext context, ScopedOpDay scopedOpDay) {
     var uncheckedIngredients = List<DayIngredient>();
     var missingIngredients = List<DayIngredient>();
     var checkedIngredients = List<DayIngredient>();
 
-    scopedInventory.ingredients.forEach((ingredient) => {
+    scopedOpDay.ingredients.forEach((ingredient) => {
       if (ingredient.hadQty == null) {
         uncheckedIngredients.add(ingredient)
       } else if (ingredient.expectedQty != ingredient.hadQty) {
@@ -39,18 +39,18 @@ class InventoryList extends StatelessWidget {
     var viewItems = List<Widget>();
     viewItems.add(_headerText("Unchecked Ingredients"));
     viewItems.addAll(uncheckedIngredients.map((i) => 
-      _inventoryListItem(context, i, scopedInventory)).toList());
+      _listListItem(context, i, scopedOpDay)).toList());
 
     if (missingIngredients.length > 0) {
       viewItems.add(_headerText("Missing Ingredients"));
       viewItems.addAll(missingIngredients.map((i) => 
-        _inventoryListItem(context, i, scopedInventory)).toList());
+        _listListItem(context, i, scopedOpDay)).toList());
     }
 
     if (checkedIngredients.length > 0) {
       viewItems.add(_headerText("Checked Ingredients"));
       viewItems.addAll(checkedIngredients.map((i) => 
-        _inventoryListItem(context, i, scopedInventory)).toList());
+        _listListItem(context, i, scopedOpDay)).toList());
     }
 
     viewItems.add(Container(padding: Styles.spacerPadding));
@@ -60,18 +60,18 @@ class InventoryList extends StatelessWidget {
 
   Widget _headerText(String text) {
     return Container(
-      padding: InventoryStyles.headerPadding,
-      child: Text(text.toUpperCase(), style: InventoryStyles.listHeader)
+      padding: MorningStyles.listHeaderPadding,
+      child: Text(text.toUpperCase(), style: MorningStyles.listHeader)
     );
   }
 
-  Widget _inventoryListItem(BuildContext context, DayIngredient ingredient, ScopedInventory scopedInventory) {
+  Widget _listListItem(BuildContext context, DayIngredient ingredient, ScopedOpDay scopedOpDay) {
     return Dismissible(
-      background: Container(color: InventoryStyles.inventorySwipeRightColor),
-      secondaryBackground: Container(color: InventoryStyles.inventorySwipeLeftColor),
+      background: Container(color: Styles.swipeRightColor),
+      secondaryBackground: Container(color: Styles.swipeLeftColor),
       confirmDismiss: (direction) => _canDismissItem(direction, ingredient),
       key: UniqueKey(),
-      onDismissed: (direction) => _onItemDismissed(direction, context, ingredient, scopedInventory),
+      onDismissed: (direction) => _onItemDismissed(direction, context, ingredient, scopedOpDay),
       child: InkWell(
         onTap: () {
           Navigator.push(
@@ -79,33 +79,33 @@ class InventoryList extends StatelessWidget {
             MaterialPageRoute(builder: (_) => AdjustQuantityPage(ingredient, 
               (double setQty, BuildContext qtyViewContext) {
                 final originalQty = ingredient.hadQty;
-                scopedInventory.updateIngredientQty(ingredient, setQty);
+                scopedOpDay.updateIngredientQty(ingredient, setQty);
                 Navigator.pop(qtyViewContext);
-                _notifyQtyUpdate("Ingredient updated", context, ingredient, scopedInventory, originalQty);
+                _notifyQtyUpdate("Ingredient updated", context, ingredient, scopedOpDay, originalQty);
               }
             ))
           );
         },
-        child: _renderInventoryItemText(ingredient)
+        child: _renderOpDayItemText(ingredient)
       )
     );
   }
 
-  Widget _renderInventoryItemText(DayIngredient ingredient) {
+  Widget _renderOpDayItemText(DayIngredient ingredient) {
     final expectedText = ingredient.qtyWithUnit(ingredient.expectedQty);
     List<Widget> textWidgets = List();
 
     if (ingredient.hadQty != null && ingredient.hadQty != ingredient.expectedQty) {
       final hadText = ingredient.qtyWithUnit(ingredient.hadQty);
-      textWidgets.add(Text("$hadText ", style: InventoryStyles.unexpectedItemText));
-      textWidgets.add(Text(expectedText, style: InventoryStyles.expectedItemText));
+      textWidgets.add(Text("$hadText ", style: MorningStyles.unexpectedItemText));
+      textWidgets.add(Text(expectedText, style: MorningStyles.expectedItemText));
     } else {
-      textWidgets.add(Text(expectedText, style: InventoryStyles.inventoryItemText));
+      textWidgets.add(Text(expectedText, style: MorningStyles.listItemText));
     }
-    textWidgets.add(Text(" ${ingredient.name}", style: InventoryStyles.inventoryItemText));
+    textWidgets.add(Text(" ${ingredient.name}", style: MorningStyles.listItemText));
 
     return Container(
-      padding: InventoryStyles.inventoryItemPadding,
+      padding: MorningStyles.listItemPadding,
       child: Wrap(
         children: textWidgets
       )
@@ -127,21 +127,21 @@ class InventoryList extends StatelessWidget {
     }
   }
 
-  void _onItemDismissed(DismissDirection direction, BuildContext context, DayIngredient ingredient, ScopedInventory scopedInventory) {
+  void _onItemDismissed(DismissDirection direction, BuildContext context, DayIngredient ingredient, ScopedOpDay scopedOpDay) {
     final originalQty = ingredient.hadQty;
     //swipe right 
     if (direction == DismissDirection.startToEnd) {
-      scopedInventory.updateIngredientQty(ingredient, ingredient.expectedQty);
-      _notifyQtyUpdate("Ingredient checked", context, ingredient, scopedInventory, originalQty);
+      scopedOpDay.updateIngredientQty(ingredient, ingredient.expectedQty);
+      _notifyQtyUpdate("Ingredient checked", context, ingredient, scopedOpDay, originalQty);
     //swipe right
     } else if (direction == DismissDirection.endToStart) {
-      scopedInventory.updateIngredientQty(ingredient, null);
-      _notifyQtyUpdate("Ingredient unchecked", context, ingredient, scopedInventory, originalQty);
+      scopedOpDay.updateIngredientQty(ingredient, null);
+      _notifyQtyUpdate("Ingredient unchecked", context, ingredient, scopedOpDay, originalQty);
     } 
   }
 
   void _notifyQtyUpdate(String notificationText, BuildContext context, DayIngredient ingredient,
-    ScopedInventory scopedInventory, double originalQty) {
+    ScopedOpDay scopedOpDay, double originalQty) {
     Flushbar flush;
     flush = Flushbar(
       message: notificationText,
@@ -149,7 +149,7 @@ class InventoryList extends StatelessWidget {
       isDismissible: true,
       mainButton: InkWell(
         onTap: () {
-          scopedInventory.updateIngredientQty(ingredient, originalQty);
+          scopedOpDay.updateIngredientQty(ingredient, originalQty);
           flush.dismiss(); 
         },
         child: Text("Undo", style: Styles.textHyperlink)
