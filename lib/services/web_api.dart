@@ -11,7 +11,7 @@ class WebApi {
 
   WebApi({apiScheme, apiHost}) {
     this.apiScheme = apiScheme ?? 'https';
-    this.apiHost = apiHost ?? 'kitchen.bramper.com';
+    this.apiHost = apiHost ?? 'makasu.co';
   }
 
   Uri uri(String path, {Map<String, dynamic> queryParameters}) {
