@@ -4,24 +4,21 @@ class Styles {
   static const horizontalPaddingDefault = 20.0;
   static const verticalPaddingDefault = 8.0;
   static const defaultPaddings = EdgeInsets.symmetric(
-    vertical: verticalPaddingDefault,
-    horizontal: horizontalPaddingDefault
-  );
+      vertical: verticalPaddingDefault, horizontal: horizontalPaddingDefault);
 
   static const spacerVerticalPadding = 15.0;
-  static const spacerPadding = EdgeInsets.symmetric(
-    vertical: spacerVerticalPadding,
-    horizontal: 0.0
-  );
+  static const spacerPadding =
+      EdgeInsets.symmetric(vertical: spacerVerticalPadding, horizontal: 0.0);
 
   static const textSizeLarge = 22.0;
   static const textSizeDefault = 16.0;
-  static const textSizeSmall = 12.0; 
+  static const textSizeSmall = 12.0;
 
   static final Color textColorStrong = hexToColor('000000');
   static final Color textColorDefault = hexToColor('111111');
   static final Color textColorFaint = hexToColor('999999');
   static final Color textColorBright = hexToColor('FFFFFF');
+  static final Color textColorHighlight = Colors.blue;
 
   static final headerLarge = TextStyle(
     fontSize: textSizeLarge,
@@ -40,21 +37,21 @@ class Styles {
     height: 1.2,
   );
 
-  static final textHyperlink = TextStyle(
+  static final textHyperlink =
+      TextStyle(fontSize: textSizeDefault, color: Colors.lightBlue);
+
+  static final textDefaultHighlighted = TextStyle(
     fontSize: textSizeDefault,
-    color: Colors.lightBlue
+    color: textColorHighlight,
+    height: 1.2,
   );
 
   static final cancelBtnColor = Colors.grey;
   static final submitBtnColor = Colors.blue;
   static final submitBtnTextColor = Colors.white;
-  static const defaultBtnPadding = EdgeInsets.symmetric(
-    vertical: 10,
-    horizontal: 20
-  );
-  static final defaultBtnText = TextStyle(
-    fontSize: textSizeDefault
-  );
+  static const defaultBtnPadding =
+      EdgeInsets.symmetric(vertical: 10, horizontal: 20);
+  static final defaultBtnText = TextStyle(fontSize: textSizeDefault);
 
   static final Color swipeRightColor = Colors.green;
   static final Color swipeLeftColor = Colors.red;

@@ -10,11 +10,11 @@ const RETRY_WAIT_SECONDS = 2;
 const NUM_RETRIES = 3;
 
 class ScopedDayIngredient extends Model {
-  List<DayIngredient> ingredients; 
+  List<DayIngredient> ingredients;
   WebApi api;
 
   @visibleForTesting
-  List<IngredientUpdate> unsavedUpdates; 
+  List<IngredientUpdate> unsavedUpdates;
   @visibleForTesting
   int savingAtSec;
   @visibleForTesting
@@ -22,7 +22,7 @@ class ScopedDayIngredient extends Model {
   int _lastUpdateAtSec;
 
   ScopedDayIngredient({ingredients, api, unsavedUpdates}) {
-    this.unsavedUpdates = unsavedUpdates ?? []; 
+    this.unsavedUpdates = unsavedUpdates ?? [];
     this.ingredients = ingredients ?? [];
     this.api = api ?? locator<WebApi>();
   }
@@ -32,16 +32,19 @@ class ScopedDayIngredient extends Model {
     notifyListeners();
   }
 
-  void updateIngredientQty(DayIngredient ingredient, double qty, {int bufferMs}) {
+  void updateIngredientQty(DayIngredient ingredient, double qty,
+      {int bufferMs}) {
     final updatedAt = DateTime.now();
     final updatedIngredient = DayIngredient(
-      ingredient.id, ingredient.name, ingredient.expectedQty, hadQty: qty, 
-      unit: ingredient.unit, qtyUpdatedAtSec: updatedAt.millisecondsSinceEpoch ~/ 1000
-    );
+        ingredient.id, ingredient.name, ingredient.expectedQty,
+        hadQty: qty,
+        unit: ingredient.unit,
+        qtyUpdatedAtSec: updatedAt.millisecondsSinceEpoch ~/ 1000);
 
-    final updatedIngredients = this.ingredients.map((i) =>
-      i.id == ingredient.id ? updatedIngredient : i
-    ).toList();
+    final updatedIngredients = this
+        .ingredients
+        .map((i) => i.id == ingredient.id ? updatedIngredient : i)
+        .toList();
 
     this.ingredients = updatedIngredients;
     notifyListeners();
@@ -65,10 +68,10 @@ class ScopedDayIngredient extends Model {
         this.unsavedUpdates = this.unsavedUpdates.where((u) {
           return u.timeSec > savingAtSec;
         }).toList();
-      } catch(err) {
+      } catch (err) {
         //TODO: log to sentry?
         this.savingAtSec = null;
-        this._retryLater();    
+        this._retryLater();
       }
     } else {
       this._retryLater();
@@ -99,13 +102,14 @@ class ScopedDayIngredient extends Model {
     }
 
     var ingredientsMap = Map<int, DayIngredient>();
-    ingredients.forEach((i) { 
+    ingredients.forEach((i) {
       ingredientsMap[i.id] = i;
     });
 
     this.unsavedUpdates.forEach((update) {
       final ingredient = ingredientsMap[update.dayIngredientId];
-      if (ingredient.qtyUpdatedAtSec == null || update.timeSec > ingredient.qtyUpdatedAtSec) {
+      if (ingredient.qtyUpdatedAtSec == null ||
+          update.timeSec > ingredient.qtyUpdatedAtSec) {
         ingredient.hadQty = update.hadQty;
         ingredient.qtyUpdatedAtSec = update.timeSec;
       }
@@ -117,13 +121,15 @@ class ScopedDayIngredient extends Model {
   }
 
   void _persistIngredient(DayIngredient ingredient, {int bufferMs}) async {
-    this.unsavedUpdates.add(IngredientUpdate(ingredient.id, ingredient.hadQty, ingredient.qtyUpdatedAtSec));
+    this.unsavedUpdates.add(IngredientUpdate(
+        ingredient.id, ingredient.hadQty, ingredient.qtyUpdatedAtSec));
     this._lastUpdateAtSec = ingredient.qtyUpdatedAtSec;
 
     final buffer = bufferMs ?? SAVE_BUFFER_SECONDS * 1000;
     await Future.delayed(Duration(milliseconds: buffer));
 
-    if (this.unsavedUpdates.length > 0 && this.unsavedUpdates.last.timeSec != this._lastUpdateAtSec) {
+    if (this.unsavedUpdates.length > 0 &&
+        this.unsavedUpdates.last.timeSec != this._lastUpdateAtSec) {
       return;
     }
 
