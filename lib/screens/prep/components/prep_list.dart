@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:kitchen/styles.dart';
 import 'package:scoped_model/scoped_model.dart';
-import '../../../scoped_models/scoped_op_day.dart';
+import 'package:kitchen/scoped_models/scoped_day_prep.dart';
 import '../../../models/day_prep.dart';
 import '../prep_styles.dart';
 import './prep_item.dart';
@@ -10,23 +10,23 @@ import './prep_item.dart';
 class PrepList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant<ScopedOpDay>(
-      builder: (context, child, scopedOpDay) => SingleChildScrollView(
+    return ScopedModelDescendant<ScopedDayPrep>(
+      builder: (context, child, scopedPrep) => SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: _renderView(context, scopedOpDay)
+          children: _renderView(context, scopedPrep)
         )
       )
     );
   }
 
-  List<Widget> _renderView(BuildContext context, ScopedOpDay scopedOpDay) {
+  List<Widget> _renderView(BuildContext context, ScopedDayPrep scopedPrep) {
     var notStartedPrep = List<DayPrep>();
     var unfinishedPrep = List<DayPrep>();
     var donePrep = List<DayPrep>();
 
-    scopedOpDay.prep.forEach((prep) => {
+    scopedPrep.prep.forEach((prep) => {
       if (prep.madeQty == null) {
         notStartedPrep.add(prep)
       } else if (prep.expectedQty != prep.madeQty) {
@@ -39,18 +39,18 @@ class PrepList extends StatelessWidget {
     var viewItems = List<Widget>();
     viewItems.add(_headerText("Not Started"));
     viewItems.addAll(notStartedPrep.map((i) => 
-      _renderListItem(context, i, scopedOpDay)).toList());
+      _renderListItem(context, i, scopedPrep)).toList());
 
     if (unfinishedPrep.length > 0) {
       viewItems.add(_headerText("Unfinished"));
       viewItems.addAll(unfinishedPrep.map((i) => 
-        _renderListItem(context, i, scopedOpDay)).toList());
+        _renderListItem(context, i, scopedPrep)).toList());
     }
 
     if (donePrep.length > 0) {
       viewItems.add(_headerText("Done"));
       viewItems.addAll(donePrep.map((i) => 
-        _renderListItem(context, i, scopedOpDay)).toList());
+        _renderListItem(context, i, scopedPrep)).toList());
     }
 
     viewItems.add(Container(padding: Styles.spacerPadding));
@@ -65,13 +65,13 @@ class PrepList extends StatelessWidget {
     );
   }
 
-  Widget _renderListItem(BuildContext context, DayPrep prep, ScopedOpDay scopedOpDay) {
+  Widget _renderListItem(BuildContext context, DayPrep prep, ScopedDayPrep scopedPrep) {
     return Dismissible(
       background: Container(color: Styles.swipeRightColor),
       secondaryBackground: Container(color: Styles.swipeLeftColor),
       confirmDismiss: (direction) => _canDismissItem(direction, prep),
       key: UniqueKey(),
-      onDismissed: (direction) => _onItemDismissed(direction, context, prep, scopedOpDay),
+      onDismissed: (direction) => _onItemDismissed(direction, context, prep, scopedPrep),
       child: InkWell(
         onTap: () {
           //TODO: on tap
@@ -96,21 +96,21 @@ class PrepList extends StatelessWidget {
     }
   }
 
-  void _onItemDismissed(DismissDirection direction, BuildContext context, DayPrep prep, ScopedOpDay scopedOpDay) {
+  void _onItemDismissed(DismissDirection direction, BuildContext context, DayPrep prep, ScopedDayPrep scopedPrep) {
     final originalQty = prep.madeQty;
     //swipe right 
     if (direction == DismissDirection.startToEnd) {
       //TODO: update to done
-      _notifyQtyUpdate("Prep done", context, prep, scopedOpDay, originalQty);
+      _notifyQtyUpdate("Prep done", context, prep, scopedPrep, originalQty);
     //swipe right
     } else if (direction == DismissDirection.endToStart) {
       //TODO: update to not started
-      _notifyQtyUpdate("Prep not started", context, prep, scopedOpDay, originalQty);
+      _notifyQtyUpdate("Prep not started", context, prep, scopedPrep, originalQty);
     } 
   }
 
   void _notifyQtyUpdate(String notificationText, BuildContext context, DayPrep prep,
-    ScopedOpDay scopedOpDay, double originalQty) {
+    ScopedDayPrep scopedPrep, double originalQty) {
     Flushbar flush;
     flush = Flushbar(
       message: notificationText,
