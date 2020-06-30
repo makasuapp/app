@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:kitchen/styles.dart';
 import 'package:scoped_model/scoped_model.dart';
-import '../../../scoped_models/scoped_op_day.dart';
+import 'package:kitchen/scoped_models/scoped_day_ingredient.dart';
 import '../../../models/day_ingredient.dart';
 import '../adjust_quantity.dart';
 import '../morning_styles.dart';
@@ -10,23 +10,23 @@ import '../morning_styles.dart';
 class MorningList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant<ScopedOpDay>(
-      builder: (context, child, scopedOpDay) => SingleChildScrollView(
+    return ScopedModelDescendant<ScopedDayIngredient>(
+      builder: (context, child, scopedDayIngredient) => SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: _renderView(context, scopedOpDay)
+          children: _renderView(context, scopedDayIngredient)
         )
       )
     );
   }
 
-  List<Widget> _renderView(BuildContext context, ScopedOpDay scopedOpDay) {
+  List<Widget> _renderView(BuildContext context, ScopedDayIngredient scopedIngredient) {
     var uncheckedIngredients = List<DayIngredient>();
     var missingIngredients = List<DayIngredient>();
     var checkedIngredients = List<DayIngredient>();
 
-    scopedOpDay.ingredients.forEach((ingredient) => {
+    scopedIngredient.ingredients.forEach((ingredient) => {
       if (ingredient.hadQty == null) {
         uncheckedIngredients.add(ingredient)
       } else if (ingredient.expectedQty != ingredient.hadQty) {
@@ -39,18 +39,18 @@ class MorningList extends StatelessWidget {
     var viewItems = List<Widget>();
     viewItems.add(_headerText("Unchecked Ingredients"));
     viewItems.addAll(uncheckedIngredients.map((i) => 
-      _renderListItem(context, i, scopedOpDay)).toList());
+      _renderListItem(context, i, scopedIngredient)).toList());
 
     if (missingIngredients.length > 0) {
       viewItems.add(_headerText("Missing Ingredients"));
       viewItems.addAll(missingIngredients.map((i) => 
-        _renderListItem(context, i, scopedOpDay)).toList());
+        _renderListItem(context, i, scopedIngredient)).toList());
     }
 
     if (checkedIngredients.length > 0) {
       viewItems.add(_headerText("Checked Ingredients"));
       viewItems.addAll(checkedIngredients.map((i) => 
-        _renderListItem(context, i, scopedOpDay)).toList());
+        _renderListItem(context, i, scopedIngredient)).toList());
     }
 
     viewItems.add(Container(padding: Styles.spacerPadding));
@@ -65,13 +65,13 @@ class MorningList extends StatelessWidget {
     );
   }
 
-  Widget _renderListItem(BuildContext context, DayIngredient ingredient, ScopedOpDay scopedOpDay) {
+  Widget _renderListItem(BuildContext context, DayIngredient ingredient, ScopedDayIngredient scopedIngredient) {
     return Dismissible(
       background: Container(color: Styles.swipeRightColor),
       secondaryBackground: Container(color: Styles.swipeLeftColor),
       confirmDismiss: (direction) => _canDismissItem(direction, ingredient),
       key: UniqueKey(),
-      onDismissed: (direction) => _onItemDismissed(direction, context, ingredient, scopedOpDay),
+      onDismissed: (direction) => _onItemDismissed(direction, context, ingredient, scopedIngredient),
       child: InkWell(
         onTap: () {
           Navigator.push(
@@ -79,9 +79,9 @@ class MorningList extends StatelessWidget {
             MaterialPageRoute(builder: (_) => AdjustQuantityPage(ingredient, 
               (double setQty, BuildContext qtyViewContext) {
                 final originalQty = ingredient.hadQty;
-                scopedOpDay.updateIngredientQty(ingredient, setQty);
+                scopedIngredient.updateIngredientQty(ingredient, setQty);
                 Navigator.pop(qtyViewContext);
-                _notifyQtyUpdate("Ingredient updated", context, ingredient, scopedOpDay, originalQty);
+                _notifyQtyUpdate("Ingredient updated", context, ingredient, scopedIngredient, originalQty);
               }
             ))
           );
@@ -127,21 +127,21 @@ class MorningList extends StatelessWidget {
     }
   }
 
-  void _onItemDismissed(DismissDirection direction, BuildContext context, DayIngredient ingredient, ScopedOpDay scopedOpDay) {
+  void _onItemDismissed(DismissDirection direction, BuildContext context, DayIngredient ingredient, ScopedDayIngredient scopedIngredient) {
     final originalQty = ingredient.hadQty;
     //swipe right 
     if (direction == DismissDirection.startToEnd) {
-      scopedOpDay.updateIngredientQty(ingredient, ingredient.expectedQty);
-      _notifyQtyUpdate("Ingredient checked", context, ingredient, scopedOpDay, originalQty);
+      scopedIngredient.updateIngredientQty(ingredient, ingredient.expectedQty);
+      _notifyQtyUpdate("Ingredient checked", context, ingredient, scopedIngredient, originalQty);
     //swipe right
     } else if (direction == DismissDirection.endToStart) {
-      scopedOpDay.updateIngredientQty(ingredient, null);
-      _notifyQtyUpdate("Ingredient unchecked", context, ingredient, scopedOpDay, originalQty);
+      scopedIngredient.updateIngredientQty(ingredient, null);
+      _notifyQtyUpdate("Ingredient unchecked", context, ingredient, scopedIngredient, originalQty);
     } 
   }
 
   void _notifyQtyUpdate(String notificationText, BuildContext context, DayIngredient ingredient,
-    ScopedOpDay scopedOpDay, double originalQty) {
+    ScopedDayIngredient scopedIngredient, double originalQty) {
     Flushbar flush;
     flush = Flushbar(
       message: notificationText,
@@ -149,7 +149,7 @@ class MorningList extends StatelessWidget {
       isDismissible: true,
       mainButton: InkWell(
         onTap: () {
-          scopedOpDay.updateIngredientQty(ingredient, originalQty);
+          scopedIngredient.updateIngredientQty(ingredient, originalQty);
           flush.dismiss(); 
         },
         child: Text("Undo", style: Styles.textHyperlink)

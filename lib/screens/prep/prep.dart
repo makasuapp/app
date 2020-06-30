@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import './components/prep_list.dart';
 import '../op_day/op_day_progress_bar.dart';
-import '../../scoped_models/scoped_op_day.dart';
+import 'package:kitchen/scoped_models/scoped_op_day.dart';
+import 'package:kitchen/scoped_models/scoped_day_prep.dart';
+import '../../service_locator.dart';
 
 class PrepChecklistPage extends StatefulWidget {
   @override
@@ -10,8 +12,7 @@ class PrepChecklistPage extends StatefulWidget {
 }
 
 class _PrepChecklistPageState extends State<PrepChecklistPage> {
-  //TODO: this should be shared with morning
-  final opDay = ScopedOpDay();
+  final opDay = locator<ScopedOpDay>();
 
   @override
   void initState() {
@@ -25,12 +26,15 @@ class _PrepChecklistPageState extends State<PrepChecklistPage> {
       appBar: AppBar(title: Text("Prep Checklist")),
       body: ScopedModel<ScopedOpDay>(
         model: this.opDay,
-        child: RefreshIndicator(
-          onRefresh: opDay.loadOpDay,
-          child: Column(children: [
-            OpDayProgressBar(),
-            Expanded(child: PrepList())
-          ])
+        child: ScopedModel<ScopedDayPrep>(
+          model: this.opDay.scopedDayPrep,
+          child: RefreshIndicator(
+            onRefresh: () => opDay.loadOpDay(forceLoad: true),
+            child: Column(children: [
+              OpDayProgressBar(),
+              Expanded(child: PrepList())
+            ])
+          )
         )
       )
     );
