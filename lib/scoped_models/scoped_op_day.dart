@@ -3,6 +3,7 @@ import 'dart:convert';
 import './scoped_day_ingredient.dart';
 import './scoped_day_prep.dart';
 import '../models/op_day.dart';
+import '../models/recipe.dart';
 import '../services/web_api.dart';
 import '../service_locator.dart';
 
@@ -38,10 +39,11 @@ class ScopedOpDay extends Model {
 
       this.scopedDayIngredient.addFetched(opDay.ingredients);
       this.scopedDayPrep.addFetched(opDay.prep);
-      this.isLoading = false;
-      notifyListeners();
 
+      this.isLoading = false;
       this._lastLoaded = now;
+
+      notifyListeners();
     }
   }
 

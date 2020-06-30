@@ -9,9 +9,8 @@ part 'op_day.g.dart';
 class OpDay {
   final List<DayIngredient> ingredients;
   final List<DayPrep> prep;
-  final List<Recipe> recipes;
 
-  OpDay(this.ingredients, this.prep, this.recipes);
+  OpDay(this.ingredients, this.prep);
 
   factory OpDay.fromJson(Map<String, dynamic> json) => _$OpDayFromJson(json);
   Map<String, dynamic> toJson() => _$OpDayToJson(this);

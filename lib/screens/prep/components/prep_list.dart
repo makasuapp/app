@@ -72,12 +72,7 @@ class PrepList extends StatelessWidget {
       confirmDismiss: (direction) => _canDismissItem(direction, prep),
       key: UniqueKey(),
       onDismissed: (direction) => _onItemDismissed(direction, context, prep, scopedPrep),
-      child: InkWell(
-        onTap: () {
-          //TODO: on tap
-        },
-        child: PrepItem(prep)
-      )
+      child:  PrepItem(prep)
     );
   }
 

@@ -28,13 +28,15 @@ class PrepStyles {
     fontSize: Styles.textSizeLarge,
     color: Styles.textColorDefault,
   );
-  static final remainingItemText = TextStyle(
-    fontSize: Styles.textSizeLarge,
-    color: Colors.red,
+
+  static final ingredientsHeaderPadding = EdgeInsets.fromLTRB(
+    Styles.horizontalPaddingDefault,
+    20.0,
+    Styles.horizontalPaddingDefault,
+    0
   );
-  static final expectedItemText = TextStyle(
-    fontSize: Styles.textSizeLarge,
+  static final ingredientsHeader = TextStyle(
+    fontSize: Styles.textSizeSmall,
     color: Styles.textColorFaint,
-    decoration: TextDecoration.lineThrough
   );
 }

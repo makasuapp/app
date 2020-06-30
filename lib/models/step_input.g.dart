@@ -9,6 +9,7 @@ part of 'step_input.dart';
 StepInput _$StepInputFromJson(Map<String, dynamic> json) {
   return StepInput(
     json['id'] as int,
+    json['name'] as String,
     json['inputable_id'] as int,
     json['inputable_type'] as String,
     unit: json['unit'] as String,
@@ -18,6 +19,7 @@ StepInput _$StepInputFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$StepInputToJson(StepInput instance) => <String, dynamic>{
       'id': instance.id,
+      'name': instance.name,
       'inputable_type': instance.inputableType,
       'inputable_id': instance.inputableId,
       'unit': instance.unit,
