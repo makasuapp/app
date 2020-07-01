@@ -19,6 +19,7 @@ class ScopedDayPrep extends Model {
   int savingAtSec;
   @visibleForTesting
   int retryCount = 0;
+  Map<int, Set<int>> _recipeDependencies = Map();
 
   ScopedDayPrep({ingredients, prep, api, unsavedUpdates}) {
     this.unsavedUpdates = unsavedUpdates ?? []; 
@@ -28,7 +29,53 @@ class ScopedDayPrep extends Model {
 
   Future<void> addFetched(List<DayPrep> fetchedPrep) async {
     this.prep = _mergePrep(fetchedPrep);
+    this._recipeDependencies = buildDependencyMap();
+    this.prep.sort((a, b) => sortPrepList(a, b));
     notifyListeners();
+  }
+
+  @visibleForTesting
+  Map<int, Set<int>> buildDependencyMap() {
+    var map = Map<int, Set<int>>();  
+    this.prep.forEach((p) {
+      final rId = p.recipeStep.recipeId;
+      if (map[rId] == null) {
+        map[rId] = Set<int>();
+      }
+
+      p.recipeStep.inputs.forEach((i) {
+        if (i.inputableType == "Recipe") {
+          map[rId].add(i.inputableId);
+        }
+      });
+    });
+    return map;
+  }
+
+  @visibleForTesting
+  int sortPrepList(DayPrep a, DayPrep b) {
+    //TODO: also include timing constraints - min/max
+    final rsA = a.recipeStep;
+    final rsB = b.recipeStep;
+    if (rsA.recipeId == rsB.recipeId) {
+      if (rsA.stepType == rsB.stepType) {
+        //earlier step first
+        return rsA.number - rsB.number;
+      } else {
+        //prep before cook
+        return rsA.stepType.compareTo(rsB.stepType) * -1;
+      }
+    } else {
+      if (this._recipeDependencies[rsA.recipeId].contains(rsB.recipeId)) {
+        //A dependent on B so B comes first
+        return 1;
+      } else if (this._recipeDependencies[rsB.recipeId].contains(rsA.recipeId)) {
+        //B dependent on A so A comes first
+        return -1;
+      } else {
+        return rsA.recipeId - rsB.recipeId;
+      }
+    }
   }
 
   //if we want to persist to db, then we'll also want to merge db entries here
@@ -54,4 +101,6 @@ class ScopedDayPrep extends Model {
 
     return prepMap.values.toList();
   }
+
+
 }

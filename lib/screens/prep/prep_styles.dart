@@ -29,10 +29,19 @@ class PrepStyles {
     color: Styles.textColorDefault,
   );
 
+  static final listItemBorder = BoxDecoration(
+    border: Border(
+      top: BorderSide(
+        width: 0.5,
+        color: Styles.textColorFaint
+      )
+    )
+  );
+
   static final ingredientsHeaderPadding = EdgeInsets.fromLTRB(
-    Styles.horizontalPaddingDefault,
-    20.0,
-    Styles.horizontalPaddingDefault,
+    0,
+    10.0,
+    0,
     0
   );
   static final ingredientsHeader = TextStyle(

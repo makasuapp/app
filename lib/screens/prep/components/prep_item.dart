@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../models/day_prep.dart';
 import '../prep_styles.dart';
 import '../../../models/step_input.dart';
+import '../../../services/unit_converter.dart';
 
 class PrepItem extends StatelessWidget {
   final DayPrep prep;
@@ -15,12 +16,11 @@ class PrepItem extends StatelessWidget {
         //TODO: open detailed view
       },
       child:
-        _renderContent()
+        _renderContent(context)
     );
   }
 
-  //TODO: render everything wrapped but as their own line
-  Widget _renderContent() {
+  Widget _renderContent(BuildContext context) {
     List<Widget> textWidgets = List();
 
     textWidgets.add(Text(prep.recipeStep.instruction, style: PrepStyles.listItemText));
@@ -37,15 +37,23 @@ class PrepItem extends StatelessWidget {
 
     return Container(
       padding: PrepStyles.listItemPadding,
-      child: Wrap(
+      decoration: PrepStyles.listItemBorder,
+      width: MediaQuery.of(context).size.width,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: textWidgets
       )
     );
   }
 
-  //TODO: add quantity, unless it's recipe step and input is quantity 1 unit null
-  //multiply quantity of input by day prep
   Widget _renderInput(StepInput input) {
-    return Text(input.name);
+    //TODO: show something different for half done prep items?
+    if (input.inputableType == "RecipeStep" && input.unit == null
+      && input.quantity == 1) {
+      return Text(input.name);
+    } else {
+      final qty = input.quantity * this.prep.expectedQty;
+      return Text("${UnitConverter.qtyWithUnit(qty, input.unit)} ${input.name}");
+    }
   }
 }

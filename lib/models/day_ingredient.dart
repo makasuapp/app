@@ -20,17 +20,6 @@ class DayIngredient {
   factory DayIngredient.fromJson(Map<String, dynamic> json) => _$DayIngredientFromJson(json);
   Map<String, dynamic> toJson() => _$DayIngredientToJson(this);
 
-  String qtyWithUnit(double qty) {
-    final isInteger = qty == qty.toInt();
-    final shownQty = isInteger ? qty.toInt().toString() : qty.toStringAsPrecision(2);
-
-    if (this.unit == null) {
-      return shownQty;
-    } else {
-      return "$shownQty ${this.unit}";
-    }
-  }
-
   DateTime qtyUpdatedAt() {
     if (this.qtyUpdatedAtSec == null) {
       return null;
