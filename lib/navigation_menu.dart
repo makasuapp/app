@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kitchen/screens/actions/actions.dart';
-import 'package:kitchen/screens/morning/morning.dart';
-import 'package:kitchen/screens/prep/prep.dart';
 import 'package:kitchen/styles.dart';
 
 class NavigationMenu {

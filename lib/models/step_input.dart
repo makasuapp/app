@@ -17,7 +17,9 @@ class StepInput {
 
   //TODO: input from inputableType/Id
 
-  StepInput(this.id, this.name, this.inputableId, this.inputableType, {this.unit, this.quantity});
+  StepInput(this.id, this.name, this.inputableId, this.inputableType,
+      {this.unit, this.quantity});
 
-  factory StepInput.fromJson(Map<String, dynamic> json) => _$StepInputFromJson(json);
+  factory StepInput.fromJson(Map<String, dynamic> json) =>
+      _$StepInputFromJson(json);
 }

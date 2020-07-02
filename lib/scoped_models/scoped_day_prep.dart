@@ -10,11 +10,11 @@ const RETRY_WAIT_SECONDS = 2;
 const NUM_RETRIES = 3;
 
 class ScopedDayPrep extends Model {
-  List<DayPrep> prep; 
+  List<DayPrep> prep;
   WebApi api;
 
   @visibleForTesting
-  List<PrepUpdate> unsavedUpdates; 
+  List<PrepUpdate> unsavedUpdates;
   @visibleForTesting
   int savingAtSec;
   @visibleForTesting
@@ -22,7 +22,7 @@ class ScopedDayPrep extends Model {
   Map<int, Set<int>> _recipeDependencies = Map();
 
   ScopedDayPrep({ingredients, prep, api, unsavedUpdates}) {
-    this.unsavedUpdates = unsavedUpdates ?? []; 
+    this.unsavedUpdates = unsavedUpdates ?? [];
     this.prep = prep ?? [];
     this.api = api ?? locator<WebApi>();
   }
@@ -36,7 +36,7 @@ class ScopedDayPrep extends Model {
 
   @visibleForTesting
   Map<int, Set<int>> buildDependencyMap() {
-    var map = Map<int, Set<int>>();  
+    var map = Map<int, Set<int>>();
     this.prep.forEach((p) {
       final rId = p.recipeStep.recipeId;
       if (map[rId] == null) {
@@ -69,7 +69,9 @@ class ScopedDayPrep extends Model {
       if (this._recipeDependencies[rsA.recipeId].contains(rsB.recipeId)) {
         //A dependent on B so B comes first
         return 1;
-      } else if (this._recipeDependencies[rsB.recipeId].contains(rsA.recipeId)) {
+      } else if (this
+          ._recipeDependencies[rsB.recipeId]
+          .contains(rsA.recipeId)) {
         //B dependent on A so A comes first
         return -1;
       } else {
@@ -85,13 +87,14 @@ class ScopedDayPrep extends Model {
     }
 
     var prepMap = Map<int, DayPrep>();
-    newPrep.forEach((p) { 
+    newPrep.forEach((p) {
       prepMap[p.id] = p;
     });
 
     this.unsavedUpdates.forEach((update) {
       final prep = prepMap[update.dayPrepId];
-      if (prep.qtyUpdatedAtSec == null || update.timeSec > prep.qtyUpdatedAtSec) {
+      if (prep.qtyUpdatedAtSec == null ||
+          update.timeSec > prep.qtyUpdatedAtSec) {
         prep.madeQty = update.madeQty;
         prep.qtyUpdatedAtSec = update.timeSec;
       }
@@ -101,6 +104,4 @@ class ScopedDayPrep extends Model {
 
     return prepMap.values.toList();
   }
-
-
 }

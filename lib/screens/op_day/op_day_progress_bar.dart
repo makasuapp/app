@@ -7,8 +7,7 @@ class OpDayProgressBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<ScopedOpDay>(
-      builder: (context, child, scopedOpDay) => 
-        ProgressBar(scopedOpDay.isLoading)
-    );
+        builder: (context, child, scopedOpDay) =>
+            ProgressBar(scopedOpDay.isLoading));
   }
 }

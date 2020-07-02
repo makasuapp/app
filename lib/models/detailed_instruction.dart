@@ -9,5 +9,6 @@ class DetailedInstruction {
 
   DetailedInstruction(this.id, this.instruction);
 
-  factory DetailedInstruction.fromJson(Map<String, dynamic> json) => _$DetailedInstructionFromJson(json);
+  factory DetailedInstruction.fromJson(Map<String, dynamic> json) =>
+      _$DetailedInstructionFromJson(json);
 }

@@ -10,11 +10,11 @@ class SubmitButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FlatButton(
-      color: Styles.submitBtnColor,
-      textColor: Styles.submitBtnTextColor,
-      padding: Styles.defaultBtnPadding,
-      onPressed: this.onSubmit,
-      child: Text(this.btnText != null ? this.btnText : "Submit", style: Styles.defaultBtnText)
-    );
+        color: Styles.submitBtnColor,
+        textColor: Styles.submitBtnTextColor,
+        padding: Styles.defaultBtnPadding,
+        onPressed: this.onSubmit,
+        child: Text(this.btnText != null ? this.btnText : "Submit",
+            style: Styles.defaultBtnText));
   }
 }

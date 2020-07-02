@@ -3,7 +3,6 @@ import 'dart:convert';
 import './scoped_day_ingredient.dart';
 import './scoped_day_prep.dart';
 import '../models/op_day.dart';
-import '../models/recipe.dart';
 import '../services/web_api.dart';
 import '../service_locator.dart';
 
@@ -21,7 +20,8 @@ class ScopedOpDay extends Model {
 
   ScopedOpDay({scopedDayIngredient, scopedDayPrep, api}) {
     this.api = api ?? locator<WebApi>();
-    this.scopedDayIngredient = scopedDayIngredient ?? locator<ScopedDayIngredient>();
+    this.scopedDayIngredient =
+        scopedDayIngredient ?? locator<ScopedDayIngredient>();
     this.scopedDayPrep = scopedDayPrep ?? locator<ScopedDayPrep>();
   }
 
@@ -29,9 +29,10 @@ class ScopedOpDay extends Model {
     final now = DateTime.now();
     final lastMidnight = new DateTime(now.year, now.month, now.day);
 
-    if (forceLoad || this._lastLoaded == null ||
-      this._lastLoaded.millisecondsSinceEpoch < lastMidnight.millisecondsSinceEpoch
-    ) {
+    if (forceLoad ||
+        this._lastLoaded == null ||
+        this._lastLoaded.millisecondsSinceEpoch <
+            lastMidnight.millisecondsSinceEpoch) {
       this.isLoading = true;
       notifyListeners();
 

@@ -6,8 +6,6 @@ class OpDayStyles {
     fontSize: 40.0,
     color: Styles.textColorDefault,
   );
-  static final quantityPickerPadding = EdgeInsets.symmetric(
-    vertical: 20.0,
-    horizontal: 0
-  );
+  static final quantityPickerPadding =
+      EdgeInsets.symmetric(vertical: 20.0, horizontal: 0);
 }

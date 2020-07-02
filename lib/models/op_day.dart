@@ -1,7 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import './day_ingredient.dart';
 import './day_prep.dart';
-import './recipe.dart';
 
 part 'op_day.g.dart';
 

@@ -21,7 +21,8 @@ class Recipe {
   @JsonKey(name: "cook_steps", nullable: true)
   List<RecipeStep> cookSteps;
 
-  Recipe(this.id, this.name, this.prepSteps, this.cookSteps, {this.outputQty, this.unit, this.publish = false});
+  Recipe(this.id, this.name, this.prepSteps, this.cookSteps,
+      {this.outputQty, this.unit, this.publish = false});
 
   factory Recipe.fromJson(Map<String, dynamic> json) => _$RecipeFromJson(json);
 

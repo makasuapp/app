@@ -27,8 +27,10 @@ class RecipeStep {
   @JsonKey(name: "inputs")
   List<StepInput> inputs;
 
-  RecipeStep(this.id, this.recipeId, this.stepType, this.number, this.instruction, this.tools, this.detailedInstructions, this.inputs,
-    {this.durationSec, this.maxBeforeSec, this.minBeforeSec});
+  RecipeStep(this.id, this.recipeId, this.stepType, this.number,
+      this.instruction, this.tools, this.detailedInstructions, this.inputs,
+      {this.durationSec, this.maxBeforeSec, this.minBeforeSec});
 
-  factory RecipeStep.fromJson(Map<String, dynamic> json) => _$RecipeStepFromJson(json);
+  factory RecipeStep.fromJson(Map<String, dynamic> json) =>
+      _$RecipeStepFromJson(json);
 }

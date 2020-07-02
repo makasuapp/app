@@ -15,9 +15,11 @@ class DayIngredient {
   @JsonKey(name: "unit", nullable: true)
   final String unit;
 
-  DayIngredient(this.id, this.name, this.expectedQty, {this.hadQty, this.qtyUpdatedAtSec, this.unit});
+  DayIngredient(this.id, this.name, this.expectedQty,
+      {this.hadQty, this.qtyUpdatedAtSec, this.unit});
 
-  factory DayIngredient.fromJson(Map<String, dynamic> json) => _$DayIngredientFromJson(json);
+  factory DayIngredient.fromJson(Map<String, dynamic> json) =>
+      _$DayIngredientFromJson(json);
   Map<String, dynamic> toJson() => _$DayIngredientToJson(this);
 
   DateTime qtyUpdatedAt() {

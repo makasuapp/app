@@ -9,6 +9,9 @@ void main() {
     updates.add(IngredientUpdate(2, 1.5, 12346));
 
     final updatesJson = jsonEncode({'updates': updates});
-    expect(updatesJson, equals('{"updates":[{"id":1,"had_qty":1.2,"time_sec":12345},{"id":2,"had_qty":1.5,"time_sec":12346}]}'));
+    expect(
+        updatesJson,
+        equals(
+            '{"updates":[{"id":1,"had_qty":1.2,"time_sec":12345},{"id":2,"had_qty":1.5,"time_sec":12346}]}'));
   });
 }

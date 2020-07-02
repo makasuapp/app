@@ -16,8 +16,10 @@ class DayPrep {
   @JsonKey(name: "recipe_step")
   final RecipeStep recipeStep;
 
-  DayPrep(this.id, this.expectedQty, this.recipeStep, {this.madeQty, this.qtyUpdatedAtSec});
+  DayPrep(this.id, this.expectedQty, this.recipeStep,
+      {this.madeQty, this.qtyUpdatedAtSec});
 
-  factory DayPrep.fromJson(Map<String, dynamic> json) => _$DayPrepFromJson(json);
+  factory DayPrep.fromJson(Map<String, dynamic> json) =>
+      _$DayPrepFromJson(json);
   Map<String, dynamic> toJson() => _$DayPrepToJson(this);
 }

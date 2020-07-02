@@ -10,10 +10,10 @@ class CancelButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FlatButton(
-      color: Styles.cancelBtnColor,
-      padding: Styles.defaultBtnPadding,
-      onPressed: this.onCancel,
-      child: Text(this.btnText != null ? this.btnText : "Cancel", style: Styles.defaultBtnText)
-    );
+        color: Styles.cancelBtnColor,
+        padding: Styles.defaultBtnPadding,
+        onPressed: this.onCancel,
+        child: Text(this.btnText != null ? this.btnText : "Cancel",
+            style: Styles.defaultBtnText));
   }
 }

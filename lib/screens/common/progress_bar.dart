@@ -7,12 +7,11 @@ class ProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return this.isLoading ? 
-      LinearProgressIndicator(
-        value: null,
-        backgroundColor: Colors.white,
-        valueColor: AlwaysStoppedAnimation<Color>(Colors.grey)
-      ) 
-    : Container();
+    return this.isLoading
+        ? LinearProgressIndicator(
+            value: null,
+            backgroundColor: Colors.white,
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.grey))
+        : Container();
   }
 }

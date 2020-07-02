@@ -27,7 +27,7 @@ class ActionsPage extends StatelessWidget {
   }
 
   Widget _actionListBuilder(BuildContext context, int index) {
-    final action = actions[index];
+    final action = ActionsPage.actions[index];
     return ListTile(
         title: _actionTitle(action),
         onTap: () => _navToActionPage(context, action));

@@ -11,14 +11,11 @@ class PrepList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<ScopedDayPrep>(
-      builder: (context, child, scopedPrep) => SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: _renderView(context, scopedPrep)
-        )
-      )
-    );
+        builder: (context, child, scopedPrep) => SingleChildScrollView(
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: _renderView(context, scopedPrep))));
   }
 
   List<Widget> _renderView(BuildContext context, ScopedDayPrep scopedPrep) {
@@ -27,30 +24,32 @@ class PrepList extends StatelessWidget {
     var donePrep = List<DayPrep>();
 
     scopedPrep.prep.forEach((prep) => {
-      if (prep.madeQty == null) {
-        notStartedPrep.add(prep)
-      } else if (prep.expectedQty != prep.madeQty) {
-        unfinishedPrep.add(prep)
-      } else {
-        donePrep.add(prep)
-      }
-    });
+          if (prep.madeQty == null)
+            {notStartedPrep.add(prep)}
+          else if (prep.expectedQty != prep.madeQty)
+            {unfinishedPrep.add(prep)}
+          else
+            {donePrep.add(prep)}
+        });
 
     var viewItems = List<Widget>();
     viewItems.add(_headerText("Not Started"));
-    viewItems.addAll(notStartedPrep.map((i) => 
-      _renderListItem(context, i, scopedPrep)).toList());
+    viewItems.addAll(notStartedPrep
+        .map((i) => _renderListItem(context, i, scopedPrep))
+        .toList());
 
     if (unfinishedPrep.length > 0) {
       viewItems.add(_headerText("Unfinished"));
-      viewItems.addAll(unfinishedPrep.map((i) => 
-        _renderListItem(context, i, scopedPrep)).toList());
+      viewItems.addAll(unfinishedPrep
+          .map((i) => _renderListItem(context, i, scopedPrep))
+          .toList());
     }
 
     if (donePrep.length > 0) {
       viewItems.add(_headerText("Done"));
-      viewItems.addAll(donePrep.map((i) => 
-        _renderListItem(context, i, scopedPrep)).toList());
+      viewItems.addAll(donePrep
+          .map((i) => _renderListItem(context, i, scopedPrep))
+          .toList());
     }
 
     viewItems.add(Container(padding: Styles.spacerPadding));
@@ -60,29 +59,28 @@ class PrepList extends StatelessWidget {
 
   Widget _headerText(String text) {
     return Container(
-      padding: PrepStyles.listHeaderPadding,
-      child: Text(text.toUpperCase(), style: PrepStyles.listHeader)
-    );
+        padding: PrepStyles.listHeaderPadding,
+        child: Text(text.toUpperCase(), style: PrepStyles.listHeader));
   }
 
-  Widget _renderListItem(BuildContext context, DayPrep prep, ScopedDayPrep scopedPrep) {
+  Widget _renderListItem(
+      BuildContext context, DayPrep prep, ScopedDayPrep scopedPrep) {
     return Dismissible(
-      background: Container(color: Styles.swipeRightColor),
-      secondaryBackground: Container(color: Styles.swipeLeftColor),
-      confirmDismiss: (direction) => _canDismissItem(direction, prep),
-      key: UniqueKey(),
-      onDismissed: (direction) => _onItemDismissed(direction, context, prep, scopedPrep),
-      child:  PrepItem(prep)
-    );
+        background: Container(color: Styles.swipeRightColor),
+        secondaryBackground: Container(color: Styles.swipeLeftColor),
+        confirmDismiss: (direction) => _canDismissItem(direction, prep),
+        key: UniqueKey(),
+        onDismissed: (direction) =>
+            _onItemDismissed(direction, context, prep, scopedPrep),
+        child: PrepItem(prep));
   }
 
   Future<bool> _canDismissItem(DismissDirection direction, DayPrep prep) {
-    //swipe right 
+    //swipe right
     if (direction == DismissDirection.startToEnd) {
-      final isNotDone = prep.madeQty == null || 
-        prep.madeQty < prep.expectedQty;
+      final isNotDone = prep.madeQty == null || prep.madeQty < prep.expectedQty;
       return Future.value(isNotDone);
-    //swipe left
+      //swipe left
     } else if (direction == DismissDirection.endToStart) {
       final isStarted = prep.madeQty != null;
       return Future.value(isStarted);
@@ -91,33 +89,34 @@ class PrepList extends StatelessWidget {
     }
   }
 
-  void _onItemDismissed(DismissDirection direction, BuildContext context, DayPrep prep, ScopedDayPrep scopedPrep) {
+  void _onItemDismissed(DismissDirection direction, BuildContext context,
+      DayPrep prep, ScopedDayPrep scopedPrep) {
     final originalQty = prep.madeQty;
-    //swipe right 
+    //swipe right
     if (direction == DismissDirection.startToEnd) {
       //TODO: update to done
       _notifyQtyUpdate("Prep done", context, prep, scopedPrep, originalQty);
-    //swipe right
+      //swipe right
     } else if (direction == DismissDirection.endToStart) {
       //TODO: update to not started
-      _notifyQtyUpdate("Prep not started", context, prep, scopedPrep, originalQty);
-    } 
+      _notifyQtyUpdate(
+          "Prep not started", context, prep, scopedPrep, originalQty);
+    }
   }
 
-  void _notifyQtyUpdate(String notificationText, BuildContext context, DayPrep prep,
-    ScopedDayPrep scopedPrep, double originalQty) {
+  void _notifyQtyUpdate(String notificationText, BuildContext context,
+      DayPrep prep, ScopedDayPrep scopedPrep, double originalQty) {
     Flushbar flush;
     flush = Flushbar(
-      message: notificationText,
-      duration: Duration(seconds: 3),
-      isDismissible: true,
-      mainButton: InkWell(
-        onTap: () {
-          //TODO: update back to original
-          flush.dismiss(); 
-        },
-        child: Text("Undo", style: Styles.textHyperlink)
-      )
-    )..show(context);
+        message: notificationText,
+        duration: Duration(seconds: 3),
+        isDismissible: true,
+        mainButton: InkWell(
+            onTap: () {
+              //TODO: update back to original
+              flush.dismiss();
+            },
+            child: Text("Undo", style: Styles.textHyperlink)))
+      ..show(context);
   }
 }
