@@ -19,17 +19,18 @@ class PrepItem extends StatelessWidget {
   }
 
   Widget _renderContent(BuildContext context) {
-    List<Widget> textWidgets = List();
+    var textWidgets = List<Widget>();
+    final recipeStep = prep.recipeStep();
 
     textWidgets
-        .add(Text(prep.recipeStep.instruction, style: PrepStyles.listItemText));
+        .add(Text(recipeStep.instruction, style: PrepStyles.listItemText));
 
-    if (prep.recipeStep.inputs.length > 0) {
+    if (recipeStep.inputs.length > 0) {
       textWidgets.add(Container(
           padding: PrepStyles.ingredientsHeaderPadding,
           child: Text("Ingredients", style: PrepStyles.ingredientsHeader)));
 
-      prep.recipeStep.inputs
+      recipeStep.inputs
           .forEach((input) => textWidgets.add(_renderInput(input)));
     }
 

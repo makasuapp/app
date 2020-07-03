@@ -21,7 +21,7 @@ void main() {
     expect(ingredient.name, isNotNull);
 
     final prep = opDay.scopedDayPrep.prep[0];
-    expect(prep.recipeStep.id, isNotNull);
+    expect(prep.recipeStepId, isNotNull);
   }, skip: 'run manually for sanity checks');
 
   //TODO: tests on refreshing / re-loading

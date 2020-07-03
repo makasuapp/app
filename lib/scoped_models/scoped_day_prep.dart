@@ -38,12 +38,12 @@ class ScopedDayPrep extends Model {
   Map<int, Set<int>> buildDependencyMap() {
     var map = Map<int, Set<int>>();
     this.prep.forEach((p) {
-      final rId = p.recipeStep.recipeId;
+      final rId = p.recipeStep().recipeId;
       if (map[rId] == null) {
         map[rId] = Set<int>();
       }
 
-      p.recipeStep.inputs.forEach((i) {
+      p.recipeStep().inputs.forEach((i) {
         if (i.inputableType == "Recipe") {
           map[rId].add(i.inputableId);
         }
@@ -55,8 +55,8 @@ class ScopedDayPrep extends Model {
   @visibleForTesting
   int sortPrepList(DayPrep a, DayPrep b) {
     //TODO: also include timing constraints - min/max
-    final rsA = a.recipeStep;
-    final rsB = b.recipeStep;
+    final rsA = a.recipeStep();
+    final rsB = b.recipeStep();
     if (rsA.recipeId == rsB.recipeId) {
       if (rsA.stepType == rsB.stepType) {
         //earlier step first

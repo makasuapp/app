@@ -37,6 +37,7 @@ class WebApi {
 
   Future<String> fetchRecipesJson() => this._fetchJson('/recipes');
   Future<String> fetchOpDayJson() => this._fetchJson('/op_days');
+  Future<String> fetchOrdersJson() => this._fetchJson('/orders');
 
   Future<dynamic> _postJson(String endpoint, dynamic body) async {
     final uri = this.uri(endpoint);
