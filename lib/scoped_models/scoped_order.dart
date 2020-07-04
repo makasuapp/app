@@ -4,16 +4,19 @@ import '../services/web_api.dart';
 import '../service_locator.dart';
 import '../models/recipe.dart';
 import '../models/recipe_step.dart';
+import '../models/order.dart';
 
 class ScopedOrder extends Model {
   Map<int, Recipe> recipesMap = Map();
   Map<int, RecipeStep> recipeStepsMap = Map();
+  List<Order> orders;
   bool isLoading = false;
   WebApi api;
 
   DateTime _lastLoaded;
 
-  ScopedOrder({List<Recipe> recipes, List<RecipeStep> recipeSteps, api}) {
+  ScopedOrder(
+      {List<Recipe> recipes, List<RecipeStep> recipeSteps, orders, api}) {
     this.api = api ?? locator<WebApi>();
     if (recipes != null) {
       recipes.forEach((recipe) => this.recipesMap[recipe.id] = recipe);
@@ -21,6 +24,7 @@ class ScopedOrder extends Model {
     if (recipeSteps != null) {
       recipeSteps.forEach((step) => this.recipeStepsMap[step.id] = step);
     }
+    this.orders = orders ?? List();
   }
 
   Future<void> loadOrders({forceLoad = false}) async {
@@ -54,5 +58,10 @@ class ScopedOrder extends Model {
     final recipeSteps = decodedResp["recipe_steps"]
         .map((recipeStepJson) => RecipeStep.fromJson(recipeStepJson));
     recipeSteps.forEach((step) => this.recipeStepsMap[step.id] = step);
+
+    var orders = List<Order>();
+    decodedResp["orders"]
+        .forEach((orderJson) => orders.add(Order.fromJson(orderJson)));
+    this.orders = orders;
   }
 }

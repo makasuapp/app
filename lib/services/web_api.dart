@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/ingredient_update.dart';
 import '../models/prep_update.dart';
+import '../models/order.dart';
 
 class WebApi {
   String apiScheme;
@@ -54,14 +55,32 @@ class WebApi {
     return resp.body;
   }
 
-  Future<void> postOpDaySaveIngredientsQty(
-      List<IngredientUpdate> updates) async {
+  Future<void> postOpDaySaveIngredientsQty(List<IngredientUpdate> updates) {
     final body = jsonEncode({'updates': updates});
     return this._postJson('/op_days/save_ingredients_qty', body);
   }
 
-  Future<void> postOpDaySavePrepQty(List<PrepUpdate> updates) async {
+  Future<void> postOpDaySavePrepQty(List<PrepUpdate> updates) {
     final body = jsonEncode({'updates': updates});
     return this._postJson('/op_days/save_prep_qty', body);
+  }
+
+  Future<void> postOrderUpdateState(Order order, OrderState newState) {
+    var action;
+    switch (newState) {
+      case OrderState.Started:
+        action = "start";
+        break;
+      case OrderState.Done:
+        action = "finish";
+        break;
+      case OrderState.Delivered:
+        action = "deliver";
+        break;
+      default:
+        throw new Exception("can't update to $newState state");
+    }
+    final body = jsonEncode({'action': action});
+    return this._postJson('/orders/${order.id}/update_state', body);
   }
 }

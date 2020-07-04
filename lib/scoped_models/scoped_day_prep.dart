@@ -38,12 +38,13 @@ class ScopedDayPrep extends Model {
   Map<int, Set<int>> buildDependencyMap() {
     var map = Map<int, Set<int>>();
     this.prep.forEach((p) {
-      final rId = p.recipeStep().recipeId;
+      final recipeStep = p.recipeStep();
+      final rId = recipeStep.recipeId;
       if (map[rId] == null) {
         map[rId] = Set<int>();
       }
 
-      p.recipeStep().inputs.forEach((i) {
+      recipeStep.inputs.forEach((i) {
         if (i.inputableType == "Recipe") {
           map[rId].add(i.inputableId);
         }

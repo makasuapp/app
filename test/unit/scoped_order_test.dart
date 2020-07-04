@@ -12,7 +12,9 @@ void main() {
   test('load orders API', () async {
     final scopedOrder = locator<ScopedOrder>();
     await scopedOrder.loadOrders();
-    print(scopedOrder.recipesMap);
-    print(scopedOrder.recipeStepsMap);
+
+    expect(scopedOrder.orders.length, greaterThan(0));
+    expect(scopedOrder.recipesMap.values.length, greaterThan(0));
+    expect(scopedOrder.recipeStepsMap.values.length, greaterThan(0));
   }, skip: 'run manually for sanity checks');
 }
