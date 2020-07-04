@@ -1,20 +1,26 @@
 import 'package:flutter/material.dart';
 import '../morning/morning.dart';
 import '../prep/prep.dart';
+import '../orders/upcoming_orders.dart';
 import 'package:kitchen/styles.dart';
 
 class Action {
   final int id;
   final String title;
-  final Widget Function() createPage;
+  final Widget Function(int, String) createPageFunc;
 
-  Action(this.title, this.createPage, this.id);
+  Action(this.id, this.title, this.createPageFunc);
+
+  Widget createPage() {
+    return this.createPageFunc(this.id, this.title);
+  }
 }
 
 class ActionsPage extends StatelessWidget {
   static final List<Action> actions = [
-    Action("Morning Checklist", () => MorningChecklistPage(0), 0),
-    Action("Prep Checklist", () => PrepChecklistPage(1), 1)
+    Action(0, "Morning Checklist", (id, t) => MorningChecklistPage(id, t)),
+    Action(1, "Prep Checklist", (id, t) => PrepChecklistPage(id, t)),
+    Action(2, "Upcoming Orders", (id, t) => UpcomingOrdersPage(id, t))
   ];
 
   @override

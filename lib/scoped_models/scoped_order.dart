@@ -1,5 +1,6 @@
 import 'package:scoped_model/scoped_model.dart';
 import 'dart:convert';
+import 'package:meta/meta.dart';
 import '../services/web_api.dart';
 import '../service_locator.dart';
 import '../models/recipe.dart';
@@ -47,6 +48,11 @@ class ScopedOrder extends Model {
     }
   }
 
+  @visibleForTesting
+  int sortOrderList(Order a, Order b) {
+    return a.forTimeSec() - b.forTimeSec();
+  }
+
   Future<void> _fetchOrders() async {
     final resp = await this.api.fetchOrdersJson();
     final decodedResp = json.decode(resp);
@@ -62,6 +68,7 @@ class ScopedOrder extends Model {
     var orders = List<Order>();
     decodedResp["orders"]
         .forEach((orderJson) => orders.add(Order.fromJson(orderJson)));
+    orders.sort((a, b) => sortOrderList(a, b));
     this.orders = orders;
   }
 }

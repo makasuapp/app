@@ -9,8 +9,9 @@ import '../../service_locator.dart';
 
 class MorningChecklistPage extends StatefulWidget {
   final int pageId;
+  final String title;
 
-  MorningChecklistPage(this.pageId);
+  MorningChecklistPage(this.pageId, this.title);
 
   @override
   createState() => _MorningChecklistPageState();
@@ -18,7 +19,6 @@ class MorningChecklistPage extends StatefulWidget {
 
 class _MorningChecklistPageState extends State<MorningChecklistPage> {
   final opDay = locator<ScopedOpDay>();
-  final String title = "Morning Checklist";
 
   _MorningChecklistPageState();
 
@@ -31,7 +31,7 @@ class _MorningChecklistPageState extends State<MorningChecklistPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text(title)),
+        appBar: AppBar(title: Text(this.widget.title)),
         drawer: NavigationMenu.navigationDrawer(this.widget.pageId),
         body: ScopedModel<ScopedOpDay>(
             model: this.opDay,

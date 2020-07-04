@@ -1,9 +1,11 @@
 import 'package:scoped_model/scoped_model.dart';
 import '../models/day_prep.dart';
+import '../models/recipe_step.dart';
 import '../services/web_api.dart';
 import '../models/prep_update.dart';
 import 'package:meta/meta.dart';
 import '../service_locator.dart';
+import 'scoped_order.dart';
 
 const SAVE_BUFFER_SECONDS = 15;
 const RETRY_WAIT_SECONDS = 2;
@@ -27,6 +29,11 @@ class ScopedDayPrep extends Model {
     this.api = api ?? locator<WebApi>();
   }
 
+  static RecipeStep recipeStepFor(DayPrep prep) {
+    final scopedOrder = locator<ScopedOrder>();
+    return scopedOrder.recipeStepsMap[prep.recipeStepId];
+  }
+
   Future<void> addFetched(List<DayPrep> fetchedPrep) async {
     this.prep = _mergePrep(fetchedPrep);
     this._recipeDependencies = buildDependencyMap();
@@ -38,7 +45,7 @@ class ScopedDayPrep extends Model {
   Map<int, Set<int>> buildDependencyMap() {
     var map = Map<int, Set<int>>();
     this.prep.forEach((p) {
-      final recipeStep = p.recipeStep();
+      final recipeStep = recipeStepFor(p);
       final rId = recipeStep.recipeId;
       if (map[rId] == null) {
         map[rId] = Set<int>();
@@ -56,8 +63,8 @@ class ScopedDayPrep extends Model {
   @visibleForTesting
   int sortPrepList(DayPrep a, DayPrep b) {
     //TODO: also include timing constraints - min/max
-    final rsA = a.recipeStep();
-    final rsB = b.recipeStep();
+    final rsA = recipeStepFor(a);
+    final rsB = recipeStepFor(b);
     if (rsA.recipeId == rsB.recipeId) {
       if (rsA.stepType == rsB.stepType) {
         //earlier step first

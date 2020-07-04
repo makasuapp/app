@@ -3,6 +3,7 @@ import '../../../models/day_prep.dart';
 import '../prep_styles.dart';
 import '../../../models/step_input.dart';
 import '../../../services/unit_converter.dart';
+import '../../../scoped_models/scoped_day_prep.dart';
 
 class PrepItem extends StatelessWidget {
   final DayPrep prep;
@@ -20,7 +21,7 @@ class PrepItem extends StatelessWidget {
 
   Widget _renderContent(BuildContext context) {
     var textWidgets = List<Widget>();
-    final recipeStep = prep.recipeStep();
+    final recipeStep = ScopedDayPrep.recipeStepFor(prep);
 
     textWidgets
         .add(Text(recipeStep.instruction, style: PrepStyles.listItemText));

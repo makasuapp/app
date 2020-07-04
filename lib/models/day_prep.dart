@@ -1,7 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
 import './recipe_step.dart';
-//not great to be referencing scoped models in models...
-import '../scoped_models/scoped_order.dart';
 import '../service_locator.dart';
 
 part 'day_prep.g.dart';
@@ -25,9 +23,4 @@ class DayPrep {
   factory DayPrep.fromJson(Map<String, dynamic> json) =>
       _$DayPrepFromJson(json);
   Map<String, dynamic> toJson() => _$DayPrepToJson(this);
-
-  RecipeStep recipeStep() {
-    final scopedOrder = locator<ScopedOrder>();
-    return scopedOrder.recipeStepsMap[this.recipeStepId];
-  }
 }

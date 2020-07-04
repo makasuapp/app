@@ -27,15 +27,20 @@ class Order {
   factory Order.fromJson(Map<String, dynamic> json) => _$OrderFromJson(json);
   Map<String, dynamic> toJson() => _$OrderToJson(this);
 
-  DateTime createdAt() {
-    return DateTime.fromMillisecondsSinceEpoch(this.createdAtSec * 1000);
+  bool isPreorder() {
+    return this.forSec != null;
+  }
+
+  int forTimeSec() {
+    if (this.isPreorder()) {
+      return this.forSec;
+    } else {
+      return this.createdAtSec;
+    }
   }
 
   DateTime forTime() {
-    if (this.forSec == null) {
-      return null;
-    }
-    return DateTime.fromMillisecondsSinceEpoch(this.forSec * 1000);
+    return DateTime.fromMillisecondsSinceEpoch(this.forTimeSec() * 1000);
   }
 
   OrderState orderState() {
