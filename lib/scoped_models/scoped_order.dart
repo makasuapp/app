@@ -71,4 +71,25 @@ class ScopedOrder extends Model {
     orders.sort((a, b) => sortOrderList(a, b));
     this.orders = orders;
   }
+
+  void moveToNextState(Order order) async {
+    final orderState = order.orderState();
+    final updatedOrder = Order(order.id, orderState.next, order.orderType,
+        order.createdAtSec, order.items, order.customer,
+        forSec: order.forSec);
+    final updatedOrders =
+        this.orders.map((o) => o.id == order.id ? updatedOrder : o).toList();
+    this.orders = updatedOrders;
+    notifyListeners();
+
+    try {
+      await this.api.postOrderUpdateState(order);
+    } catch (err) {
+      print(err);
+      final revertedOrders =
+          this.orders.map((o) => o.id == order.id ? order : o).toList();
+      this.orders = revertedOrders;
+      notifyListeners();
+    }
+  }
 }

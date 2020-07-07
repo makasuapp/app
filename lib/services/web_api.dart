@@ -65,22 +65,13 @@ class WebApi {
     return this._postJson('/op_days/save_prep_qty', body);
   }
 
-  Future<void> postOrderUpdateState(Order order, OrderState newState) {
-    var action;
-    switch (newState) {
-      case OrderState.Started:
-        action = "start";
-        break;
-      case OrderState.Done:
-        action = "finish";
-        break;
-      case OrderState.Delivered:
-        action = "deliver";
-        break;
-      default:
-        throw new Exception("can't update to $newState state");
+  Future<void> postOrderUpdateState(Order order) {
+    final orderState = order.orderState();
+    if (orderState.nextAction != null) {
+      final body = jsonEncode({'state_action': orderState.nextAction});
+      return this._postJson('/orders/${order.id}/update_state', body);
+    } else {
+      return Future.value(null);
     }
-    final body = jsonEncode({'action': action});
-    return this._postJson('/orders/${order.id}/update_state', body);
   }
 }

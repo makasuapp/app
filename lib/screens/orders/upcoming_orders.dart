@@ -18,6 +18,9 @@ class UpcomingOrdersPage extends StatelessWidget {
         appBar: AppBar(title: Text(this.title)),
         drawer: NavigationMenu.navigationDrawer(this.pageId),
         body: ScopedModel<ScopedOrder>(
-            model: this.scopedOrder, child: OrderList()));
+            model: this.scopedOrder,
+            child: RefreshIndicator(
+                onRefresh: () => this.scopedOrder.loadOrders(forceLoad: true),
+                child: OrderList())));
   }
 }

@@ -21,7 +21,7 @@ class OrderCard extends StatelessWidget {
   Widget _renderContent(BuildContext context, ScopedOrder scopedOrder) {
     var contentWidgets = List<Widget>();
 
-    contentWidgets.addAll(_renderInfo());
+    contentWidgets.add(_renderTop(scopedOrder));
     contentWidgets.add(Container(padding: OrderStyles.orderItemsTopPadding));
 
     this
@@ -38,8 +38,13 @@ class OrderCard extends StatelessWidget {
             children: contentWidgets));
   }
 
-  Widget _renderText(String text) {
-    return Text(text);
+  Widget _renderTop(ScopedOrder scopedOrder) {
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: _renderInfo()),
+      Row(children: _renderButtons(scopedOrder))
+    ]);
   }
 
   List<Widget> _renderInfo() {
@@ -51,12 +56,27 @@ class OrderCard extends StatelessWidget {
     info.add(_renderText("For: $forTime"));
     info.add(_renderText("Status: ${this.order.state}"));
 
-    if (orderState == OrderState.Done) {
+    if (orderState == OrderState.done()) {
       info.add(_renderText("Type: ${this.order.orderType}"));
       info.add(_renderText("Customer Info: ${this.order.customer.info()}"));
     }
 
     return info;
+  }
+
+  Widget _renderText(String text) {
+    return Text(text);
+  }
+
+  List<Widget> _renderButtons(ScopedOrder scopedOrder) {
+    var buttons = List<Widget>();
+
+    if (this.order.orderState() != OrderState.delivered()) {
+      buttons.add(IconButton(
+          icon: Icon(Icons.assignment_turned_in),
+          onPressed: () => scopedOrder.moveToNextState(this.order)));
+    }
+    return buttons;
   }
 
   Widget _renderItem(OrderItem item, ScopedOrder scopedOrder) {
@@ -69,11 +89,11 @@ class OrderCard extends StatelessWidget {
     final orderState = this.order.orderState();
     final now = DateTime.now();
     //5 minutes before and still haven't started
-    if (orderState == OrderState.New &&
+    if (orderState == OrderState.newOrder() &&
         this.order.forTimeSec() <=
             now.subtract(Duration(minutes: 5)).millisecondsSinceEpoch) {
       return OrderStyles.orderOverdueColor;
-    } else if (orderState == OrderState.Started) {
+    } else if (orderState == OrderState.started()) {
       return OrderStyles.orderStartedColor;
     } else {
       return OrderStyles.orderDefaultColor;

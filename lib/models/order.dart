@@ -4,7 +4,39 @@ import './customer.dart';
 
 part 'order.g.dart';
 
-enum OrderState { New, Started, Done, Delivered }
+class OrderState {
+  final int id;
+  final String state;
+  final String next;
+  final String nextAction;
+
+  OrderState(this.id, this.state, this.next, this.nextAction);
+
+  static OrderState get(String state) {
+    switch (state) {
+      case "new":
+        return OrderState.newOrder();
+      case "started":
+        return OrderState.started();
+      case "done":
+        return OrderState.done();
+      case "delivered":
+        return OrderState.delivered();
+      default:
+        throw new Exception("unexpected order state");
+    }
+  }
+
+  @override
+  int get hashCode => this.id;
+  @override
+  bool operator ==(o) => o is OrderState && o.id == this.id;
+
+  factory OrderState.newOrder() => OrderState(1, "new", "started", "start");
+  factory OrderState.started() => OrderState(2, "started", "done", "finish");
+  factory OrderState.done() => OrderState(3, "done", "delivered", "deliver");
+  factory OrderState.delivered() => OrderState(4, "delivered", null, null);
+}
 
 @JsonSerializable()
 class Order {
@@ -44,17 +76,6 @@ class Order {
   }
 
   OrderState orderState() {
-    switch (this.state) {
-      case "new":
-        return OrderState.New;
-      case "started":
-        return OrderState.Started;
-      case "done":
-        return OrderState.Done;
-      case "delivered":
-        return OrderState.Delivered;
-      default:
-        throw new Exception("unexpected order state");
-    }
+    return OrderState.get(this.state);
   }
 }
