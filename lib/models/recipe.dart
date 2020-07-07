@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:json_annotation/json_annotation.dart';
 import '../services/web_api.dart';
-import './recipe_step.dart';
 
 part 'recipe.g.dart';
 

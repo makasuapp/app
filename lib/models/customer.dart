@@ -17,4 +17,21 @@ class Customer {
   factory Customer.fromJson(Map<String, dynamic> json) =>
       _$CustomerFromJson(json);
   Map<String, dynamic> toJson() => _$CustomerToJson(this);
+
+  String info() {
+    var includedInfo = List<String>();
+    if (this.name != null) {
+      includedInfo.add(this.name);
+    } else {
+      includedInfo.add(this.id.toString());
+    }
+
+    if (this.phoneNumber != null) {
+      includedInfo.add("(${this.phoneNumber})");
+    } else if (this.email != null) {
+      includedInfo.add("(${this.email})");
+    }
+
+    return includedInfo.join(" ");
+  }
 }

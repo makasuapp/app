@@ -1,6 +1,4 @@
 import 'package:json_annotation/json_annotation.dart';
-import './recipe_step.dart';
-import '../service_locator.dart';
 
 part 'day_prep.g.dart';
 

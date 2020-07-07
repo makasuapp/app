@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kitchen/models/order.dart';
 import 'package:kitchen/styles.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:kitchen/scoped_models/scoped_order.dart';
@@ -17,7 +18,10 @@ class OrderList extends StatelessWidget {
 
   List<Widget> _renderView(BuildContext context, ScopedOrder scopedOrder) {
     var viewItems = List<Widget>();
-    viewItems.addAll(scopedOrder.orders.map((o) => OrderCard(o)).toList());
+    viewItems.addAll(scopedOrder.orders
+        .where((o) => o.orderState() != OrderState.Delivered)
+        .map((o) => OrderCard(o))
+        .toList());
 
     viewItems.add(Container(padding: Styles.spacerPadding));
 
