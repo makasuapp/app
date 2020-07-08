@@ -6,6 +6,7 @@ import '../service_locator.dart';
 import '../models/recipe.dart';
 import '../models/recipe_step.dart';
 import '../models/order.dart';
+import '../models/order_item.dart';
 
 class ScopedOrder extends Model {
   Map<int, Recipe> recipesMap = Map();
@@ -74,9 +75,7 @@ class ScopedOrder extends Model {
 
   void moveToNextState(Order order) async {
     final orderState = order.orderState();
-    final updatedOrder = Order(order.id, orderState.next, order.orderType,
-        order.createdAtSec, order.items, order.customer,
-        forSec: order.forSec);
+    final updatedOrder = Order.clone(order, state: orderState.next);
     final updatedOrders =
         this.orders.map((o) => o.id == order.id ? updatedOrder : o).toList();
     this.orders = updatedOrders;
@@ -91,5 +90,25 @@ class ScopedOrder extends Model {
       this.orders = revertedOrders;
       notifyListeners();
     }
+  }
+
+  void markItemDoneTime(Order parentOrder, OrderItem item, DateTime doneAt) {
+    final updatedItem = OrderItem.clone(item, item.startedAtSec,
+        doneAt != null ? doneAt.millisecondsSinceEpoch ~/ 1000 : null);
+
+    final updatedOrders = this.orders.map((o) {
+      if (o.id == parentOrder.id) {
+        final updatedItems = parentOrder.items
+            .map((i) => i.id == updatedItem.id ? updatedItem : i)
+            .toList();
+        return Order.clone(parentOrder, items: updatedItems);
+      } else {
+        return o;
+      }
+    }).toList();
+    this.orders = updatedOrders;
+    notifyListeners();
+
+    //TODO: make api request
   }
 }

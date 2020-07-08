@@ -3,8 +3,9 @@ import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:kitchen/scoped_models/scoped_order.dart';
 import '../../../models/order.dart';
-import '../../../models/order_item.dart';
 import '../order_styles.dart';
+import '../order_details.dart';
+import './order_item.dart';
 
 class OrderCard extends StatelessWidget {
   final Order order;
@@ -14,8 +15,14 @@ class OrderCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<ScopedOrder>(
-        builder: (context, child, scopedOrder) =>
-            _renderContent(context, scopedOrder));
+        builder: (context, child, scopedOrder) => InkWell(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => OrderDetailsPage(this.order)));
+            },
+            child: _renderContent(context, scopedOrder)));
   }
 
   Widget _renderContent(BuildContext context, ScopedOrder scopedOrder) {
@@ -24,14 +31,15 @@ class OrderCard extends StatelessWidget {
     contentWidgets.add(_renderTop(scopedOrder));
     contentWidgets.add(Container(padding: OrderStyles.orderItemsTopPadding));
 
-    this
-        .order
-        .items
-        .forEach((item) => contentWidgets.add(_renderItem(item, scopedOrder)));
+    this.order.items.forEach((item) => contentWidgets.add(OrderItemItem(item)));
 
     return Container(
         padding: OrderStyles.orderCardPadding,
-        color: _cardColor(),
+        decoration: BoxDecoration(
+            border: Border.all(
+          color: _cardColor(),
+          width: 5,
+        )),
         width: MediaQuery.of(context).size.width,
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -54,7 +62,7 @@ class OrderCard extends StatelessWidget {
 
     info.add(_renderText("Order ID: ${this.order.id}"));
     info.add(_renderText("For: $forTime"));
-    info.add(_renderText("Status: ${this.order.state}"));
+    info.add(_renderText("Status: ${orderState.text}"));
 
     if (orderState == OrderState.done()) {
       info.add(_renderText("Type: ${this.order.orderType}"));
@@ -77,12 +85,6 @@ class OrderCard extends StatelessWidget {
           onPressed: () => scopedOrder.moveToNextState(this.order)));
     }
     return buttons;
-  }
-
-  Widget _renderItem(OrderItem item, ScopedOrder scopedOrder) {
-    var recipe = scopedOrder.recipesMap[item.recipeId];
-    return Text("${item.quantity} ${recipe.name}",
-        style: OrderStyles.orderItemText);
   }
 
   Color _cardColor() {

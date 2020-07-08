@@ -7,10 +7,11 @@ part 'order.g.dart';
 class OrderState {
   final int id;
   final String state;
+  final String text;
   final String next;
   final String nextAction;
 
-  OrderState(this.id, this.state, this.next, this.nextAction);
+  OrderState(this.id, this.state, this.text, this.next, this.nextAction);
 
   static OrderState get(String state) {
     switch (state) {
@@ -32,10 +33,14 @@ class OrderState {
   @override
   bool operator ==(o) => o is OrderState && o.id == this.id;
 
-  factory OrderState.newOrder() => OrderState(1, "new", "started", "start");
-  factory OrderState.started() => OrderState(2, "started", "done", "finish");
-  factory OrderState.done() => OrderState(3, "done", "delivered", "deliver");
-  factory OrderState.delivered() => OrderState(4, "delivered", null, null);
+  factory OrderState.newOrder() =>
+      OrderState(1, "new", "Not Started", "started", "start");
+  factory OrderState.started() =>
+      OrderState(2, "started", "Started", "done", "finish");
+  factory OrderState.done() =>
+      OrderState(3, "done", "Awaiting Pickup", "delivered", "deliver");
+  factory OrderState.delivered() =>
+      OrderState(4, "delivered", "Delivered", null, null);
 }
 
 @JsonSerializable()
@@ -58,6 +63,24 @@ class Order {
 
   factory Order.fromJson(Map<String, dynamic> json) => _$OrderFromJson(json);
   Map<String, dynamic> toJson() => _$OrderToJson(this);
+
+  //note we can't set null to values with optional params like this
+  factory Order.clone(Order orig,
+      {String state,
+      String orderType,
+      int createdAtSec,
+      List<OrderItem> items,
+      Customer customer,
+      int forSec}) {
+    return Order(
+        orig.id,
+        state ?? orig.state,
+        orderType ?? orig.orderType,
+        createdAtSec ?? orig.createdAtSec,
+        items ?? orig.items,
+        customer ?? orig.customer,
+        forSec: forSec ?? orig.forSec);
+  }
 
   bool isPreorder() {
     return this.forSec != null;

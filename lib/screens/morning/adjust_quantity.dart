@@ -4,6 +4,7 @@ import '../common/cancel_button.dart';
 import '../common/submit_button.dart';
 import '../../models/day_ingredient.dart';
 import './morning_styles.dart';
+import 'package:kitchen/navigation_menu.dart';
 
 class AdjustQuantityPage extends StatefulWidget {
   final DayIngredient ingredient;
@@ -33,6 +34,7 @@ class _AdjustQuantityPageState extends State<AdjustQuantityPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: Text("Adjust Quantity")),
+        drawer: NavigationMenu.navigationDrawer(null),
         body: Container(
             padding: MorningStyles.adjustQuantityTopPadding,
             child: Column(children: [

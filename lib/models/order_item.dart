@@ -22,6 +22,13 @@ class OrderItem {
       _$OrderItemFromJson(json);
   Map<String, dynamic> toJson() => _$OrderItemToJson(this);
 
+  factory OrderItem.clone(OrderItem orig, int startedAtSec, int doneAtSec,
+      {int recipeId, int priceCents, int quantity}) {
+    return OrderItem(orig.id, recipeId ?? orig.recipeId,
+        priceCents ?? orig.priceCents, quantity ?? orig.quantity,
+        startedAtSec: startedAtSec, doneAtSec: doneAtSec);
+  }
+
   DateTime startedAt() {
     if (this.startedAtSec == null) {
       return null;
