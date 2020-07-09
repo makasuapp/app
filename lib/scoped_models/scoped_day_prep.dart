@@ -23,26 +23,33 @@ class ScopedDayPrep extends Model {
   int retryCount = 0;
   Map<int, Set<int>> _recipeDependencies = Map();
 
-  ScopedDayPrep({ingredients, prep, api, unsavedUpdates}) {
+  static ScopedOrder _scopedOrder = locator<ScopedOrder>();
+
+  ScopedDayPrep({ingredients, prep, api, unsavedUpdates, scopedOrder}) {
     this.unsavedUpdates = unsavedUpdates ?? [];
     this.prep = prep ?? [];
     this.api = api ?? locator<WebApi>();
+
+    if(scopedOrder != null){
+      _scopedOrder = scopedOrder;
+    }
   }
 
   static RecipeStep recipeStepFor(DayPrep prep) {
-    final scopedOrder = locator<ScopedOrder>();
+    // final scopedOrder = locator<ScopedOrder>();
+    final scopedOrder = _scopedOrder;
     return scopedOrder.recipeStepsMap[prep.recipeStepId];
   }
 
   Future<void> addFetched(List<DayPrep> fetchedPrep) async {
     this.prep = _mergePrep(fetchedPrep);
-    this._recipeDependencies = buildDependencyMap();
-    this.prep.sort((a, b) => sortPrepList(a, b));
+    this._recipeDependencies = mkRecipeDependencyMap();
+    this.prep.sort((a, b) => compareForPrepList(a, b));
     notifyListeners();
   }
 
   @visibleForTesting
-  Map<int, Set<int>> buildDependencyMap() {
+  Map<int, Set<int>> mkRecipeDependencyMap() {
     var map = Map<int, Set<int>>();
     this.prep.forEach((p) {
       final recipeStep = recipeStepFor(p);
@@ -61,7 +68,7 @@ class ScopedDayPrep extends Model {
   }
 
   @visibleForTesting
-  int sortPrepList(DayPrep a, DayPrep b) {
+  int compareForPrepList(DayPrep a, DayPrep b) {
     //TODO: also include timing constraints - min/max
     final rsA = recipeStepFor(a);
     final rsB = recipeStepFor(b);
