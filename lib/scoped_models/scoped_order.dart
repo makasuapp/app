@@ -1,6 +1,7 @@
 import 'package:scoped_model/scoped_model.dart';
 import 'dart:convert';
 import 'package:meta/meta.dart';
+import '../api/load_orders_response.dart';
 import '../services/web_api.dart';
 import '../service_locator.dart';
 import '../models/recipe.dart';
@@ -57,18 +58,14 @@ class ScopedOrder extends Model {
   Future<void> _fetchOrders() async {
     final resp = await this.api.fetchOrdersJson();
     final decodedResp = json.decode(resp);
+    final loadOrdersResp = LoadOrdersResponse.fromJson(decodedResp);
 
-    final recipes =
-        decodedResp["recipes"].map((recipeJson) => Recipe.fromJson(recipeJson));
-    recipes.forEach((recipe) => this.recipesMap[recipe.id] = recipe);
+    loadOrdersResp.recipes
+        .forEach((recipe) => this.recipesMap[recipe.id] = recipe);
+    loadOrdersResp.recipeSteps
+        .forEach((step) => this.recipeStepsMap[step.id] = step);
 
-    final recipeSteps = decodedResp["recipe_steps"]
-        .map((recipeStepJson) => RecipeStep.fromJson(recipeStepJson));
-    recipeSteps.forEach((step) => this.recipeStepsMap[step.id] = step);
-
-    var orders = List<Order>();
-    decodedResp["orders"]
-        .forEach((orderJson) => orders.add(Order.fromJson(orderJson)));
+    var orders = loadOrdersResp.orders;
     orders.sort((a, b) => sortOrderList(a, b));
     this.orders = orders;
   }

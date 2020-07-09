@@ -1,7 +1,7 @@
 import 'package:scoped_model/scoped_model.dart';
 import '../models/day_ingredient.dart';
 import '../services/web_api.dart';
-import '../models/ingredient_update.dart';
+import '../api/ingredient_update.dart';
 import 'package:meta/meta.dart';
 import '../service_locator.dart';
 

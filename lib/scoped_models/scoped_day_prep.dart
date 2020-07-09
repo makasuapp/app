@@ -2,7 +2,7 @@ import 'package:scoped_model/scoped_model.dart';
 import '../models/day_prep.dart';
 import '../models/recipe_step.dart';
 import '../services/web_api.dart';
-import '../models/prep_update.dart';
+import '../api/prep_update.dart';
 import 'package:meta/meta.dart';
 import '../service_locator.dart';
 import 'scoped_order.dart';
@@ -30,7 +30,7 @@ class ScopedDayPrep extends Model {
     this.prep = prep ?? [];
     this.api = api ?? locator<WebApi>();
 
-    if(scopedOrder != null){
+    if (scopedOrder != null) {
       _scopedOrder = scopedOrder;
     }
   }
