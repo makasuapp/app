@@ -8,9 +8,9 @@ import '../../../styles.dart';
 import '../components/order_item.dart';
 
 class OrderDetailItems extends StatelessWidget {
-  final Order order;
+  final int orderId;
 
-  OrderDetailItems(this.order);
+  OrderDetailItems(this.orderId);
 
   @override
   Widget build(BuildContext context) {
@@ -19,12 +19,15 @@ class OrderDetailItems extends StatelessWidget {
             _renderContent(context, scopedOrder));
   }
 
+  //we don't want to pass in order from order_details since it doesn't update with the scoped order, so it might not be up to date
+  //this doesn't seem like the correct thing to do...
+  Order _order(ScopedOrder scopedOrder) =>
+      scopedOrder.orders.where((o) => o.id == this.orderId).first;
+
   Widget _renderContent(BuildContext context, ScopedOrder scopedOrder) {
-    //order may not be up to date since it's the one from order_details, which doesn't pick up on listener..?
-    //this doesn't seem like the correct thing to do
-    final order = scopedOrder.orders.where((o) => o.id == this.order.id).first;
     return Column(
-        children: order.items
+        children: _order(scopedOrder)
+            .items
             .map((item) => _renderItem(context, item, scopedOrder))
             .toList());
   }
@@ -65,10 +68,10 @@ class OrderDetailItems extends StatelessWidget {
       OrderItem item, ScopedOrder scopedOrder) {
     //swipe right
     if (direction == DismissDirection.startToEnd) {
-      scopedOrder.markItemDoneTime(this.order, item, DateTime.now());
+      scopedOrder.markItemDoneTime(_order(scopedOrder), item, DateTime.now());
       //swipe left
     } else if (direction == DismissDirection.endToStart) {
-      scopedOrder.markItemDoneTime(this.order, item, null);
+      scopedOrder.markItemDoneTime(_order(scopedOrder), item, null);
     }
   }
 }

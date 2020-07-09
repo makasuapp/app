@@ -2,6 +2,7 @@ import 'package:scoped_model/scoped_model.dart';
 import 'dart:convert';
 import 'package:meta/meta.dart';
 import '../api/load_orders_response.dart';
+import '../api/order_item_update.dart';
 import '../services/web_api.dart';
 import '../service_locator.dart';
 import '../models/recipe.dart';
@@ -82,6 +83,7 @@ class ScopedOrder extends Model {
       await this.api.postOrderUpdateState(order);
     } catch (err) {
       print(err);
+      //TODO: save update locally to retry later instead
       final revertedOrders =
           this.orders.map((o) => o.id == order.id ? order : o).toList();
       this.orders = revertedOrders;
@@ -89,7 +91,8 @@ class ScopedOrder extends Model {
     }
   }
 
-  void markItemDoneTime(Order parentOrder, OrderItem item, DateTime doneAt) {
+  void markItemDoneTime(
+      Order parentOrder, OrderItem item, DateTime doneAt) async {
     final updatedItem = OrderItem.clone(item, item.startedAtSec,
         doneAt != null ? doneAt.millisecondsSinceEpoch ~/ 1000 : null);
 
@@ -106,6 +109,25 @@ class ScopedOrder extends Model {
     this.orders = updatedOrders;
     notifyListeners();
 
-    //TODO: make api request
+    final orderItemUpdate = doneAt != null
+        ? OrderItemUpdate.forDoneAt(item.id, doneAt, doneAt)
+        : OrderItemUpdate.clearDoneAt(item.id, DateTime.now());
+    try {
+      await this.api.postOrderItemUpdates([orderItemUpdate]);
+    } catch (err) {
+      print(err);
+      //TODO: save update locally to retry later instead
+      final revertedOrders = this.orders.map((o) {
+        if (o.id == parentOrder.id) {
+          final updatedItems =
+              parentOrder.items.map((i) => i.id == item.id ? item : i).toList();
+          return Order.clone(parentOrder, items: updatedItems);
+        } else {
+          return o;
+        }
+      }).toList();
+      this.orders = revertedOrders;
+      notifyListeners();
+    }
   }
 }

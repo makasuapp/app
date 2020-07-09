@@ -29,7 +29,7 @@ class OrderDetailsPage extends StatelessWidget {
 
     contentWidgets.addAll(_renderInfo());
     contentWidgets.add(Container(padding: OrderStyles.orderItemsTopPadding));
-    contentWidgets.add(OrderDetailItems(this.order));
+    contentWidgets.add(OrderDetailItems(this.order.id));
 
     return Container(
         padding: OrderStyles.orderCardPadding,
