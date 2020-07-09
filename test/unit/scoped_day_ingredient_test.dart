@@ -1,4 +1,4 @@
-import 'package:kitchen/models/ingredient_update.dart';
+import 'package:kitchen/api/ingredient_update.dart';
 import 'package:kitchen/models/day_ingredient.dart';
 import 'package:kitchen/scoped_models/scoped_day_ingredient.dart';
 import 'package:kitchen/services/web_api.dart';

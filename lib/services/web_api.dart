@@ -1,8 +1,9 @@
 import 'dart:core';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../models/ingredient_update.dart';
-import '../models/prep_update.dart';
+import '../api/ingredient_update.dart';
+import '../api/prep_update.dart';
+import '../api/order_item_update.dart';
 import '../models/order.dart';
 
 class WebApi {
@@ -63,6 +64,11 @@ class WebApi {
   Future<void> postOpDaySavePrepQty(List<PrepUpdate> updates) {
     final body = jsonEncode({'updates': updates});
     return this._postJson('/op_days/save_prep_qty', body);
+  }
+
+  Future<void> postOrderItemUpdates(List<OrderItemUpdate> updates) {
+    final body = jsonEncode({'updates': updates});
+    return this._postJson('/orders/update_items', body);
   }
 
   Future<void> postOrderUpdateState(Order order) {

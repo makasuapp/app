@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:test/test.dart';
-import 'package:kitchen/models/ingredient_update.dart';
+import 'package:kitchen/api/ingredient_update.dart';
 
 void main() {
   test('ingredient_update to JSON', () {
