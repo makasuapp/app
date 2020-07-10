@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:kitchen/models/step_input.dart';
+import 'package:kitchen/screens/common/step_input_item.dart';
 import '../../../models/day_prep.dart';
 import '../prep_styles.dart';
-import '../../../models/step_input.dart';
-import '../../../services/unit_converter.dart';
 import '../../../scoped_models/scoped_day_prep.dart';
 
 class PrepItem extends StatelessWidget {
@@ -41,49 +41,17 @@ class PrepItem extends StatelessWidget {
           padding: PrepStyles.ingredientsHeaderPadding,
           child: Text("Ingredients", style: PrepStyles.ingredientsHeader)));
 
-      inputs.forEach((input) => widgets.add(_renderInput(input)));
+      inputs.forEach((input) => widgets.add(StepInputItem(input,
+          prep: this.prep,
+          defaultTextStyle: PrepStyles.ingredientText,
+          remainingIngredientsStyle: PrepStyles.remainingIngredientText,
+          totalIngredientsStyle: PrepStyles.totalIngredientText)));
 
       return Column(
           crossAxisAlignment: CrossAxisAlignment.start, children: widgets);
     } else {
       return Container(height: 0, width: 0);
     }
-  }
-
-  Widget _renderInput(StepInput input) {
-    var widgets = List<Widget>();
-    double toMakeConversion;
-    if (this.prep.madeQty != null &&
-        this.prep.madeQty < this.prep.expectedQty) {
-      toMakeConversion =
-          (this.prep.expectedQty - this.prep.madeQty) / this.prep.expectedQty;
-    }
-
-    if (input.inputableType == "RecipeStep" &&
-        input.unit == null &&
-        input.quantity == 1) {
-      if (toMakeConversion != null) {
-        widgets
-            .add(Text("Remaining ", style: PrepStyles.remainingIngredientText));
-      }
-      widgets.add(Text(input.name, style: PrepStyles.ingredientText));
-    } else {
-      final totalQty = input.quantity * this.prep.expectedQty;
-      if (toMakeConversion != null) {
-        final remainingQty = totalQty * toMakeConversion;
-        widgets.add(Text(
-            "${UnitConverter.qtyWithUnit(remainingQty, input.unit)} ",
-            style: PrepStyles.remainingIngredientText));
-        widgets.add(Text(UnitConverter.qtyWithUnit(totalQty, input.unit),
-            style: PrepStyles.totalIngredientText));
-      } else {
-        widgets.add(Text(UnitConverter.qtyWithUnit(totalQty, input.unit),
-            style: PrepStyles.ingredientText));
-      }
-      widgets.add(Text(" ${input.name}", style: PrepStyles.ingredientText));
-    }
-
-    return Wrap(children: widgets);
   }
 
   Widget _renderButtons() {

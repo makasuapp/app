@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kitchen/screens/common/step_input_item.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:kitchen/scoped_models/scoped_story.dart';
 import 'package:kitchen/scoped_models/scoped_order.dart';
@@ -7,7 +8,6 @@ import './recipe_step_story_item.dart';
 import '../../../models/recipe.dart';
 import '../../../models/step_input.dart';
 import '../story_styles.dart';
-import '../../../services/unit_converter.dart';
 
 class RecipeStoryItem extends StoryItem {
   final Recipe recipe;
@@ -45,21 +45,18 @@ class RecipeStoryItem extends StoryItem {
 
     inputs.forEach((input) {
       if (input.inputableType == InputType.Ingredient) {
-        widgets.add(_renderInput(input, scopedStory));
+        widgets.add(StepInputItem(input, defaultTextStyle: StoryStyles.storyText));
       } else if (input.inputableType == InputType.Recipe) {
         final recipe = scopedOrder.recipesMap[input.inputableId];
         widgets.add(InkWell(
-            onTap: () => scopedStory.push(RecipeStoryItem(recipe)),
-            child: _renderInput(input, scopedStory)));
+            onTap: () {
+              scopedStory.push(RecipeStoryItem(recipe));
+            },
+            child: StepInputItem(input, defaultTextStyle: StoryStyles.storyText)));
       }
     });
 
     return widgets;
-  }
-
-  Widget _renderInput(StepInput input, ScopedStory scopedStory) {
-    final qty = UnitConverter.qtyWithUnit(input.quantity, input.unit);
-    return Text("$qty ${input.name}", style: StoryStyles.storyText);
   }
 
   List<Widget> _renderAllSteps(
