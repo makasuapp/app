@@ -52,6 +52,7 @@ class ScopedOrder extends Model {
   }
 
   @visibleForTesting
+  //TODO: move done to the back? and delivered to very back
   int sortOrderList(Order a, Order b) {
     return a.forTimeSec() - b.forTimeSec();
   }
@@ -77,6 +78,7 @@ class ScopedOrder extends Model {
     final updatedOrders =
         this.orders.map((o) => o.id == order.id ? updatedOrder : o).toList();
     this.orders = updatedOrders;
+    //TODO: sort again
     notifyListeners();
 
     try {

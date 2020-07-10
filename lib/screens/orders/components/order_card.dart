@@ -79,6 +79,7 @@ class OrderCard extends StatelessWidget {
   List<Widget> _renderButtons(ScopedOrder scopedOrder) {
     var buttons = List<Widget>();
 
+    //TODO: snackbar for undo
     if (this.order.orderState() != OrderState.delivered()) {
       buttons.add(IconButton(
           icon: Icon(Icons.assignment_turned_in),
@@ -97,6 +98,8 @@ class OrderCard extends StatelessWidget {
       return OrderStyles.orderOverdueColor;
     } else if (orderState == OrderState.started()) {
       return OrderStyles.orderStartedColor;
+    } else if (orderState == OrderState.done()) {
+      return OrderStyles.orderDoneColor;
     } else {
       return OrderStyles.orderDefaultColor;
     }

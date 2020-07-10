@@ -5,6 +5,7 @@ class OrderStyles {
   static final Color orderOverdueColor = Colors.red;
   static final Color orderStartedColor = Colors.amber[200];
   static final Color orderDefaultColor = Colors.white;
+  static final Color orderDoneColor = Colors.grey;
 
   static final orderCardPadding = EdgeInsets.symmetric(
       vertical: 15.0, horizontal: Styles.horizontalPaddingDefault);

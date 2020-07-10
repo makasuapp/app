@@ -12,11 +12,7 @@ class PrepItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-        onTap: () {
-          //TODO: open detailed view
-        },
-        child: _renderContent(context));
+    return _renderContent(context);
   }
 
   Widget _renderContent(BuildContext context) {

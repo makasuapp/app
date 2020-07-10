@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:kitchen/navigation_menu.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:kitchen/scoped_models/scoped_order.dart';
 import 'package:intl/intl.dart';
@@ -18,7 +17,6 @@ class OrderDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: Text("Order ${this.order.id}")),
-        drawer: NavigationMenu.navigationDrawer(null),
         body: ScopedModel<ScopedOrder>(
             model: this.scopedOrder,
             child: Container(child: _renderContent(context))));
