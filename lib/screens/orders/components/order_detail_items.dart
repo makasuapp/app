@@ -6,6 +6,8 @@ import '../../../models/order_item.dart';
 import '../order_styles.dart';
 import '../../../styles.dart';
 import '../components/order_item.dart';
+import '../../story/components/recipe_story_item.dart';
+import '../../story/story.dart';
 
 class OrderDetailItems extends StatelessWidget {
   final int orderId;
@@ -42,9 +44,8 @@ class OrderDetailItems extends StatelessWidget {
         onDismissed: (direction) =>
             _onItemDismissed(direction, context, item, scopedOrder),
         child: InkWell(
-            onTap: () {
-              //TODO: open recipe card modal
-            },
+            onTap: () => StoryView.render(context,
+                RecipeStoryItem(scopedOrder.recipesMap[item.recipeId])),
             child: Container(
                 width: MediaQuery.of(context).size.width,
                 padding: OrderStyles.orderDetailItemPadding,
