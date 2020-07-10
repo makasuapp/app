@@ -14,6 +14,7 @@ class PrepList extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScopedModelDescendant<ScopedDayPrep>(
         builder: (context, child, scopedPrep) => SingleChildScrollView(
+            physics: AlwaysScrollableScrollPhysics(),
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.stretch,

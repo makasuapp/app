@@ -42,7 +42,7 @@ class OrderDetailItems extends StatelessWidget {
         confirmDismiss: (direction) => _canDismissItem(direction, item),
         key: UniqueKey(),
         onDismissed: (direction) =>
-            _onItemDismissed(direction, context, item, scopedOrder),
+            _onItemDismissed(direction, item, scopedOrder),
         child: InkWell(
             onTap: () => StoryView.render(context,
                 RecipeStoryItem(scopedOrder.recipesMap[item.recipeId])),
@@ -65,14 +65,14 @@ class OrderDetailItems extends StatelessWidget {
     }
   }
 
-  void _onItemDismissed(DismissDirection direction, BuildContext context,
-      OrderItem item, ScopedOrder scopedOrder) {
+  void _onItemDismissed(
+      DismissDirection direction, OrderItem item, ScopedOrder scopedOrder) {
     //swipe right
     if (direction == DismissDirection.startToEnd) {
-      scopedOrder.markItemDoneTime(_order(scopedOrder), item, DateTime.now());
+      scopedOrder.markItemsDoneTime({item.id: item}, DateTime.now());
       //swipe left
     } else if (direction == DismissDirection.endToStart) {
-      scopedOrder.markItemDoneTime(_order(scopedOrder), item, null);
+      scopedOrder.markItemsDoneTime({item.id: item}, null);
     }
   }
 }

@@ -35,6 +35,7 @@ class RecipeStoryItem extends StoryItem {
         .map((id) => scopedOrder.recipeStepsMap[id])
         .toList();
     var inputs = Set<StepInput>();
+    //TODO: combine ingredients that are the same
     steps.forEach((step) => step.inputs.forEach((input) {
           if (input.inputableType == InputType.Ingredient ||
               input.inputableType == InputType.Recipe) {

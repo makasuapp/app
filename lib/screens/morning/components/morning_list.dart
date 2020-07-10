@@ -13,6 +13,7 @@ class MorningList extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScopedModelDescendant<ScopedDayIngredient>(
         builder: (context, child, scopedDayIngredient) => SingleChildScrollView(
+            physics: AlwaysScrollableScrollPhysics(),
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.stretch,

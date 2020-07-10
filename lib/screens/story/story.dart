@@ -6,6 +6,7 @@ import './components/story_item.dart';
 import './components/story_carousel.dart';
 import '../common/transparent_route.dart';
 import '../../service_locator.dart';
+import './story_styles.dart';
 
 class StoryView extends StatelessWidget {
   final StoryItem initStory;
@@ -23,7 +24,7 @@ class StoryView extends StatelessWidget {
                 child: SafeArea(
                     child: Dismissible(
                         background:
-                            Container(color: Colors.grey.withOpacity(0.1)),
+                            Container(color: StoryStyles.pulldownBackground),
                         key: Key('Story'),
                         direction: DismissDirection.down,
                         onDismissed: (_) => Navigator.pop(context),

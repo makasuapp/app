@@ -1,4 +1,3 @@
-import 'package:flutter/services.dart';
 import 'package:kitchen/models/day_prep.dart';
 import 'package:kitchen/models/recipe_step.dart';
 import 'package:kitchen/models/step_input.dart';
@@ -407,7 +406,6 @@ void main() {
     test(
         'if recipe ids are different and if A depends on B, B should come first',
         () async {
-
       const numberForA = 1;
       const numberForB = 2;
 
@@ -448,7 +446,6 @@ void main() {
     test(
         'if recipe ids are different and if B depends on A, A should come first',
         () async {
-
       const numberForA = 2;
       const numberForB = 1;
 
