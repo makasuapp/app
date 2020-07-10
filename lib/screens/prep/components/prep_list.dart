@@ -6,6 +6,8 @@ import 'package:kitchen/scoped_models/scoped_day_prep.dart';
 import '../../../models/day_prep.dart';
 import '../prep_styles.dart';
 import './prep_item.dart';
+import '../../story/components/recipe_step_story_item.dart';
+import '../../story/story.dart';
 
 class PrepList extends StatelessWidget {
   @override
@@ -72,7 +74,10 @@ class PrepList extends StatelessWidget {
         key: UniqueKey(),
         onDismissed: (direction) =>
             _onItemDismissed(direction, context, prep, scopedPrep),
-        child: PrepItem(prep));
+        child: InkWell(
+            onTap: () => StoryView.render(context,
+                RecipeStepStoryItem(ScopedDayPrep.recipeStepFor(prep))),
+            child: PrepItem(prep)));
   }
 
   Future<bool> _canDismissItem(DismissDirection direction, DayPrep prep) {
