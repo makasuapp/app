@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:kitchen/scoped_models/scoped_order.dart';
+import '../../common/swipable.dart';
 import '../../../models/order.dart';
 import '../../../models/order_item.dart';
 import '../order_styles.dart';
-import '../../../styles.dart';
 import '../../story/components/recipe_story_item.dart';
 import '../../story/story.dart';
 
@@ -73,8 +73,7 @@ class _CurrentOrdersState extends State<CurrentOrders> {
                 itemsByRecipe[oi.recipeId] =
                     itemsByRecipe[oi.recipeId].concat(oi);
               } else {
-                itemsByRecipe[oi.recipeId] =
-                    CurrentOrderItem(oi.quantity, oi.recipeId, [oi]);
+                itemsByRecipe[oi.recipeId] = CurrentOrderItem.from(oi);
               }
             }));
 
@@ -99,11 +98,8 @@ class _CurrentOrdersState extends State<CurrentOrders> {
   Widget _renderOrderItem(CurrentOrderItem item, ScopedOrder scopedOrder) {
     final recipe = scopedOrder.recipesMap[item.recipeId];
 
-    return Dismissible(
-        background: Container(color: Styles.swipeRightColor),
-        key: UniqueKey(),
-        onDismissed: (direction) =>
-            _onItemDismissed(direction, item, scopedOrder),
+    return Swipable(
+        onSwipeRight: (_) => _onItemDismissed(item, scopedOrder),
         child: InkWell(
             onTap: () => StoryView.render(context,
                 RecipeStoryItem(scopedOrder.recipesMap[item.recipeId])),
@@ -114,24 +110,23 @@ class _CurrentOrdersState extends State<CurrentOrders> {
                     style: OrderStyles.orderItemText))));
   }
 
-  void _onItemDismissed(DismissDirection direction, CurrentOrderItem item,
-      ScopedOrder scopedOrder) {
-    //swipe right
-    if (direction == DismissDirection.startToEnd) {
-      final itemsMap = Map<int, OrderItem>.fromIterable(item.comprisedItems,
-          key: (i) => i.id, value: (i) => i);
-      scopedOrder.markItemsDoneTime(itemsMap, DateTime.now());
-    }
+  void _onItemDismissed(CurrentOrderItem item, ScopedOrder scopedOrder) {
+    final itemsMap = Map<int, OrderItem>.fromIterable(item.comprisedItems,
+        key: (i) => i.id, value: (i) => i);
+    scopedOrder.markItemsDoneTime(itemsMap, DateTime.now());
   }
 }
 
-//TODO: test
 class CurrentOrderItem {
   final int totalQty;
   final int recipeId;
   final List<OrderItem> comprisedItems;
 
   CurrentOrderItem(this.totalQty, this.recipeId, this.comprisedItems);
+
+  factory CurrentOrderItem.from(OrderItem oi) {
+    return CurrentOrderItem(oi.quantity, oi.recipeId, [oi]);
+  }
 
   CurrentOrderItem concat(OrderItem oi) {
     return CurrentOrderItem(

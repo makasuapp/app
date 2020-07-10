@@ -4,10 +4,10 @@ import 'package:kitchen/scoped_models/scoped_order.dart';
 import '../../../models/order.dart';
 import '../../../models/order_item.dart';
 import '../order_styles.dart';
-import '../../../styles.dart';
 import '../components/order_item.dart';
 import '../../story/components/recipe_story_item.dart';
 import '../../story/story.dart';
+import '../../common/swipable.dart';
 
 class OrderDetailItems extends StatelessWidget {
   final int orderId;
@@ -36,13 +36,14 @@ class OrderDetailItems extends StatelessWidget {
 
   Widget _renderItem(
       BuildContext context, OrderItem item, ScopedOrder scopedOrder) {
-    return Dismissible(
-        background: Container(color: Styles.swipeRightColor),
-        secondaryBackground: Container(color: Styles.swipeLeftColor),
-        confirmDismiss: (direction) => _canDismissItem(direction, item),
-        key: UniqueKey(),
-        onDismissed: (direction) =>
-            _onItemDismissed(direction, item, scopedOrder),
+    final isDone = item.doneAtSec != null;
+    return Swipable(
+        canSwipeLeft: () => Future.value(isDone),
+        canSwipeRight: () => Future.value(!isDone),
+        onSwipeRight: (_) =>
+            scopedOrder.markItemsDoneTime({item.id: item}, DateTime.now()),
+        onSwipeLeft: (_) =>
+            scopedOrder.markItemsDoneTime({item.id: item}, null),
         child: InkWell(
             onTap: () => StoryView.render(context,
                 RecipeStoryItem(scopedOrder.recipesMap[item.recipeId])),
@@ -50,29 +51,5 @@ class OrderDetailItems extends StatelessWidget {
                 width: MediaQuery.of(context).size.width,
                 padding: OrderStyles.orderDetailItemPadding,
                 child: OrderItemItem(item))));
-  }
-
-  Future<bool> _canDismissItem(DismissDirection direction, OrderItem item) {
-    final isDone = item.doneAtSec != null;
-    //swipe right
-    if (direction == DismissDirection.startToEnd) {
-      return Future.value(!isDone);
-      //swipe left
-    } else if (direction == DismissDirection.endToStart) {
-      return Future.value(isDone);
-    } else {
-      return Future.value(false);
-    }
-  }
-
-  void _onItemDismissed(
-      DismissDirection direction, OrderItem item, ScopedOrder scopedOrder) {
-    //swipe right
-    if (direction == DismissDirection.startToEnd) {
-      scopedOrder.markItemsDoneTime({item.id: item}, DateTime.now());
-      //swipe left
-    } else if (direction == DismissDirection.endToStart) {
-      scopedOrder.markItemsDoneTime({item.id: item}, null);
-    }
   }
 }
