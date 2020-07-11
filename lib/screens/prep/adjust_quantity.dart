@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import '../op_day/quantity_picker.dart';
+import 'package:flutter/services.dart';
+import 'dart:math';
 import '../common/cancel_button.dart';
 import '../common/submit_button.dart';
 import '../../models/day_prep.dart';
 import './prep_styles.dart';
+import '../../service_locator.dart';
+import '../../scoped_models/scoped_order.dart';
 
 class PrepAdjustQuantityPage extends StatefulWidget {
   final DayPrep prep;
@@ -17,6 +20,8 @@ class PrepAdjustQuantityPage extends StatefulWidget {
 
 class _PrepAdjustQuantityPageState extends State<PrepAdjustQuantityPage> {
   double _setQty;
+  final scopedOrder = locator<ScopedOrder>();
+  TextEditingController _controller;
 
   @override
   void initState() {
@@ -27,27 +32,45 @@ class _PrepAdjustQuantityPageState extends State<PrepAdjustQuantityPage> {
     } else {
       this._setQty = prep.expectedQty;
     }
+    _controller = TextEditingController(text: "100");
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final recipeStep =
+        this.scopedOrder.recipeStepsMap[this.widget.prep.recipeStepId];
+
     return Scaffold(
         appBar: AppBar(title: Text("Adjust Quantity")),
         body: Container(
             padding: PrepStyles.adjustQuantityTopPadding,
-            child:
-                //TODO: add description of prep
-                Column(children: [_renderPicker(), _renderButtons(context)])));
+            child: Column(children: [
+              Text(recipeStep.instruction, style: PrepStyles.listItemText),
+              _renderPicker(),
+              _renderButtons(context)
+            ])));
   }
 
   Widget _renderPicker() {
-    final prep = this.widget.prep;
-
-    //TODO: swap out for number input
-    //TODO: picker is for % of total - sets newQty to percentage of expected
-    return QuantityPicker(
-        this._setQty, (double newQty) => setState(() => this._setQty = newQty),
-        maxQty: prep.expectedQty.toInt());
+    return Container(
+        width: 180,
+        child: TextField(
+          controller: _controller,
+          keyboardType: TextInputType.number,
+          decoration: InputDecoration(
+            labelText: '% of total expected done',
+          ),
+          onChanged: (input) {
+            final percentage = min(double.tryParse(input), 100.0);
+            this._setQty = percentage * this.widget.prep.expectedQty;
+          },
+        ));
   }
 
   Widget _renderButtons(BuildContext context) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../op_day/quantity_picker.dart';
 import '../common/cancel_button.dart';
 import '../common/submit_button.dart';
@@ -18,6 +19,7 @@ class IngredientAdjustQtyPage extends StatefulWidget {
 
 class _IngredientAdjustQtyPageState extends State<IngredientAdjustQtyPage> {
   double _setQty;
+  TextEditingController _controller;
 
   @override
   void initState() {
@@ -28,6 +30,15 @@ class _IngredientAdjustQtyPageState extends State<IngredientAdjustQtyPage> {
     } else {
       this._setQty = ingredient.expectedQty;
     }
+
+    _controller =
+        TextEditingController(text: this._setQty.toStringAsPrecision(2));
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -48,9 +59,19 @@ class _IngredientAdjustQtyPageState extends State<IngredientAdjustQtyPage> {
     final ingredient = this.widget.ingredient;
     List<Widget> pickers = List();
 
-    pickers.add(QuantityPicker(
-        this._setQty, (double newQty) => setState(() => this._setQty = newQty),
-        maxQty: ingredient.expectedQty.toInt()));
+    pickers.add(Container(
+        width: 100,
+        child: TextField(
+          controller: _controller,
+          keyboardType: TextInputType.number,
+          onChanged: (input) {
+            this._setQty = double.tryParse(input);
+            print(this._setQty);
+          },
+        )));
+    // pickers.add(QuantityPicker(
+    //     this._setQty, (double newQty) => setState(() => this._setQty = newQty),
+    //     maxQty: ingredient.expectedQty.toInt()));
 
     if (ingredient.unit != null) {
       //TODO(unit_conversion): convert to picker
