@@ -9,6 +9,7 @@ import './prep_item.dart';
 import '../../story/components/recipe_step_story_item.dart';
 import '../../story/story.dart';
 import '../../common/swipable.dart';
+import '../adjust_quantity.dart';
 
 class PrepList extends StatelessWidget {
   @override
@@ -75,18 +76,29 @@ class PrepList extends StatelessWidget {
         canSwipeRight: () => Future.value(
             prep.madeQty == null || prep.madeQty < prep.expectedQty),
         onSwipeLeft: (context) {
-          //TODO: update
+          //TODO(swipe): update madeQty to null
           _notifyQtyUpdate(
               "Prep not started", context, prep, scopedPrep, originalQty);
         },
         onSwipeRight: (context) {
-          //TODO: update
+          //TODO(swipe): update madeQty to expectedQty
           _notifyQtyUpdate("Prep done", context, prep, scopedPrep, originalQty);
         },
         child: InkWell(
             onTap: () => StoryView.render(context,
                 RecipeStepStoryItem(ScopedDayPrep.recipeStepFor(prep))),
-            child: PrepItem(prep)));
+            child: PrepItem(prep, onEdit: () {
+              Navigator.push(context, MaterialPageRoute(builder: (_) {
+                return PrepAdjustQuantityPage(prep,
+                    onSubmit: (double setQty, BuildContext qtyViewContext) {
+                  final originalQty = prep.madeQty;
+                  //TODO(swipe): update madeQty to setQty
+                  Navigator.pop(qtyViewContext);
+                  _notifyQtyUpdate(
+                      "Prep updated", context, prep, scopedPrep, originalQty);
+                });
+              }));
+            })));
   }
 
   void _notifyQtyUpdate(String notificationText, BuildContext context,
@@ -98,7 +110,7 @@ class PrepList extends StatelessWidget {
         isDismissible: true,
         mainButton: InkWell(
             onTap: () {
-              //TODO: update back to original
+              //TODO(swipe): update back to original
               flush.dismiss();
             },
             child: Text("Undo", style: Styles.textHyperlink)))

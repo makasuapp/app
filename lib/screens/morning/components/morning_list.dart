@@ -88,18 +88,16 @@ class MorningList extends StatelessWidget {
         },
         child: InkWell(
             onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (_) => AdjustQuantityPage(ingredient,
-                              (double setQty, BuildContext qtyViewContext) {
-                            final originalQty = ingredient.hadQty;
-                            scopedIngredient.updateIngredientQty(
-                                ingredient, setQty);
-                            Navigator.pop(qtyViewContext);
-                            _notifyQtyUpdate("Ingredient updated", context,
-                                ingredient, scopedIngredient, originalQty);
-                          })));
+              Navigator.push(context, MaterialPageRoute(builder: (_) {
+                return IngredientAdjustQtyPage(ingredient,
+                    onSubmit: (double setQty, BuildContext qtyViewContext) {
+                  final originalQty = ingredient.hadQty;
+                  scopedIngredient.updateIngredientQty(ingredient, setQty);
+                  Navigator.pop(qtyViewContext);
+                  _notifyQtyUpdate("Ingredient updated", context, ingredient,
+                      scopedIngredient, originalQty);
+                });
+              }));
             },
             child: MorningItem(ingredient)));
   }

@@ -5,17 +5,18 @@ import '../common/submit_button.dart';
 import '../../models/day_ingredient.dart';
 import './morning_styles.dart';
 
-class AdjustQuantityPage extends StatefulWidget {
+class IngredientAdjustQtyPage extends StatefulWidget {
   final DayIngredient ingredient;
   final void Function(double qty, BuildContext qtyViewContext) onSubmit;
 
-  AdjustQuantityPage(this.ingredient, this.onSubmit);
+  IngredientAdjustQtyPage(this.ingredient, {this.onSubmit})
+      : assert(onSubmit != null);
 
   @override
-  createState() => _AdjustQuantityPageState();
+  createState() => _IngredientAdjustQtyPageState();
 }
 
-class _AdjustQuantityPageState extends State<AdjustQuantityPage> {
+class _IngredientAdjustQtyPageState extends State<IngredientAdjustQtyPage> {
   double _setQty;
 
   @override
@@ -32,7 +33,7 @@ class _AdjustQuantityPageState extends State<AdjustQuantityPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text("Adjust Quantity")),
+        appBar: AppBar(title: Text("Adjust Qty")),
         body: Container(
             padding: MorningStyles.adjustQuantityTopPadding,
             child: Column(children: [

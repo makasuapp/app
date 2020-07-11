@@ -26,6 +26,9 @@ class PrepStyles {
     color: Styles.textColorDefault,
   );
 
+  static final adjustQuantityTopPadding =
+      EdgeInsets.symmetric(vertical: 20.0, horizontal: 0);
+
   static final listItemBorder = BoxDecoration(
       border:
           Border(top: BorderSide(width: 0.5, color: Styles.textColorFaint)));
