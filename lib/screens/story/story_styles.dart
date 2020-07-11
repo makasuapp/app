@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:kitchen/styles.dart';
 
 class StoryStyles {
+  static final pulldownBackground = Colors.grey.withOpacity(0.1);
+
   static final itemPadding = EdgeInsets.fromLTRB(
       Styles.horizontalPaddingDefault, 0, Styles.horizontalPaddingDefault, 20);
 

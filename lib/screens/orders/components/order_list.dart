@@ -10,6 +10,7 @@ class OrderList extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScopedModelDescendant<ScopedOrder>(
         builder: (context, child, scopedOrder) => SingleChildScrollView(
+            physics: AlwaysScrollableScrollPhysics(),
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -18,6 +19,7 @@ class OrderList extends StatelessWidget {
 
   List<Widget> _renderView(BuildContext context, ScopedOrder scopedOrder) {
     var viewItems = List<Widget>();
+
     viewItems.addAll(scopedOrder.orders
         .where((o) => o.orderState() != OrderState.delivered())
         .map((o) => OrderCard(o))

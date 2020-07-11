@@ -8,12 +8,14 @@ import '../prep_styles.dart';
 import './prep_item.dart';
 import '../../story/components/recipe_step_story_item.dart';
 import '../../story/story.dart';
+import '../../common/swipable.dart';
 
 class PrepList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<ScopedDayPrep>(
         builder: (context, child, scopedPrep) => SingleChildScrollView(
+            physics: AlwaysScrollableScrollPhysics(),
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -67,46 +69,24 @@ class PrepList extends StatelessWidget {
 
   Widget _renderListItem(
       BuildContext context, DayPrep prep, ScopedDayPrep scopedPrep) {
-    return Dismissible(
-        background: Container(color: Styles.swipeRightColor),
-        secondaryBackground: Container(color: Styles.swipeLeftColor),
-        confirmDismiss: (direction) => _canDismissItem(direction, prep),
-        key: UniqueKey(),
-        onDismissed: (direction) =>
-            _onItemDismissed(direction, context, prep, scopedPrep),
+    final originalQty = prep.madeQty;
+    return Swipable(
+        canSwipeLeft: () => Future.value(prep.madeQty != null),
+        canSwipeRight: () => Future.value(
+            prep.madeQty == null || prep.madeQty < prep.expectedQty),
+        onSwipeLeft: (context) {
+          //TODO: update
+          _notifyQtyUpdate(
+              "Prep not started", context, prep, scopedPrep, originalQty);
+        },
+        onSwipeRight: (context) {
+          //TODO: update
+          _notifyQtyUpdate("Prep done", context, prep, scopedPrep, originalQty);
+        },
         child: InkWell(
             onTap: () => StoryView.render(context,
                 RecipeStepStoryItem(ScopedDayPrep.recipeStepFor(prep))),
             child: PrepItem(prep)));
-  }
-
-  Future<bool> _canDismissItem(DismissDirection direction, DayPrep prep) {
-    //swipe right
-    if (direction == DismissDirection.startToEnd) {
-      final isNotDone = prep.madeQty == null || prep.madeQty < prep.expectedQty;
-      return Future.value(isNotDone);
-      //swipe left
-    } else if (direction == DismissDirection.endToStart) {
-      final isStarted = prep.madeQty != null;
-      return Future.value(isStarted);
-    } else {
-      return Future.value(false);
-    }
-  }
-
-  void _onItemDismissed(DismissDirection direction, BuildContext context,
-      DayPrep prep, ScopedDayPrep scopedPrep) {
-    final originalQty = prep.madeQty;
-    //swipe right
-    if (direction == DismissDirection.startToEnd) {
-      //TODO: update to done
-      _notifyQtyUpdate("Prep done", context, prep, scopedPrep, originalQty);
-      //swipe right
-    } else if (direction == DismissDirection.endToStart) {
-      //TODO: update to not started
-      _notifyQtyUpdate(
-          "Prep not started", context, prep, scopedPrep, originalQty);
-    }
   }
 
   void _notifyQtyUpdate(String notificationText, BuildContext context,

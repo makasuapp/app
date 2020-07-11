@@ -3,6 +3,7 @@ import 'package:flushbar/flushbar.dart';
 import 'package:kitchen/styles.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:kitchen/scoped_models/scoped_day_ingredient.dart';
+import '../../common/swipable.dart';
 import '../../../models/day_ingredient.dart';
 import '../adjust_quantity.dart';
 import '../morning_styles.dart';
@@ -13,6 +14,7 @@ class MorningList extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScopedModelDescendant<ScopedDayIngredient>(
         builder: (context, child, scopedDayIngredient) => SingleChildScrollView(
+            physics: AlwaysScrollableScrollPhysics(),
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -67,13 +69,23 @@ class MorningList extends StatelessWidget {
 
   Widget _renderListItem(BuildContext context, DayIngredient ingredient,
       ScopedDayIngredient scopedIngredient) {
-    return Dismissible(
-        background: Container(color: Styles.swipeRightColor),
-        secondaryBackground: Container(color: Styles.swipeLeftColor),
-        confirmDismiss: (direction) => _canDismissItem(direction, ingredient),
-        key: UniqueKey(),
-        onDismissed: (direction) =>
-            _onItemDismissed(direction, context, ingredient, scopedIngredient),
+    final originalQty = ingredient.hadQty;
+
+    return Swipable(
+        canSwipeLeft: () => Future.value(ingredient.hadQty != null),
+        canSwipeRight: () => Future.value(ingredient.hadQty == null ||
+            ingredient.hadQty < ingredient.expectedQty),
+        onSwipeLeft: (context) {
+          scopedIngredient.updateIngredientQty(ingredient, null);
+          _notifyQtyUpdate("Ingredient unchecked", context, ingredient,
+              scopedIngredient, originalQty);
+        },
+        onSwipeRight: (context) {
+          scopedIngredient.updateIngredientQty(
+              ingredient, ingredient.expectedQty);
+          _notifyQtyUpdate("Ingredient checked", context, ingredient,
+              scopedIngredient, originalQty);
+        },
         child: InkWell(
             onTap: () {
               Navigator.push(
@@ -90,38 +102,6 @@ class MorningList extends StatelessWidget {
                           })));
             },
             child: MorningItem(ingredient)));
-  }
-
-  Future<bool> _canDismissItem(
-      DismissDirection direction, DayIngredient ingredient) {
-    //swipe right
-    if (direction == DismissDirection.startToEnd) {
-      final isUnchecked = ingredient.hadQty == null ||
-          ingredient.hadQty < ingredient.expectedQty;
-      return Future.value(isUnchecked);
-      //swipe left
-    } else if (direction == DismissDirection.endToStart) {
-      final isChecked = ingredient.hadQty != null;
-      return Future.value(isChecked);
-    } else {
-      return Future.value(false);
-    }
-  }
-
-  void _onItemDismissed(DismissDirection direction, BuildContext context,
-      DayIngredient ingredient, ScopedDayIngredient scopedIngredient) {
-    final originalQty = ingredient.hadQty;
-    //swipe right
-    if (direction == DismissDirection.startToEnd) {
-      scopedIngredient.updateIngredientQty(ingredient, ingredient.expectedQty);
-      _notifyQtyUpdate("Ingredient checked", context, ingredient,
-          scopedIngredient, originalQty);
-      //swipe right
-    } else if (direction == DismissDirection.endToStart) {
-      scopedIngredient.updateIngredientQty(ingredient, null);
-      _notifyQtyUpdate("Ingredient unchecked", context, ingredient,
-          scopedIngredient, originalQty);
-    }
   }
 
   void _notifyQtyUpdate(

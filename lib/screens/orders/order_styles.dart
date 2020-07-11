@@ -7,6 +7,10 @@ class OrderStyles {
   static final Color orderDefaultColor = Colors.white;
   static final Color orderDoneColor = Colors.grey;
 
+  static final Color currentOrdersBorder = Colors.black.withOpacity(0.8);
+  static final currentOrdersPadding = EdgeInsets.symmetric(
+      vertical: 10.0, horizontal: Styles.horizontalPaddingDefault);
+
   static final orderCardPadding = EdgeInsets.symmetric(
       vertical: 15.0, horizontal: Styles.horizontalPaddingDefault);
 

@@ -93,42 +93,33 @@ class ScopedOrder extends Model {
     }
   }
 
-  void markItemDoneTime(
-      Order parentOrder, OrderItem item, DateTime doneAt) async {
-    final updatedItem = OrderItem.clone(item, item.startedAtSec,
-        doneAt != null ? doneAt.millisecondsSinceEpoch ~/ 1000 : null);
-
+  void markItemsDoneTime(Map<int, OrderItem> itemsById, DateTime doneAt) async {
+    final originalOrders = this.orders;
     final updatedOrders = this.orders.map((o) {
-      if (o.id == parentOrder.id) {
-        final updatedItems = parentOrder.items
-            .map((i) => i.id == updatedItem.id ? updatedItem : i)
-            .toList();
-        return Order.clone(parentOrder, items: updatedItems);
-      } else {
-        return o;
-      }
+      final updatedItems = o.items.map((i) {
+        if (itemsById.containsKey(i.id)) {
+          final updatedItem = OrderItem.clone(i, i.startedAtSec,
+              doneAt != null ? doneAt.millisecondsSinceEpoch ~/ 1000 : null);
+          return updatedItem;
+        } else {
+          return i;
+        }
+      }).toList();
+      return Order.clone(o, items: updatedItems);
     }).toList();
     this.orders = updatedOrders;
     notifyListeners();
 
-    final orderItemUpdate = doneAt != null
-        ? OrderItemUpdate.forDoneAt(item.id, doneAt, doneAt)
-        : OrderItemUpdate.clearDoneAt(item.id, DateTime.now());
+    final orderItemUpdates = itemsById.values
+        .map((i) => doneAt != null
+            ? OrderItemUpdate.forDoneAt(i.id, doneAt, doneAt)
+            : OrderItemUpdate.clearDoneAt(i.id, DateTime.now()))
+        .toList();
     try {
-      await this.api.postOrderItemUpdates([orderItemUpdate]);
+      await this.api.postOrderItemUpdates(orderItemUpdates);
     } catch (err) {
       print(err);
-      //TODO: save update locally to retry later instead
-      final revertedOrders = this.orders.map((o) {
-        if (o.id == parentOrder.id) {
-          final updatedItems =
-              parentOrder.items.map((i) => i.id == item.id ? item : i).toList();
-          return Order.clone(parentOrder, items: updatedItems);
-        } else {
-          return o;
-        }
-      }).toList();
-      this.orders = revertedOrders;
+      this.orders = originalOrders;
       notifyListeners();
     }
   }
