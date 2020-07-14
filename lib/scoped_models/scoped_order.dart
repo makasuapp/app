@@ -20,7 +20,10 @@ class ScopedOrder extends Model {
   DateTime _lastLoaded;
 
   ScopedOrder(
-      {List<Recipe> recipes, List<RecipeStep> recipeSteps, orders, api}) {
+      {List<Recipe> recipes,
+      List<RecipeStep> recipeSteps,
+      List<Order> orders,
+      WebApi api}) {
     this.api = api ?? locator<WebApi>();
     if (recipes != null) {
       recipes.forEach((recipe) => this.recipesMap[recipe.id] = recipe);

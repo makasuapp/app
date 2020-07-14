@@ -21,7 +21,10 @@ class ScopedDayIngredient extends Model {
   int retryCount = 0;
   int _lastUpdateAtSec;
 
-  ScopedDayIngredient({ingredients, api, unsavedUpdates}) {
+  ScopedDayIngredient(
+      {List<DayIngredient> ingredients,
+      WebApi api,
+      List<IngredientUpdate> unsavedUpdates}) {
     this.unsavedUpdates = unsavedUpdates ?? [];
     this.ingredients = ingredients ?? [];
     this.api = api ?? locator<WebApi>();
@@ -34,13 +37,8 @@ class ScopedDayIngredient extends Model {
 
   void updateIngredientQty(DayIngredient ingredient, double qty,
       {int bufferMs}) {
-    final updatedAt = DateTime.now();
-    final updatedIngredient = DayIngredient(
-        ingredient.id, ingredient.name, ingredient.expectedQty,
-        hadQty: qty,
-        unit: ingredient.unit,
-        qtyUpdatedAtSec: updatedAt.millisecondsSinceEpoch ~/ 1000);
-
+    final updatedIngredient =
+        DayIngredient.clone(ingredient, qty, DateTime.now());
     final updatedIngredients = this
         .ingredients
         .map((i) => i.id == ingredient.id ? updatedIngredient : i)
@@ -70,6 +68,7 @@ class ScopedDayIngredient extends Model {
         }).toList();
       } catch (err) {
         //TODO: log to sentry?
+        print(err);
         this.savingAtSec = null;
         this._retryLater();
       }

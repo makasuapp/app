@@ -1,6 +1,7 @@
 import 'package:kitchen/models/day_prep.dart';
 import 'package:kitchen/models/recipe_step.dart';
 import 'package:kitchen/models/step_input.dart';
+import 'package:kitchen/api/prep_update.dart';
 import 'package:kitchen/scoped_models/scoped_day_prep.dart';
 import 'package:kitchen/scoped_models/scoped_order.dart';
 import 'package:kitchen/services/web_api.dart';
@@ -28,9 +29,11 @@ void main() {
     return new StepInput(10, "mock name", inputableId, inputableType);
   }
 
-  DayPrep _createDayPrep(int recipeStepId, {int prepId}) {
+  DayPrep _createDayPrep(int recipeStepId,
+      {int prepId, double madeQty, int qtyUpdatedAtSec}) {
     prepId = prepId ?? 11;
-    return new DayPrep(prepId, 2.5, recipeStepId);
+    return new DayPrep(prepId, 2.5, recipeStepId,
+        madeQty: madeQty, qtyUpdatedAtSec: qtyUpdatedAtSec);
   }
 
   group('test buildDependencyMap', () {
@@ -57,18 +60,18 @@ void main() {
     test('a recipe step with 2 inputs should result in a map[id] with length 2',
         () {
       inputs.add(_createStepInput("Recipe", inputableId: inputTypeRecipe1Id));
-      inputs.add(_createStepInput("Ingredient"));
+      inputs.add(_createStepInput("Prep"));
       inputs.add(_createStepInput("Recipe", inputableId: inputTypeRecipe2Id));
 
       recipeStepsMap[recipeStepId] =
           _createRecipeStep(recipeStepId, recipeStepRecipeId, inputs);
 
-      final dayPrep = _createDayPrep(
-        recipeStepId,
-        prepId: dayPrepId,
-      );
-      List<DayPrep> dayPrepList = [];
-      dayPrepList.add(dayPrep);
+      List<DayPrep> dayPrepList = [
+        _createDayPrep(
+          recipeStepId,
+          prepId: dayPrepId,
+        )
+      ];
 
       final scopedOrder = new ScopedOrder();
       scopedOrder.recipeStepsMap = recipeStepsMap;
@@ -89,12 +92,12 @@ void main() {
       recipeStepsMap[recipeStepId] =
           _createRecipeStep(recipeStepId, recipeStepRecipeId, inputs);
 
-      final dayPrep = _createDayPrep(
-        recipeStepId,
-        prepId: dayPrepId,
-      );
-      List<DayPrep> dayPrepList = [];
-      dayPrepList.add(dayPrep);
+      List<DayPrep> dayPrepList = [
+        _createDayPrep(
+          recipeStepId,
+          prepId: dayPrepId,
+        )
+      ];
 
       final scopedOrder = new ScopedOrder();
       scopedOrder.recipeStepsMap = recipeStepsMap;
@@ -109,7 +112,7 @@ void main() {
     });
 
     test(
-        '2 recipe steps belonging to 1 recipe with 2 day preps, not sharing the same inputable id, should result in map with 1 key, 2 values',
+        '2 recipe steps belonging to 1 recipe, not sharing the same inputable id, should result in map with 1 key, 2 values',
         () {
       const sharedStepRecipeId = 2;
 
@@ -125,15 +128,12 @@ void main() {
       recipeStepsMap[recipe2StepId] =
           _createRecipeStep(recipe2StepId, sharedStepRecipeId, inputs2);
 
-      var dayPrep1 = _createDayPrep(
+      List<DayPrep> dayPrepList = [];
+      dayPrepList.add(_createDayPrep(
         recipe1StepId,
         prepId: dayPrep1Id,
-      );
-      var dayPrep2 = _createDayPrep(recipe2StepId, prepId: dayPrep2Id);
-
-      List<DayPrep> dayPrepList = [];
-      dayPrepList.add(dayPrep1);
-      dayPrepList.add(dayPrep2);
+      ));
+      dayPrepList.add(_createDayPrep(recipe2StepId, prepId: dayPrep2Id));
 
       final scopedOrder = new ScopedOrder();
       scopedOrder.recipeStepsMap = recipeStepsMap;
@@ -150,7 +150,7 @@ void main() {
     });
 
     test(
-        '2 recipe steps belonging to 1 recipe with 2 day preps,where the steps share the same inputable id, should result in a map with 1 key, 1 value',
+        '2 recipe steps belonging to 1 recipe, where the steps share the same inputable id, should result in a map with 1 key, 1 value',
         () {
       const sharedStepRecipeId = 2;
       const inputTypeRecipeId = 11;
@@ -163,15 +163,12 @@ void main() {
       recipeStepsMap[recipe2StepId] =
           _createRecipeStep(recipe2StepId, sharedStepRecipeId, inputs);
 
-      var dayPrep1 = _createDayPrep(
+      List<DayPrep> dayPrepList = [];
+      dayPrepList.add(_createDayPrep(
         recipe1StepId,
         prepId: dayPrep1Id,
-      );
-      var dayPrep2 = _createDayPrep(recipe2StepId, prepId: dayPrep2Id);
-
-      List<DayPrep> dayPrepList = [];
-      dayPrepList.add(dayPrep1);
-      dayPrepList.add(dayPrep2);
+      ));
+      dayPrepList.add(_createDayPrep(recipe2StepId, prepId: dayPrep2Id));
 
       final scopedOrder = new ScopedOrder();
       scopedOrder.recipeStepsMap = recipeStepsMap;
@@ -187,30 +184,27 @@ void main() {
     });
 
     test(
-        '2 recipe steps belonging to 2 different recipes with 2 day preps should result in map having 2 keys',
+        '2 recipe steps belonging to 2 different recipes should result in map having 2 keys',
         () {
-      const recipeStep1RecipeId = 2;
-      const recipeStep2RecipeId = 5;
+      const recipe1RecipeId = 2;
+      const recipe2RecipeId = 5;
 
-      const inputTypeRecipeId = 11;
+      const sharedInputRecipeId = 11;
 
-      inputs.add(_createStepInput("Recipe", inputableId: inputTypeRecipeId));
+      inputs.add(_createStepInput("Recipe", inputableId: sharedInputRecipeId));
 
       recipeStepsMap[recipe1StepId] =
-          _createRecipeStep(recipe1StepId, recipeStep1RecipeId, inputs);
+          _createRecipeStep(recipe1StepId, recipe1RecipeId, inputs);
 
       recipeStepsMap[recipe2StepId] =
-          _createRecipeStep(recipe2StepId, recipeStep2RecipeId, inputs);
-
-      var dayPrep1 = _createDayPrep(
-        recipe1StepId,
-        prepId: dayPrep1Id,
-      );
-      var dayPrep2 = _createDayPrep(recipe2StepId, prepId: dayPrep2Id);
+          _createRecipeStep(recipe2StepId, recipe2RecipeId, inputs);
 
       List<DayPrep> dayPrepList = [];
-      dayPrepList.add(dayPrep1);
-      dayPrepList.add(dayPrep2);
+      dayPrepList.add(_createDayPrep(
+        recipe1StepId,
+        prepId: dayPrep1Id,
+      ));
+      dayPrepList.add(_createDayPrep(recipe2StepId, prepId: dayPrep2Id));
 
       final scopedOrder = new ScopedOrder();
       scopedOrder.recipeStepsMap = recipeStepsMap;
@@ -220,14 +214,14 @@ void main() {
       var map = scopedDayPrep.mkRecipeDependencyMap();
 
       expect(map.length, equals(2));
-      expect(map.containsKey(recipeStep1RecipeId), equals(true));
-      expect(map[recipeStep1RecipeId].length, equals(1));
-      expect(map[recipeStep1RecipeId].elementAt(0), inputTypeRecipeId);
+      expect(map.containsKey(recipe1RecipeId), equals(true));
+      expect(map[recipe1RecipeId].length, equals(1));
+      expect(map[recipe1RecipeId].elementAt(0), sharedInputRecipeId);
 
       expect(map.length, equals(2));
-      expect(map.containsKey(recipeStep2RecipeId), equals(true));
-      expect(map[recipeStep2RecipeId].length, equals(1));
-      expect(map[recipeStep2RecipeId].elementAt(0), inputTypeRecipeId);
+      expect(map.containsKey(recipe2RecipeId), equals(true));
+      expect(map[recipe2RecipeId].length, equals(1));
+      expect(map[recipe2RecipeId].elementAt(0), sharedInputRecipeId);
     });
 
     test(
@@ -235,12 +229,13 @@ void main() {
         () {
       const recipeStep1Id = 1;
       const recipeStep2Id = 2;
-      const input1AndRecipe2Id = 3;
+      const input1Id = 3;
       const input2Id = 4;
       const recipeStep1RecipeId = 5;
+      const recipeStep2RecipeId = 3;
 
       List<StepInput> inputs1 = [];
-      inputs1.add(_createStepInput("Recipe", inputableId: input1AndRecipe2Id));
+      inputs1.add(_createStepInput("Recipe", inputableId: input1Id));
 
       List<StepInput> inputs2 = [];
       inputs2.add(_createStepInput("Recipe", inputableId: input2Id));
@@ -248,7 +243,7 @@ void main() {
       recipeStepsMap[recipeStep1Id] =
           _createRecipeStep(recipeStep1Id, recipeStep1RecipeId, inputs1);
       recipeStepsMap[recipeStep2Id] =
-          _createRecipeStep(recipeStep2Id, input1AndRecipe2Id, inputs2);
+          _createRecipeStep(recipeStep2Id, recipeStep2RecipeId, inputs2);
 
       List<DayPrep> preps = [];
       preps.add(_createDayPrep(recipeStep1Id));
@@ -262,17 +257,16 @@ void main() {
       var map = scopedDayPrep.mkRecipeDependencyMap();
 
       expect(map.containsKey(recipeStep1RecipeId), equals(true));
-      expect(map.containsKey(input1AndRecipe2Id), equals(true));
+      expect(map.containsKey(recipeStep2RecipeId), equals(true));
       expect(map[recipeStep1RecipeId].length, equals(1));
-      expect(map[recipeStep1RecipeId].elementAt(0), equals(input1AndRecipe2Id));
-      expect(map[input1AndRecipe2Id].length, equals(1));
-      expect(map[input1AndRecipe2Id].elementAt(0), equals(input2Id));
+      expect(map[recipeStep1RecipeId].elementAt(0), equals(input1Id));
+      expect(map[recipeStep2RecipeId].length, equals(1));
+      expect(map[recipeStep2RecipeId].elementAt(0), equals(input2Id));
     });
 
     test('if inputs dont have type recipe, the map should not contain their id',
         () {
-      inputs
-          .add(_createStepInput("Ingredient", inputableId: inputTypeRecipe1Id));
+      inputs.add(_createStepInput("Prep", inputableId: inputTypeRecipe1Id));
       inputs.add(
           _createStepInput("Recipe Step", inputableId: inputTypeRecipe2Id));
 
@@ -300,7 +294,11 @@ void main() {
   });
 
   group('test sortPrepList', () {
-    var recipeStepsMap = Map<int, RecipeStep>();
+    Map<int, RecipeStep> recipeStepsMap;
+
+    setUp(() {
+      recipeStepsMap = new Map<int, RecipeStep>();
+    });
 
     const recipeStepIdForA = 1;
     const recipeStepIdForB = 2;
@@ -319,7 +317,6 @@ void main() {
       final rsForB = _createRecipeStep(recipeStepIdForB, sharedRecipeId, null,
           number: numberForB, stepType: sharedStepType);
 
-      recipeStepsMap.clear();
       recipeStepsMap[recipeStepIdForA] = rsForA;
       recipeStepsMap[recipeStepIdForB] = rsForB;
 
@@ -347,7 +344,6 @@ void main() {
       final rsForB = _createRecipeStep(recipeStepIdForB, sharedRecipeId, null,
           stepType: stepTypeB, number: numberB);
 
-      recipeStepsMap.clear();
       recipeStepsMap[recipeStepIdForA] = rsForA;
       recipeStepsMap[recipeStepIdForB] = rsForB;
 
@@ -381,7 +377,6 @@ void main() {
       final rsForB = _createRecipeStep(recipeStepIdForB, recipeIdB, inputsForB,
           stepType: sharedStepType, number: numberForB);
 
-      recipeStepsMap.clear();
       recipeStepsMap[recipeStepIdForA] = rsForA;
       recipeStepsMap[recipeStepIdForB] = rsForB;
 
@@ -421,7 +416,6 @@ void main() {
       final rsForB = _createRecipeStep(recipeStepIdForB, recipeIdB, inputsForB,
           stepType: sharedStepType, number: numberForB);
 
-      recipeStepsMap.clear();
       recipeStepsMap[recipeStepIdForA] = rsForA;
       recipeStepsMap[recipeStepIdForB] = rsForB;
 
@@ -463,7 +457,6 @@ void main() {
           recipeStepIdForB, recipeIdB, inputsForB,
           stepType: sharedStepType, number: numberForB);
 
-      recipeStepsMap.clear();
       recipeStepsMap[recipeStepIdForA] = rsForA;
       recipeStepsMap[recipeStepIdForB] = rsForB;
 
@@ -484,5 +477,101 @@ void main() {
 
       expect(result, equals(-1));
     });
+  });
+
+  group('updatePrepQty', () {
+    const recipeStepId = 1;
+    const recipeStepRecipeId = 2;
+    ScopedOrder scopedOrder;
+    List<DayPrep> dayPrepList;
+    final api = MockApi();
+
+    setUp(() {
+      var recipeStepsMap = new Map<int, RecipeStep>();
+      recipeStepsMap[recipeStepId] =
+          _createRecipeStep(recipeStepId, recipeStepRecipeId, []);
+      scopedOrder = new ScopedOrder();
+      scopedOrder.recipeStepsMap = recipeStepsMap;
+
+      dayPrepList = [];
+    });
+
+    test('changes quantity and makes API call to save it after delay',
+        () async {
+      final prep = _createDayPrep(recipeStepId);
+      dayPrepList.add(prep);
+
+      final scopedPrep =
+          ScopedDayPrep(prep: dayPrepList, scopedOrder: scopedOrder, api: api);
+
+      expect(scopedPrep.prep[0].madeQty, isNull);
+      expect(scopedPrep.prep[0].qtyUpdatedAtSec, isNull);
+
+      var updated = false;
+      when(api.postOpDaySavePrepQty(any)).thenAnswer((_) async {
+        updated = true;
+      });
+
+      await scopedPrep.updatePrepQty(prep, 1.5);
+      expect(updated, isTrue);
+      expect(scopedPrep.prep[0].madeQty, equals(1.5));
+      expect(scopedPrep.prep[0].qtyUpdatedAtSec, isNotNull);
+      expect(scopedPrep.unsavedUpdates.length, equals(0));
+    });
+
+    test("makes call with all unsavedUpdates and clears those", () async {
+      final now = DateTime.now();
+      final hourAgo = now.subtract(Duration(hours: 1));
+      final prep = _createDayPrep(recipeStepId);
+      dayPrepList.add(prep);
+      var updates = List<PrepUpdate>();
+      updates.add(PrepUpdate.withDate(1, 1.2, hourAgo));
+      updates.add(PrepUpdate.withDate(1, 0.9, hourAgo));
+
+      final scopedPrep =
+          ScopedDayPrep(api: api, prep: dayPrepList, unsavedUpdates: updates);
+      expect(scopedPrep.unsavedUpdates.length, equals(2));
+
+      when(api.postOpDaySavePrepQty(any)).thenAnswer((invocation) async {
+        List<PrepUpdate> calledUpdates = invocation.positionalArguments[0];
+        expect(calledUpdates.length, equals(3));
+        expect(calledUpdates.last.madeQty, equals(1.5));
+
+        //new request came in before save async finishes
+        scopedPrep.unsavedUpdates
+            .add(PrepUpdate.withDate(1, 1.8, now.add(Duration(hours: 1))));
+      });
+
+      await scopedPrep.updatePrepQty(prep, 1.5);
+
+      expect(scopedPrep.unsavedUpdates.length, equals(1));
+      expect(scopedPrep.unsavedUpdates[0].madeQty, equals(1.8));
+    });
+
+    test(
+        "doesn't clear unsaved updates if unsuccessful API call (e.g. bad internet connection)",
+        () async {
+      final now = DateTime.now();
+      final hourAgo = now.subtract(Duration(hours: 1));
+      final prep = _createDayPrep(recipeStepId);
+      dayPrepList.add(prep);
+      var updates = List<PrepUpdate>();
+      updates.add(PrepUpdate.withDate(1, 1.2, hourAgo));
+      updates.add(PrepUpdate.withDate(1, 0.9, hourAgo));
+
+      final scopedPrep =
+          ScopedDayPrep(api: api, prep: dayPrepList, unsavedUpdates: updates);
+      expect(scopedPrep.unsavedUpdates.length, equals(2));
+      expect(scopedPrep.retryCount, equals(0));
+
+      when(api.postOpDaySavePrepQty(any)).thenThrow(Error());
+
+      await scopedPrep.updatePrepQty(prep, 1.5);
+
+      expect(scopedPrep.unsavedUpdates.length, equals(3));
+      expect(scopedPrep.retryCount, equals(1));
+    });
+
+    //TODO: test retry
   });
 }

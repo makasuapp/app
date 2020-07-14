@@ -76,12 +76,12 @@ class PrepList extends StatelessWidget {
         canSwipeRight: () => Future.value(
             prep.madeQty == null || prep.madeQty < prep.expectedQty),
         onSwipeLeft: (context) {
-          //TODO(swipe): update madeQty to null
+          scopedPrep.updatePrepQty(prep, null);
           _notifyQtyUpdate(
               "Prep not started", context, prep, scopedPrep, originalQty);
         },
         onSwipeRight: (context) {
-          //TODO(swipe): update madeQty to expectedQty
+          scopedPrep.updatePrepQty(prep, prep.expectedQty);
           _notifyQtyUpdate("Prep done", context, prep, scopedPrep, originalQty);
         },
         child: InkWell(
@@ -92,7 +92,7 @@ class PrepList extends StatelessWidget {
                 return PrepAdjustQuantityPage(prep,
                     onSubmit: (double setQty, BuildContext qtyViewContext) {
                   final originalQty = prep.madeQty;
-                  //TODO(swipe): update madeQty to setQty
+                  scopedPrep.updatePrepQty(prep, setQty);
                   Navigator.pop(qtyViewContext);
                   _notifyQtyUpdate(
                       "Prep updated", context, prep, scopedPrep, originalQty);
@@ -110,7 +110,7 @@ class PrepList extends StatelessWidget {
         isDismissible: true,
         mainButton: InkWell(
             onTap: () {
-              //TODO(swipe): update back to original
+              scopedPrep.updatePrepQty(prep, originalQty);
               flush.dismiss();
             },
             child: Text("Undo", style: Styles.textHyperlink)))

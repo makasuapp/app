@@ -21,4 +21,10 @@ class DayPrep {
   factory DayPrep.fromJson(Map<String, dynamic> json) =>
       _$DayPrepFromJson(json);
   Map<String, dynamic> toJson() => _$DayPrepToJson(this);
+
+  factory DayPrep.clone(DayPrep orig, double madeQty, DateTime updatedAt) {
+    return DayPrep(orig.id, orig.expectedQty, orig.recipeStepId,
+        madeQty: madeQty,
+        qtyUpdatedAtSec: updatedAt.millisecondsSinceEpoch ~/ 1000);
+  }
 }

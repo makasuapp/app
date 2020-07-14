@@ -68,7 +68,7 @@ class _PrepAdjustQuantityPageState extends State<PrepAdjustQuantityPage> {
           ),
           onChanged: (input) {
             final percentage = min(double.tryParse(input), 100.0);
-            this._setQty = percentage * this.widget.prep.expectedQty;
+            this._setQty = (percentage / 100) * this.widget.prep.expectedQty;
           },
         ));
   }
