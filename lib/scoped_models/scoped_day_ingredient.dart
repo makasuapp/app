@@ -4,6 +4,7 @@ import '../services/web_api.dart';
 import '../api/ingredient_update.dart';
 import 'package:meta/meta.dart';
 import '../service_locator.dart';
+import '../services/logger.dart';
 
 const SAVE_BUFFER_SECONDS = 15;
 const RETRY_WAIT_SECONDS = 2;
@@ -67,8 +68,7 @@ class ScopedDayIngredient extends Model {
           return u.timeSec > savingAtSec;
         }).toList();
       } catch (err) {
-        //TODO: log to sentry?
-        print(err);
+        Logger.error(err);
         this.savingAtSec = null;
         this._retryLater();
       }
@@ -89,8 +89,7 @@ class ScopedDayIngredient extends Model {
     if (retryCount <= NUM_RETRIES) {
       this.saveUnsavedQty();
     } else {
-      //TODO: log to sentry?
-      print("hit max retries");
+      Logger.error("hit max retries in scoped_day_ingredient");
     }
   }
 

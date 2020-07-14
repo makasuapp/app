@@ -5,6 +5,7 @@ import '../api/ingredient_update.dart';
 import '../api/prep_update.dart';
 import '../api/order_item_update.dart';
 import '../models/order.dart';
+import '../env.dart';
 
 class WebApi {
   String apiScheme;
@@ -13,7 +14,7 @@ class WebApi {
 
   WebApi({apiScheme, apiHost}) {
     this.apiScheme = apiScheme ?? 'https';
-    this.apiHost = apiHost ?? 'makasu.co';
+    this.apiHost = apiHost ?? EnvironmentConfig.API_HOST;
   }
 
   Uri uri(String path, {Map<String, dynamic> queryParameters}) {

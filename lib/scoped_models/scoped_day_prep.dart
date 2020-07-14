@@ -6,6 +6,7 @@ import '../api/prep_update.dart';
 import 'package:meta/meta.dart';
 import '../service_locator.dart';
 import 'scoped_order.dart';
+import '../services/logger.dart';
 
 const RETRY_WAIT_SECONDS = 2;
 const NUM_RETRIES = 3;
@@ -150,8 +151,7 @@ class ScopedDayPrep extends Model {
           .where((u) => !savingUpdatesMap.containsKey(u.id()))
           .toList();
     } catch (err) {
-      //TODO: log to sentry?
-      print(err);
+      Logger.error(err);
       _retryLater();
     }
   }
@@ -166,8 +166,7 @@ class ScopedDayPrep extends Model {
     if (retryCount <= NUM_RETRIES) {
       _saveUnsavedQty();
     } else {
-      //TODO: log to sentry?
-      print("hit max retries");
+      Logger.error("hit max retries in scoped_day_prep");
     }
   }
 }

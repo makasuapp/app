@@ -564,7 +564,7 @@ void main() {
       expect(scopedPrep.unsavedUpdates.length, equals(2));
       expect(scopedPrep.retryCount, equals(0));
 
-      when(api.postOpDaySavePrepQty(any)).thenThrow(Error());
+      when(api.postOpDaySavePrepQty(any)).thenThrow(Exception("test"));
 
       await scopedPrep.updatePrepQty(prep, 1.5);
 
