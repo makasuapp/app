@@ -4,6 +4,7 @@ import 'package:meta/meta.dart';
 import '../api/load_orders_response.dart';
 import '../api/order_item_update.dart';
 import '../services/web_api.dart';
+import '../services/logger.dart';
 import '../service_locator.dart';
 import '../models/recipe.dart';
 import '../models/recipe_step.dart';
@@ -20,7 +21,10 @@ class ScopedOrder extends Model {
   DateTime _lastLoaded;
 
   ScopedOrder(
-      {List<Recipe> recipes, List<RecipeStep> recipeSteps, orders, api}) {
+      {List<Recipe> recipes,
+      List<RecipeStep> recipeSteps,
+      List<Order> orders,
+      WebApi api}) {
     this.api = api ?? locator<WebApi>();
     if (recipes != null) {
       recipes.forEach((recipe) => this.recipesMap[recipe.id] = recipe);
@@ -84,7 +88,7 @@ class ScopedOrder extends Model {
     try {
       await this.api.postOrderUpdateState(order);
     } catch (err) {
-      print(err);
+      Logger.error(err);
       //TODO: save update locally to retry later instead
       final revertedOrders =
           this.orders.map((o) => o.id == order.id ? order : o).toList();
@@ -118,7 +122,7 @@ class ScopedOrder extends Model {
     try {
       await this.api.postOrderItemUpdates(orderItemUpdates);
     } catch (err) {
-      print(err);
+      Logger.error(err);
       this.orders = originalOrders;
       notifyListeners();
     }

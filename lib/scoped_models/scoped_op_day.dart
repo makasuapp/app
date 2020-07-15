@@ -18,7 +18,10 @@ class ScopedOpDay extends Model {
 
   DateTime _lastLoaded;
 
-  ScopedOpDay({scopedDayIngredient, scopedDayPrep, api}) {
+  ScopedOpDay(
+      {ScopedDayIngredient scopedDayIngredient,
+      ScopedDayPrep scopedDayPrep,
+      WebApi api}) {
     this.api = api ?? locator<WebApi>();
     this.scopedDayIngredient =
         scopedDayIngredient ?? locator<ScopedDayIngredient>();

@@ -25,6 +25,17 @@ class PrepStyles {
     fontSize: Styles.textSizeLarge,
     color: Styles.textColorDefault,
   );
+  static final ingredientText = TextStyle(
+    fontSize: Styles.textSizeSmall,
+  );
+  static final remainingIngredientText = TextStyle(
+    fontSize: Styles.textSizeSmall,
+    color: Colors.red,
+  );
+  static final totalIngredientText = TextStyle(
+      fontSize: Styles.textSizeSmall,
+      color: Styles.textColorFaint,
+      decoration: TextDecoration.lineThrough);
 
   static final adjustQuantityTopPadding =
       EdgeInsets.symmetric(vertical: 20.0, horizontal: 0);

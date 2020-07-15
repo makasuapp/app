@@ -11,6 +11,8 @@
 
 Then in Visual Studio Code do Run -> Start Debugging
 
+To run with environment variables passed in: `flutter run --dart-define=ENV=production --dart-define=<KEY>=<VALUE>`
+
 # Testing
 
 ```

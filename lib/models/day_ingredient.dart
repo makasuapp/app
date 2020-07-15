@@ -22,6 +22,14 @@ class DayIngredient {
       _$DayIngredientFromJson(json);
   Map<String, dynamic> toJson() => _$DayIngredientToJson(this);
 
+  factory DayIngredient.clone(
+      DayIngredient orig, double hadQty, DateTime updatedAt) {
+    return DayIngredient(orig.id, orig.name, orig.expectedQty,
+        hadQty: hadQty,
+        unit: orig.unit,
+        qtyUpdatedAtSec: updatedAt.millisecondsSinceEpoch ~/ 1000);
+  }
+
   DateTime qtyUpdatedAt() {
     if (this.qtyUpdatedAtSec == null) {
       return null;

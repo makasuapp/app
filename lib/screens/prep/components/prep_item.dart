@@ -51,16 +51,39 @@ class PrepItem extends StatelessWidget {
   }
 
   Widget _renderInput(StepInput input) {
-    //TODO: show something different for half done prep items?
+    var widgets = List<Widget>();
+    double toMakeConversion;
+    if (this.prep.madeQty != null &&
+        this.prep.madeQty < this.prep.expectedQty) {
+      toMakeConversion =
+          (this.prep.expectedQty - this.prep.madeQty) / this.prep.expectedQty;
+    }
+
     if (input.inputableType == "RecipeStep" &&
         input.unit == null &&
         input.quantity == 1) {
-      return Text(input.name);
+      if (toMakeConversion != null) {
+        widgets
+            .add(Text("Remaining ", style: PrepStyles.remainingIngredientText));
+      }
+      widgets.add(Text(input.name, style: PrepStyles.ingredientText));
     } else {
-      final qty = input.quantity * this.prep.expectedQty;
-      return Text(
-          "${UnitConverter.qtyWithUnit(qty, input.unit)} ${input.name}");
+      final totalQty = input.quantity * this.prep.expectedQty;
+      if (toMakeConversion != null) {
+        final remainingQty = totalQty * toMakeConversion;
+        widgets.add(Text(
+            "${UnitConverter.qtyWithUnit(remainingQty, input.unit)} ",
+            style: PrepStyles.remainingIngredientText));
+        widgets.add(Text(UnitConverter.qtyWithUnit(totalQty, input.unit),
+            style: PrepStyles.totalIngredientText));
+      } else {
+        widgets.add(Text(UnitConverter.qtyWithUnit(totalQty, input.unit),
+            style: PrepStyles.ingredientText));
+      }
+      widgets.add(Text(" ${input.name}", style: PrepStyles.ingredientText));
     }
+
+    return Wrap(children: widgets);
   }
 
   Widget _renderButtons() {

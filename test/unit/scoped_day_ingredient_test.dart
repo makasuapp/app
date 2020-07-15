@@ -141,7 +141,7 @@ void main() {
       expect(scopedIngredient.unsavedUpdates.length, equals(2));
       expect(scopedIngredient.retryCount, equals(0));
 
-      when(api.postOpDaySaveIngredientsQty(any)).thenThrow(Error());
+      when(api.postOpDaySaveIngredientsQty(any)).thenThrow(Exception("test"));
 
       scopedIngredient.updateIngredientQty(ingredient, 1.5, bufferMs: 100);
       await Future.delayed(Duration(milliseconds: 120));

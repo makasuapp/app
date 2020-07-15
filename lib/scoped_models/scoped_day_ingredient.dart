@@ -4,6 +4,7 @@ import '../services/web_api.dart';
 import '../api/ingredient_update.dart';
 import 'package:meta/meta.dart';
 import '../service_locator.dart';
+import '../services/logger.dart';
 
 const SAVE_BUFFER_SECONDS = 15;
 const RETRY_WAIT_SECONDS = 2;
@@ -21,7 +22,10 @@ class ScopedDayIngredient extends Model {
   int retryCount = 0;
   int _lastUpdateAtSec;
 
-  ScopedDayIngredient({ingredients, api, unsavedUpdates}) {
+  ScopedDayIngredient(
+      {List<DayIngredient> ingredients,
+      WebApi api,
+      List<IngredientUpdate> unsavedUpdates}) {
     this.unsavedUpdates = unsavedUpdates ?? [];
     this.ingredients = ingredients ?? [];
     this.api = api ?? locator<WebApi>();
@@ -34,13 +38,8 @@ class ScopedDayIngredient extends Model {
 
   void updateIngredientQty(DayIngredient ingredient, double qty,
       {int bufferMs}) {
-    final updatedAt = DateTime.now();
-    final updatedIngredient = DayIngredient(
-        ingredient.id, ingredient.name, ingredient.expectedQty,
-        hadQty: qty,
-        unit: ingredient.unit,
-        qtyUpdatedAtSec: updatedAt.millisecondsSinceEpoch ~/ 1000);
-
+    final updatedIngredient =
+        DayIngredient.clone(ingredient, qty, DateTime.now());
     final updatedIngredients = this
         .ingredients
         .map((i) => i.id == ingredient.id ? updatedIngredient : i)
@@ -69,7 +68,7 @@ class ScopedDayIngredient extends Model {
           return u.timeSec > savingAtSec;
         }).toList();
       } catch (err) {
-        //TODO: log to sentry?
+        Logger.error(err);
         this.savingAtSec = null;
         this._retryLater();
       }
@@ -90,8 +89,7 @@ class ScopedDayIngredient extends Model {
     if (retryCount <= NUM_RETRIES) {
       this.saveUnsavedQty();
     } else {
-      //TODO: log to sentry?
-      print("hit max retries");
+      Logger.error("hit max retries in scoped_day_ingredient");
     }
   }
 
