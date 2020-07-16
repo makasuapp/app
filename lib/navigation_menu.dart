@@ -2,17 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:kitchen/screens/actions/actions.dart';
 import 'package:kitchen/styles.dart';
 
-class NavigationMenu {
+class NavigationMenu extends StatelessWidget {
   static final actions = ActionsPage.actions;
+  final int pageSelected;
 
-  static Drawer navigationDrawer(int pageSelected) {
-    return new Drawer(
+  NavigationMenu(this.pageSelected);
+
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
         child: ListView.builder(
       itemCount: actions.length,
       itemBuilder: (BuildContext context, int index) {
         return ListTile(
             title: Text(actions[index].title,
-                style: (pageSelected == actions[index].id)
+                style: (this.pageSelected == actions[index].id)
                     ? Styles.textDefaultHighlighted
                     : Styles.textDefault),
             onTap: () {

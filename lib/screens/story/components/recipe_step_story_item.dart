@@ -1,6 +1,19 @@
+import 'dart:core';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:kitchen/models/detailed_instruction.dart';
+import 'package:kitchen/models/step_input.dart';
+import 'package:kitchen/models/tool.dart';
+import 'package:kitchen/scoped_models/scoped_story.dart';
+import 'package:kitchen/screens/common/step_input_item.dart';
+import 'package:kitchen/screens/story/components/recipe_story_item.dart';
+import 'package:kitchen/services/unit_converter.dart';
+import 'package:kitchen/styles.dart';
+import 'package:scoped_model/scoped_model.dart';
+import '../story_styles.dart';
 import './story_item.dart';
 import '../../../models/recipe_step.dart';
+import 'package:kitchen/scoped_models/scoped_order.dart';
 
 class RecipeStepStoryItem extends StoryItem {
   final RecipeStep recipeStep;
@@ -9,6 +22,136 @@ class RecipeStepStoryItem extends StoryItem {
 
   @override
   Widget renderContent() {
-    return Text(this.recipeStep.instruction);
+    return ScopedModelDescendant<ScopedStory>(
+        builder: (context, child, scopedStory) =>
+            ScopedModelDescendant<ScopedOrder>(
+                builder: (context, child, scopedOrder) => Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: _renderInfo(context, scopedOrder, scopedStory))));
+  }
+
+  static Widget _renderTextBody(String text) {
+    return Container(
+      child: Text(
+        text,
+        style: StoryStyles.storyText,
+      ),
+      padding: StoryStyles.itemPadding,
+    );
+  }
+
+  static Widget _textHeader(String header) {
+    return Container(
+      child: Text(header, style: StoryStyles.storyHeader),
+      padding: StoryStyles.headerPadding,
+    );
+  }
+
+  List<Widget> _renderInfo(
+      BuildContext context, ScopedOrder scopedOrder, ScopedStory scopedStory) {
+    var widgets = List<Widget>();
+    widgets.add(_renderInstruction());
+    widgets.addAll(_renderListDuration());
+    widgets.addAll(_renderListTools());
+    widgets.addAll(_renderListDetailedInstructions());
+    widgets.addAll(_renderInputList(context, scopedStory, scopedOrder));
+    return widgets;
+  }
+
+  Widget _renderInstruction() {
+    return new Container(
+        padding: Styles.spacerPadding,
+        child: Text(
+          "${recipeStep.number}) ${recipeStep.instruction}",
+          style: StoryStyles.storyHeaderLarge,
+        ));
+  }
+
+  List<Widget> _renderListDuration() {
+    var durationWidgets = List<Widget>();
+    if (recipeStep.durationSec != null ||
+        recipeStep.minBeforeSec != null ||
+        recipeStep.maxBeforeSec != null) {
+      durationWidgets.add(_textHeader("Durations"));
+
+      if (recipeStep.durationSec != null) {
+        durationWidgets.add(_renderTextBody(
+            "Total duration: ${UnitConverter.stringifySec(recipeStep.durationSec)}"));
+      }
+      if (recipeStep.maxBeforeSec != null) {
+        durationWidgets.add(_renderTextBody(
+            "Max time in advance to prepare: ${UnitConverter.stringifySec(recipeStep.maxBeforeSec)}"));
+      }
+      if (recipeStep.minBeforeSec != null) {
+        durationWidgets.add(_renderTextBody(
+            "Min time in advance to prepare: ${UnitConverter.stringifySec(recipeStep.minBeforeSec)}"));
+      }
+    }
+    return durationWidgets;
+  }
+
+  List<Widget> _renderListTools() {
+    var toolsList = List<Widget>();
+    if (recipeStep.tools.length != 0) {
+      toolsList.add(_textHeader("Tools required"));
+      for (Tool tool in recipeStep.tools) {
+        toolsList.add(_renderTextBody("${tool.name}"));
+      }
+    }
+    return toolsList;
+  }
+
+  List<Widget> _renderListDetailedInstructions() {
+    var instructions = List<Widget>();
+    if (recipeStep.detailedInstructions.length > 0) {
+      instructions.add(_textHeader("Detailed Instructions"));
+
+      for (DetailedInstruction detInst in recipeStep.detailedInstructions) {
+        instructions.add(_renderTextBody("${detInst.instruction}"));
+      }
+    }
+    return instructions;
+  }
+
+  List<Widget> _renderInputList(
+      BuildContext context, ScopedStory scopedStory, ScopedOrder scopedOrder) {
+    var inputsList = List<Widget>();
+    if (recipeStep.inputs.length > 0) {
+      inputsList.add(_textHeader("Inputs"));
+
+      for (StepInput input in recipeStep.inputs) {
+        if (input.inputableType == InputType.Ingredient) {
+          inputsList.add(
+            Container(
+              child: StepInputItem(input, defaultTextStyle: StoryStyles.storyText),
+              padding: StoryStyles.itemPadding,
+            ),
+          );
+        } else if (input.inputableType == InputType.Recipe) {
+          final recipe = scopedOrder.recipesMap[input.inputableId];
+          inputsList.add(Container(
+            child: InkWell(
+                onTap: () {
+                  scopedStory.push(RecipeStoryItem(recipe));
+                },
+                child: StepInputItem(input, defaultTextStyle: StoryStyles.storyText)),
+            padding: StoryStyles.itemPadding,
+          ));
+        } else if (input.inputableType == InputType.RecipeStep) {
+          final recipeStep = scopedOrder.recipeStepsMap[input.inputableId];
+          inputsList.add(Container(
+            child: InkWell(
+              onTap: () {
+                scopedStory.push(RecipeStepStoryItem(recipeStep));
+              },
+              child: StepInputItem(input, defaultTextStyle: StoryStyles.storyText),
+            ),
+            padding: StoryStyles.itemPadding,
+          ));
+        }
+      }
+    }
+    return inputsList;
   }
 }

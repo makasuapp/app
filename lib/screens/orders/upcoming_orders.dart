@@ -19,10 +19,11 @@ class UpcomingOrdersPage extends StatelessWidget {
         model: this.scopedOrder,
         child: Scaffold(
             appBar: AppBar(title: Text(this.title)),
-            drawer: NavigationMenu.navigationDrawer(this.pageId),
+            drawer: NavigationMenu(this.pageId),
             bottomSheet: CurrentOrders(),
             body: RefreshIndicator(
                 onRefresh: () => this.scopedOrder.loadOrders(forceLoad: true),
                 child: OrderList())));
+
   }
 }

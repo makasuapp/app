@@ -32,7 +32,7 @@ class _MorningChecklistPageState extends State<MorningChecklistPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: Text(this.widget.title)),
-        drawer: NavigationMenu.navigationDrawer(this.widget.pageId),
+        drawer: NavigationMenu(this.widget.pageId),
         body: ScopedModel<ScopedOpDay>(
             model: this.opDay,
             child: ScopedModel<ScopedDayIngredient>(
