@@ -27,8 +27,9 @@ class WebApi {
     return uri;
   }
 
-  Future<String> _fetchJson(String endpoint) async {
-    final uri = this.uri(endpoint);
+  Future<String> _fetchJson(String endpoint,
+      {Map<String, dynamic> queryParameters}) async {
+    final uri = this.uri(endpoint, queryParameters: queryParameters);
     final resp = await http.get(uri.toString());
 
     if (resp.statusCode != 200) {
@@ -39,8 +40,10 @@ class WebApi {
   }
 
   Future<String> fetchRecipesJson() => this._fetchJson('/recipes');
-  Future<String> fetchOpDayJson() => this._fetchJson('/op_days');
-  Future<String> fetchOrdersJson() => this._fetchJson('/orders');
+  Future<String> fetchOpDayJson() => this
+      ._fetchJson('/op_days', queryParameters: {"env": EnvironmentConfig.ENV});
+  Future<String> fetchOrdersJson() => this
+      ._fetchJson('/orders', queryParameters: {"env": EnvironmentConfig.ENV});
 
   Future<dynamic> _postJson(String endpoint, dynamic body) async {
     final uri = this.uri(endpoint);
