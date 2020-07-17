@@ -24,7 +24,10 @@ class PrepItem extends StatelessWidget {
 
     widgets.add(Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [_renderIngredients(recipeStep.inputs), _renderButtons()]));
+        children: [
+          Expanded(child: _renderIngredients(recipeStep.inputs)),
+          _renderButtons()
+        ]));
 
     return Container(
         padding: PrepStyles.listItemPadding,
@@ -41,11 +44,23 @@ class PrepItem extends StatelessWidget {
           padding: PrepStyles.ingredientsHeaderPadding,
           child: Text("Ingredients", style: PrepStyles.ingredientsHeader)));
 
-      inputs.forEach((input) => widgets.add(StepInputItem(input,
-          prep: this.prep,
-          defaultTextStyle: PrepStyles.ingredientText,
-          remainingIngredientsStyle: PrepStyles.remainingIngredientText,
-          totalIngredientsStyle: PrepStyles.totalIngredientText)));
+      inputs.forEach((input) {
+        final originalQty = this.prep.expectedQty * input.quantity;
+        double remainingQty;
+        if (this.prep.madeQty != null &&
+            this.prep.madeQty < this.prep.expectedQty) {
+          final toMakeConversion = (this.prep.expectedQty - this.prep.madeQty) /
+              this.prep.expectedQty;
+          remainingQty = originalQty * toMakeConversion;
+        }
+
+        widgets.add(StepInputItem(
+            input.name, originalQty, input.inputableType, input.unit,
+            adjustedInputQty: remainingQty,
+            regularTextStyle: PrepStyles.ingredientText,
+            adjustedQtyStyle: PrepStyles.remainingIngredientText,
+            originalQtyStyle: PrepStyles.totalIngredientText));
+      });
 
       return Column(
           crossAxisAlignment: CrossAxisAlignment.start, children: widgets);

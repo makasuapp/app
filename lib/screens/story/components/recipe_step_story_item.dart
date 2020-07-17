@@ -18,17 +18,26 @@ import 'package:kitchen/scoped_models/scoped_data.dart';
 class RecipeStepStoryItem extends StoryItem {
   final RecipeStep recipeStep;
 
-  RecipeStepStoryItem(this.recipeStep);
+  RecipeStepStoryItem(this.recipeStep, {double servingSize})
+      : super(null, servingSize ?? 1);
 
   @override
   Widget renderContent() {
     return ScopedModelDescendant<ScopedStory>(
         builder: (context, child, scopedStory) =>
             ScopedModelDescendant<ScopedData>(
-                builder: (context, child, scopedData) => Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: _renderInfo(context, scopedData, scopedStory))));
+                builder: (context, child, scopedData) {
+              return Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: _renderInfo(
+                      context, scopedData, scopedStory, this.servingSize));
+            }));
+  }
+
+  @override
+  StoryItem getUpdatedStoryItem(String outputUnits, double servingSize) {
+    return RecipeStepStoryItem(this.recipeStep, servingSize: servingSize);
   }
 
   static Widget _renderTextBody(String text) {
@@ -48,14 +57,15 @@ class RecipeStepStoryItem extends StoryItem {
     );
   }
 
-  List<Widget> _renderInfo(
-      BuildContext context, ScopedData scopedData, ScopedStory scopedStory) {
+  List<Widget> _renderInfo(BuildContext context, ScopedData scopedData,
+      ScopedStory scopedStory, double servingSize) {
     var widgets = List<Widget>();
     widgets.add(_renderInstruction());
     widgets.addAll(_renderListDuration());
     widgets.addAll(_renderListTools());
     widgets.addAll(_renderListDetailedInstructions());
-    widgets.addAll(_renderInputList(context, scopedStory, scopedData));
+    widgets.addAll(
+        _renderInputList(context, scopedStory, scopedData, servingSize));
     return widgets;
   }
 
@@ -114,21 +124,17 @@ class RecipeStepStoryItem extends StoryItem {
     return instructions;
   }
 
-  List<Widget> _renderInputList(
-      BuildContext context, ScopedStory scopedStory, ScopedData scopedData) {
+  List<Widget> _renderInputList(BuildContext context, ScopedStory scopedStory,
+      ScopedData scopedData, double servingSize) {
     var inputsList = List<Widget>();
     if (recipeStep.inputs.length > 0) {
       inputsList.add(_textHeader("Inputs"));
 
       for (StepInput input in recipeStep.inputs) {
         if (input.inputableType == InputType.Ingredient) {
-          inputsList.add(
-            Container(
-              child:
-                  StepInputItem(input, defaultTextStyle: StoryStyles.storyText),
-              padding: StoryStyles.itemPadding,
-            ),
-          );
+          inputsList.add(Container(
+              child: _renderInput(input, servingSize),
+              padding: StoryStyles.itemPadding));
         } else if (input.inputableType == InputType.Recipe) {
           final recipe = scopedData.recipesMap[input.inputableId];
           inputsList.add(Container(
@@ -136,8 +142,7 @@ class RecipeStepStoryItem extends StoryItem {
                 onTap: () {
                   scopedStory.push(RecipeStoryItem(recipe));
                 },
-                child: StepInputItem(input,
-                    defaultTextStyle: StoryStyles.storyText)),
+                child: _renderInput(input, servingSize)),
             padding: StoryStyles.itemPadding,
           ));
         } else if (input.inputableType == InputType.RecipeStep) {
@@ -147,8 +152,7 @@ class RecipeStepStoryItem extends StoryItem {
               onTap: () {
                 scopedStory.push(RecipeStepStoryItem(recipeStep));
               },
-              child:
-                  StepInputItem(input, defaultTextStyle: StoryStyles.storyText),
+              child: _renderInput(input, servingSize),
             ),
             padding: StoryStyles.itemPadding,
           ));
@@ -156,5 +160,16 @@ class RecipeStepStoryItem extends StoryItem {
       }
     }
     return inputsList;
+  }
+
+  Widget _renderInput(StepInput input, double servingSize) {
+    final newQty = (servingSize != 1) ? servingSize * input.quantity : null;
+    return StepInputItem.fromStepInputItem(
+      input,
+      adjustedInputQty: newQty,
+      regularTextStyle: StoryStyles.storyText,
+      adjustedQtyStyle: StoryStyles.adjustedQtyText,
+      originalQtyStyle: StoryStyles.initialQtyText,
+    );
   }
 }
