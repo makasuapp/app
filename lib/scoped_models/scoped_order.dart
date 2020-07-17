@@ -6,33 +6,25 @@ import '../api/order_item_update.dart';
 import '../services/web_api.dart';
 import '../services/logger.dart';
 import '../service_locator.dart';
-import '../models/recipe.dart';
-import '../models/recipe_step.dart';
 import '../models/order.dart';
 import '../models/order_item.dart';
+import './scoped_data.dart';
 
 class ScopedOrder extends Model {
-  Map<int, Recipe> recipesMap = Map();
-  Map<int, RecipeStep> recipeStepsMap = Map();
   List<Order> orders;
   bool isLoading = false;
   WebApi api;
+  static ScopedData _scopedData = locator<ScopedData>();
 
   DateTime _lastLoaded;
 
-  ScopedOrder(
-      {List<Recipe> recipes,
-      List<RecipeStep> recipeSteps,
-      List<Order> orders,
-      WebApi api}) {
+  ScopedOrder({List<Order> orders, WebApi api, ScopedData scopedData}) {
     this.api = api ?? locator<WebApi>();
-    if (recipes != null) {
-      recipes.forEach((recipe) => this.recipesMap[recipe.id] = recipe);
-    }
-    if (recipeSteps != null) {
-      recipeSteps.forEach((step) => this.recipeStepsMap[step.id] = step);
-    }
     this.orders = orders ?? List();
+
+    if (scopedData != null) {
+      _scopedData = scopedData;
+    }
   }
 
   Future<void> loadOrders({forceLoad = false}) async {
@@ -66,11 +58,10 @@ class ScopedOrder extends Model {
     final decodedResp = json.decode(resp);
     final loadOrdersResp = LoadOrdersResponse.fromJson(decodedResp);
 
-    loadOrdersResp.recipes
-        .forEach((recipe) => this.recipesMap[recipe.id] = recipe);
-    loadOrdersResp.recipeSteps
-        .forEach((step) => this.recipeStepsMap[step.id] = step);
-
+    _scopedData.addData(
+        recipes: loadOrdersResp.recipes,
+        recipeSteps: loadOrdersResp.recipeSteps,
+        ingredients: loadOrdersResp.ingredients);
     var orders = loadOrdersResp.orders;
     orders.sort((a, b) => sortOrderList(a, b));
     this.orders = orders;

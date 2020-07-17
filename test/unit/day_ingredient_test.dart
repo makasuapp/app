@@ -4,14 +4,13 @@ import 'package:kitchen/models/day_ingredient.dart';
 
 void main() {
   test('day_ingredient from JSON', () {
-    const ingredientJSON = '{"id":1,"expected_qty":4.0,"name":"Whole Chicken"}';
+    const ingredientJSON = '{"id":1,"expected_qty":4.0}';
 
     final ingredientMap = json.decode(ingredientJSON) as Map<String, dynamic>;
     expect(ingredientMap['id'], equals(1));
 
     final ingredient = DayIngredient.fromJson(ingredientMap);
     expect(ingredient.id, equals(1));
-    expect(ingredient.name, equals("Whole Chicken"));
     expect(ingredient.expectedQty, equals(4.0));
     expect(ingredient.hadQty, equals(null));
     expect(ingredient.unit, equals(null));

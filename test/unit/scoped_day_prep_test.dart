@@ -3,7 +3,7 @@ import 'package:kitchen/models/recipe_step.dart';
 import 'package:kitchen/models/step_input.dart';
 import 'package:kitchen/api/prep_update.dart';
 import 'package:kitchen/scoped_models/scoped_day_prep.dart';
-import 'package:kitchen/scoped_models/scoped_order.dart';
+import 'package:kitchen/scoped_models/scoped_data.dart';
 import 'package:kitchen/services/web_api.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
@@ -73,10 +73,10 @@ void main() {
         )
       ];
 
-      final scopedOrder = new ScopedOrder();
-      scopedOrder.recipeStepsMap = recipeStepsMap;
+      final scopedData = new ScopedData();
+      scopedData.recipeStepsMap = recipeStepsMap;
       final scopedDayPrep =
-          ScopedDayPrep(prep: dayPrepList, scopedOrder: scopedOrder);
+          ScopedDayPrep(prep: dayPrepList, scopedData: scopedData);
 
       var map = scopedDayPrep.mkRecipeDependencyMap();
 
@@ -99,10 +99,10 @@ void main() {
         )
       ];
 
-      final scopedOrder = new ScopedOrder();
-      scopedOrder.recipeStepsMap = recipeStepsMap;
+      final scopedData = new ScopedData();
+      scopedData.recipeStepsMap = recipeStepsMap;
       final scopedDayPrep =
-          ScopedDayPrep(prep: dayPrepList, scopedOrder: scopedOrder);
+          ScopedDayPrep(prep: dayPrepList, scopedData: scopedData);
 
       var map = scopedDayPrep.mkRecipeDependencyMap();
 
@@ -135,10 +135,10 @@ void main() {
       ));
       dayPrepList.add(_createDayPrep(recipe2StepId, prepId: dayPrep2Id));
 
-      final scopedOrder = new ScopedOrder();
-      scopedOrder.recipeStepsMap = recipeStepsMap;
+      final scopedData = new ScopedData();
+      scopedData.recipeStepsMap = recipeStepsMap;
       final scopedDayPrep =
-          ScopedDayPrep(prep: dayPrepList, scopedOrder: scopedOrder);
+          ScopedDayPrep(prep: dayPrepList, scopedData: scopedData);
 
       var map = scopedDayPrep.mkRecipeDependencyMap();
 
@@ -170,10 +170,10 @@ void main() {
       ));
       dayPrepList.add(_createDayPrep(recipe2StepId, prepId: dayPrep2Id));
 
-      final scopedOrder = new ScopedOrder();
-      scopedOrder.recipeStepsMap = recipeStepsMap;
+      final scopedData = new ScopedData();
+      scopedData.recipeStepsMap = recipeStepsMap;
       final scopedDayPrep =
-          ScopedDayPrep(prep: dayPrepList, scopedOrder: scopedOrder);
+          ScopedDayPrep(prep: dayPrepList, scopedData: scopedData);
 
       var map = scopedDayPrep.mkRecipeDependencyMap();
 
@@ -206,10 +206,10 @@ void main() {
       ));
       dayPrepList.add(_createDayPrep(recipe2StepId, prepId: dayPrep2Id));
 
-      final scopedOrder = new ScopedOrder();
-      scopedOrder.recipeStepsMap = recipeStepsMap;
+      final scopedData = new ScopedData();
+      scopedData.recipeStepsMap = recipeStepsMap;
       final scopedDayPrep =
-          ScopedDayPrep(prep: dayPrepList, scopedOrder: scopedOrder);
+          ScopedDayPrep(prep: dayPrepList, scopedData: scopedData);
 
       var map = scopedDayPrep.mkRecipeDependencyMap();
 
@@ -249,10 +249,10 @@ void main() {
       preps.add(_createDayPrep(recipeStep1Id));
       preps.add(_createDayPrep(recipeStep2Id));
 
-      final ScopedOrder scopedOrder = new ScopedOrder();
-      scopedOrder.recipeStepsMap = recipeStepsMap;
+      final ScopedData scopedData = new ScopedData();
+      scopedData.recipeStepsMap = recipeStepsMap;
       final ScopedDayPrep scopedDayPrep =
-          new ScopedDayPrep(prep: preps, scopedOrder: scopedOrder);
+          new ScopedDayPrep(prep: preps, scopedData: scopedData);
 
       var map = scopedDayPrep.mkRecipeDependencyMap();
 
@@ -280,11 +280,11 @@ void main() {
       List<DayPrep> dayPrepList = [];
       dayPrepList.add(dayPrep);
 
-      final scopedOrder = new ScopedOrder();
-      scopedOrder.recipeStepsMap = recipeStepsMap;
+      final scopedData = new ScopedData();
+      scopedData.recipeStepsMap = recipeStepsMap;
 
       final scopedDayPrep =
-          ScopedDayPrep(prep: dayPrepList, scopedOrder: scopedOrder);
+          ScopedDayPrep(prep: dayPrepList, scopedData: scopedData);
 
       var map = scopedDayPrep.mkRecipeDependencyMap();
 
@@ -323,10 +323,10 @@ void main() {
       final prepA = _createDayPrep(recipeStepIdForA);
       final prepB = _createDayPrep(recipeStepIdForB);
 
-      ScopedOrder scopedOrder = new ScopedOrder();
-      scopedOrder.recipeStepsMap = recipeStepsMap;
+      ScopedData scopedData = new ScopedData();
+      scopedData.recipeStepsMap = recipeStepsMap;
 
-      ScopedDayPrep scopedDayPrep = new ScopedDayPrep(scopedOrder: scopedOrder);
+      ScopedDayPrep scopedDayPrep = new ScopedDayPrep(scopedData: scopedData);
 
       final result = scopedDayPrep.compareForPrepList(prepA, prepB);
 
@@ -350,9 +350,9 @@ void main() {
       final prepA = _createDayPrep(recipeStepIdForA);
       final prepB = _createDayPrep(recipeStepIdForB);
 
-      ScopedOrder scopedOrder = new ScopedOrder();
-      scopedOrder.recipeStepsMap = recipeStepsMap;
-      ScopedDayPrep scopedDayPrep = new ScopedDayPrep(scopedOrder: scopedOrder);
+      ScopedData scopedData = new ScopedData();
+      scopedData.recipeStepsMap = recipeStepsMap;
+      ScopedDayPrep scopedDayPrep = new ScopedDayPrep(scopedData: scopedData);
 
       final result = scopedDayPrep.compareForPrepList(prepA, prepB);
 
@@ -387,9 +387,9 @@ void main() {
       preps.add(prepA);
       preps.add(prepB);
 
-      ScopedOrder scopedOrder = new ScopedOrder();
-      scopedOrder.recipeStepsMap = recipeStepsMap;
-      final scopedDayPrep = ScopedDayPrep(scopedOrder: scopedOrder);
+      ScopedData scopedData = new ScopedData();
+      scopedData.recipeStepsMap = recipeStepsMap;
+      final scopedDayPrep = ScopedDayPrep(scopedData: scopedData);
 
       await scopedDayPrep.addFetched(preps);
 
@@ -426,9 +426,9 @@ void main() {
       preps.add(prepA);
       preps.add(prepB);
 
-      ScopedOrder scopedOrder = new ScopedOrder();
-      scopedOrder.recipeStepsMap = recipeStepsMap;
-      final scopedDayPrep = ScopedDayPrep(scopedOrder: scopedOrder);
+      ScopedData scopedData = new ScopedData();
+      scopedData.recipeStepsMap = recipeStepsMap;
+      final scopedDayPrep = ScopedDayPrep(scopedData: scopedData);
 
       await scopedDayPrep.addFetched(preps);
 
@@ -467,9 +467,9 @@ void main() {
       preps.add(prepA);
       preps.add(prepB);
 
-      ScopedOrder scopedOrder = new ScopedOrder();
-      scopedOrder.recipeStepsMap = recipeStepsMap;
-      final scopedDayPrep = ScopedDayPrep(scopedOrder: scopedOrder);
+      ScopedData scopedData = new ScopedData();
+      scopedData.recipeStepsMap = recipeStepsMap;
+      final scopedDayPrep = ScopedDayPrep(scopedData: scopedData);
 
       await scopedDayPrep.addFetched(preps);
 
@@ -482,7 +482,7 @@ void main() {
   group('updatePrepQty', () {
     const recipeStepId = 1;
     const recipeStepRecipeId = 2;
-    ScopedOrder scopedOrder;
+    ScopedData scopedData;
     List<DayPrep> dayPrepList;
     final api = MockApi();
 
@@ -490,8 +490,8 @@ void main() {
       var recipeStepsMap = new Map<int, RecipeStep>();
       recipeStepsMap[recipeStepId] =
           _createRecipeStep(recipeStepId, recipeStepRecipeId, []);
-      scopedOrder = new ScopedOrder();
-      scopedOrder.recipeStepsMap = recipeStepsMap;
+      scopedData = new ScopedData();
+      scopedData.recipeStepsMap = recipeStepsMap;
 
       dayPrepList = [];
     });
@@ -502,7 +502,7 @@ void main() {
       dayPrepList.add(prep);
 
       final scopedPrep =
-          ScopedDayPrep(prep: dayPrepList, scopedOrder: scopedOrder, api: api);
+          ScopedDayPrep(prep: dayPrepList, scopedData: scopedData, api: api);
 
       expect(scopedPrep.prep[0].madeQty, isNull);
       expect(scopedPrep.prep[0].qtyUpdatedAtSec, isNull);

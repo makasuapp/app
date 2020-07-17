@@ -9,7 +9,7 @@ part of 'day_ingredient.dart';
 DayIngredient _$DayIngredientFromJson(Map<String, dynamic> json) {
   return DayIngredient(
     json['id'] as int,
-    json['name'] as String,
+    json['ingredient_id'] as int,
     (json['expected_qty'] as num).toDouble(),
     hadQty: (json['had_qty'] as num)?.toDouble(),
     qtyUpdatedAtSec: json['qty_updated_at'] as int,
@@ -20,7 +20,7 @@ DayIngredient _$DayIngredientFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$DayIngredientToJson(DayIngredient instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'name': instance.name,
+      'ingredient_id': instance.ingredientId,
       'expected_qty': instance.expectedQty,
       'had_qty': instance.hadQty,
       'qty_updated_at': instance.qtyUpdatedAtSec,

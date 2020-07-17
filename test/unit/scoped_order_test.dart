@@ -1,4 +1,5 @@
 import 'package:kitchen/scoped_models/scoped_order.dart';
+import 'package:kitchen/scoped_models/scoped_data.dart';
 import 'package:kitchen/services/web_api.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
@@ -15,11 +16,13 @@ void main() {
 
   test('load orders API', () async {
     final scopedOrder = locator<ScopedOrder>();
+    final scopedData = locator<ScopedData>();
     await scopedOrder.loadOrders();
 
     expect(scopedOrder.orders.length, greaterThan(0));
-    expect(scopedOrder.recipesMap.values.length, greaterThan(0));
-    expect(scopedOrder.recipeStepsMap.values.length, greaterThan(0));
+    expect(scopedData.recipesMap.values.length, greaterThan(0));
+    expect(scopedData.recipeStepsMap.values.length, greaterThan(0));
+    expect(scopedData.ingredientsMap.values.length, greaterThan(0));
   }, skip: 'run manually for sanity checks');
 
   //TODO: write tests for moveToNextState

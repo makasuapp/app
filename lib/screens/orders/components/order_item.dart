@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:kitchen/scoped_models/scoped_order.dart';
+import 'package:kitchen/scoped_models/scoped_data.dart';
 import '../../../models/order_item.dart';
 import '../order_styles.dart';
 
@@ -11,12 +11,12 @@ class OrderItemItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant<ScopedOrder>(
-        builder: (context, child, scopedOrder) => _renderContent(scopedOrder));
+    return ScopedModelDescendant<ScopedData>(
+        builder: (context, child, scopedData) => _renderContent(scopedData));
   }
 
-  Widget _renderContent(ScopedOrder scopedOrder) {
-    final recipe = scopedOrder.recipesMap[item.recipeId];
+  Widget _renderContent(ScopedData scopedData) {
+    final recipe = scopedData.recipesMap[item.recipeId];
     final text = "${item.quantity} ${recipe.name}";
 
     if (this.item.doneAtSec != null) {

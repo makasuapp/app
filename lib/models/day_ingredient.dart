@@ -5,7 +5,8 @@ part 'day_ingredient.g.dart';
 @JsonSerializable()
 class DayIngredient {
   final int id;
-  final String name;
+  @JsonKey(name: "ingredient_id")
+  final int ingredientId;
   @JsonKey(name: "expected_qty")
   final double expectedQty;
   @JsonKey(name: "had_qty", nullable: true)
@@ -15,7 +16,7 @@ class DayIngredient {
   @JsonKey(name: "unit", nullable: true)
   final String unit;
 
-  DayIngredient(this.id, this.name, this.expectedQty,
+  DayIngredient(this.id, this.ingredientId, this.expectedQty,
       {this.hadQty, this.qtyUpdatedAtSec, this.unit});
 
   factory DayIngredient.fromJson(Map<String, dynamic> json) =>
@@ -24,7 +25,7 @@ class DayIngredient {
 
   factory DayIngredient.clone(
       DayIngredient orig, double hadQty, DateTime updatedAt) {
-    return DayIngredient(orig.id, orig.name, orig.expectedQty,
+    return DayIngredient(orig.id, orig.ingredientId, orig.expectedQty,
         hadQty: hadQty,
         unit: orig.unit,
         qtyUpdatedAtSec: updatedAt.millisecondsSinceEpoch ~/ 1000);

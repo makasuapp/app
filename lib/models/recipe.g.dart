@@ -16,6 +16,7 @@ Recipe _$RecipeFromJson(Map<String, dynamic> json) {
         (json['cook_step_ids'] as List)?.map((e) => e as int)?.toList(),
     outputQty: (json['output_qty'] as num)?.toDouble(),
     unit: json['unit'] as String,
+    volumeWeightRatio: (json['volume_weight_ratio'] as num)?.toDouble(),
     publish: json['publish'] as bool,
   );
 }
@@ -26,6 +27,7 @@ Map<String, dynamic> _$RecipeToJson(Recipe instance) => <String, dynamic>{
       'publish': instance.publish,
       'output_qty': instance.outputQty,
       'unit': instance.unit,
+      'volume_weight_ratio': instance.volumeWeightRatio,
       'prep_step_ids': instance.prepStepIds,
       'cook_step_ids': instance.cookStepIds,
     };

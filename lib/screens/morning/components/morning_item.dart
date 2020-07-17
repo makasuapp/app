@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../models/day_ingredient.dart';
 import '../../../services/unit_converter.dart';
 import '../morning_styles.dart';
+import '../../../scoped_models/scoped_day_ingredient.dart';
 
 class MorningItem extends StatelessWidget {
   final DayIngredient ingredient;
@@ -25,8 +26,9 @@ class MorningItem extends StatelessWidget {
     } else {
       textWidgets.add(Text(expectedText, style: MorningStyles.listItemText));
     }
-    textWidgets
-        .add(Text(" ${ingredient.name}", style: MorningStyles.listItemText));
+    textWidgets.add(Text(
+        " ${ScopedDayIngredient.ingredientFor(ingredient).name}",
+        style: MorningStyles.listItemText));
 
     return Container(
         padding: MorningStyles.listItemPadding,

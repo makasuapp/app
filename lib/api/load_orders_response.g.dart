@@ -17,6 +17,9 @@ LoadOrdersResponse _$LoadOrdersResponseFromJson(Map<String, dynamic> json) {
     (json['orders'] as List)
         .map((e) => Order.fromJson(e as Map<String, dynamic>))
         .toList(),
+    (json['ingredients'] as List)
+        .map((e) => Ingredient.fromJson(e as Map<String, dynamic>))
+        .toList(),
   );
 }
 
@@ -25,4 +28,5 @@ Map<String, dynamic> _$LoadOrdersResponseToJson(LoadOrdersResponse instance) =>
       'recipes': instance.recipes,
       'recipe_steps': instance.recipeSteps,
       'orders': instance.orders,
+      'ingredients': instance.ingredients,
     };

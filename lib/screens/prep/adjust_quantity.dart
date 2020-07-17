@@ -6,7 +6,7 @@ import '../common/submit_button.dart';
 import '../../models/day_prep.dart';
 import './prep_styles.dart';
 import '../../service_locator.dart';
-import '../../scoped_models/scoped_order.dart';
+import '../../scoped_models/scoped_data.dart';
 
 class PrepAdjustQuantityPage extends StatefulWidget {
   final DayPrep prep;
@@ -20,7 +20,7 @@ class PrepAdjustQuantityPage extends StatefulWidget {
 
 class _PrepAdjustQuantityPageState extends State<PrepAdjustQuantityPage> {
   double _setQty;
-  final scopedOrder = locator<ScopedOrder>();
+  final scopedData = locator<ScopedData>();
   TextEditingController _controller;
 
   @override
@@ -44,7 +44,7 @@ class _PrepAdjustQuantityPageState extends State<PrepAdjustQuantityPage> {
   @override
   Widget build(BuildContext context) {
     final recipeStep =
-        this.scopedOrder.recipeStepsMap[this.widget.prep.recipeStepId];
+        this.scopedData.recipeStepsMap[this.widget.prep.recipeStepId];
 
     return Scaffold(
         appBar: AppBar(title: Text("Adjust Quantity")),

@@ -34,8 +34,8 @@ void main() {
     updates.add(IngredientUpdate.withDate(2, 1.5, dayAgo));
 
     var fetched = List<DayIngredient>();
-    fetched.add(DayIngredient(1, "test", 2));
-    fetched.add(DayIngredient(2, "test", 2,
+    fetched.add(DayIngredient(1, 1, 2));
+    fetched.add(DayIngredient(2, 2, 2,
         hadQty: 1.8, qtyUpdatedAtSec: hourAgo.millisecondsSinceEpoch ~/ 1000));
 
     final scopedIngredient = ScopedDayIngredient(unsavedUpdates: updates);
@@ -53,7 +53,7 @@ void main() {
   });
 
   group('updateIngredientQty', () {
-    final ingredient = DayIngredient(1, "test", 2);
+    final ingredient = DayIngredient(1, 1, 2);
     var init = List<DayIngredient>();
     init.add(ingredient);
     final api = MockApi();

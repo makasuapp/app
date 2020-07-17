@@ -18,7 +18,7 @@ void main() {
     expect(opDay.scopedDayPrep.prep.length, greaterThan(0));
 
     final ingredient = opDay.scopedDayIngredient.ingredients[0];
-    expect(ingredient.name, isNotNull);
+    expect(ingredient.ingredientId, isNotNull);
 
     final prep = opDay.scopedDayPrep.prep[0];
     expect(prep.recipeStepId, isNotNull);

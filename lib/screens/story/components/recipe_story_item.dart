@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kitchen/screens/common/step_input_item.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:kitchen/scoped_models/scoped_story.dart';
-import 'package:kitchen/scoped_models/scoped_order.dart';
+import 'package:kitchen/scoped_models/scoped_data.dart';
 import './story_item.dart';
 import './recipe_step_story_item.dart';
 import '../../../models/recipe.dart';
@@ -18,21 +18,21 @@ class RecipeStoryItem extends StoryItem {
   Widget renderContent() {
     return ScopedModelDescendant<ScopedStory>(
         builder: (context, child, scopedStory) =>
-            ScopedModelDescendant<ScopedOrder>(
-                builder: (context, child, scopedOrder) => Column(
+            ScopedModelDescendant<ScopedData>(
+                builder: (context, child, scopedData) => Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: _renderAllInputs(scopedOrder, scopedStory) +
-                        _renderAllSteps(scopedOrder, scopedStory))));
+                    children: _renderAllInputs(scopedData, scopedStory) +
+                        _renderAllSteps(scopedData, scopedStory))));
   }
 
   List<Widget> _renderAllInputs(
-      ScopedOrder scopedOrder, ScopedStory scopedStory) {
+      ScopedData scopedData, ScopedStory scopedStory) {
     var widgets = List<Widget>();
 
     widgets.add(_renderHeader("Ingredients"));
     final steps = (this.recipe.prepStepIds + this.recipe.cookStepIds)
-        .map((id) => scopedOrder.recipeStepsMap[id])
+        .map((id) => scopedData.recipeStepsMap[id])
         .toList();
     var inputs = Set<StepInput>();
     //TODO: combine ingredients that are the same
@@ -45,33 +45,34 @@ class RecipeStoryItem extends StoryItem {
 
     inputs.forEach((input) {
       if (input.inputableType == InputType.Ingredient) {
-        widgets.add(StepInputItem(input, defaultTextStyle: StoryStyles.storyText));
+        widgets
+            .add(StepInputItem(input, defaultTextStyle: StoryStyles.storyText));
       } else if (input.inputableType == InputType.Recipe) {
-        final recipe = scopedOrder.recipesMap[input.inputableId];
+        final recipe = scopedData.recipesMap[input.inputableId];
         widgets.add(InkWell(
             onTap: () {
               scopedStory.push(RecipeStoryItem(recipe));
             },
-            child: StepInputItem(input, defaultTextStyle: StoryStyles.storyText)));
+            child:
+                StepInputItem(input, defaultTextStyle: StoryStyles.storyText)));
       }
     });
 
     return widgets;
   }
 
-  List<Widget> _renderAllSteps(
-      ScopedOrder scopedOrder, ScopedStory scopedStory) {
+  List<Widget> _renderAllSteps(ScopedData scopedData, ScopedStory scopedStory) {
     var widgets = List<Widget>();
 
     if (this.recipe.prepStepIds.length > 0) {
       widgets.add(_renderHeader("Prep"));
       widgets.addAll(
-          _renderSteps(scopedOrder, scopedStory, this.recipe.prepStepIds));
+          _renderSteps(scopedData, scopedStory, this.recipe.prepStepIds));
     }
     if (this.recipe.cookStepIds.length > 0) {
       widgets.add(_renderHeader("Cook"));
       widgets.addAll(
-          _renderSteps(scopedOrder, scopedStory, this.recipe.cookStepIds));
+          _renderSteps(scopedData, scopedStory, this.recipe.cookStepIds));
     }
 
     return widgets;
@@ -84,9 +85,9 @@ class RecipeStoryItem extends StoryItem {
   }
 
   List<Widget> _renderSteps(
-      ScopedOrder scopedOrder, ScopedStory scopedStory, List<int> ids) {
+      ScopedData scopedData, ScopedStory scopedStory, List<int> ids) {
     return ids.map((id) {
-      final recipeStep = scopedOrder.recipeStepsMap[id];
+      final recipeStep = scopedData.recipeStepsMap[id];
       return InkWell(
           onTap: () => scopedStory.push(RecipeStepStoryItem(recipeStep)),
           child: Text("${recipeStep.number}. ${recipeStep.instruction}",

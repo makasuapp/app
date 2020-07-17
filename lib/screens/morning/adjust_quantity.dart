@@ -4,6 +4,7 @@ import '../op_day/quantity_picker.dart';
 import '../common/cancel_button.dart';
 import '../common/submit_button.dart';
 import '../../models/day_ingredient.dart';
+import '../../scoped_models/scoped_day_ingredient.dart';
 import './morning_styles.dart';
 
 class IngredientAdjustQtyPage extends StatefulWidget {
@@ -48,7 +49,9 @@ class _IngredientAdjustQtyPageState extends State<IngredientAdjustQtyPage> {
         body: Container(
             padding: MorningStyles.adjustQuantityTopPadding,
             child: Column(children: [
-              Text(this.widget.ingredient.name,
+              Text(
+                  ScopedDayIngredient.ingredientFor(this.widget.ingredient)
+                      .name,
                   style: MorningStyles.listItemText),
               _renderPickers(),
               _renderButtons(context)
