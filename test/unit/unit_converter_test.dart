@@ -2,7 +2,7 @@ import 'package:kitchen/services/unit_converter.dart';
 import 'package:test/test.dart';
 
 void main() {
-  group('test stringifySec', () {
+  group('test(stringifySec', () {
     test('output hours minutes and seconds', () {
       final seconds = 4325;
       final result = UnitConverter.stringifySec(seconds);
@@ -57,6 +57,65 @@ void main() {
       final result = UnitConverter.stringifySec(seconds);
 
       expect(result, equals(""));
+    });
+  });
+
+  group("canConvert", () {
+    test("is true when both null", () {
+      expect(UnitConverter.canConvert(null, null), isTrue);
+    });
+
+    test("is true when both not weight/volume", () {
+      expect(UnitConverter.canConvert("handful", "handful"), isTrue);
+    });
+
+    test("is false when one has units and other, doesn't", () {
+      expect(UnitConverter.canConvert("tbsp", null), isFalse);
+      expect(UnitConverter.canConvert(null, "tbsp"), isFalse);
+    });
+
+    test("is true when both volume or weight", () {
+      expect(UnitConverter.canConvert("tbsp", "tsp"), isTrue);
+      expect(UnitConverter.canConvert("lb", "kg"), isTrue);
+    });
+
+    test("is false when not both volume/weight", () {
+      expect(UnitConverter.canConvert("tbsp", "kg"), isFalse);
+      expect(UnitConverter.canConvert("handful", "tbsp"), isFalse);
+    });
+
+    test("is true when volume <-> weight volumeWeightRatio", () {
+      expect(UnitConverter.canConvert("tbsp", "kg", volumeWeightRatio: 1.5), isTrue);
+      expect(UnitConverter.canConvert("lb", "tsp", volumeWeightRatio: 1.5), isTrue);
+    });
+  });
+
+  group("convert", () {
+    test("with no units just returns qty", () {
+      expect(UnitConverter.convert(1.5), equals(1.5));
+    });
+
+    test("with one unit errors", () {
+      expect(() => UnitConverter.convert(1.5, outputUnit: "g"), throwsException);
+      expect(() => UnitConverter.convert(1.5, inputUnit: "g"), throwsException);
+    });
+
+    test("of weight", () {
+      expect(UnitConverter.convert(16, inputUnit: "oz", outputUnit: "lb"), equals(1));
+    });
+
+    test("of volume", () {
+      expect(UnitConverter.convert(1.5, inputUnit: "tbsp", outputUnit: "tsp"), equals(4.5));
+    });
+
+    test("of volume to weight", () {
+      expect(UnitConverter.convert(2, inputUnit: "gal", outputUnit: "kg", 
+        volumeWeightRatio: 1.5), equals(11.355));
+    });
+
+    test("of weight to volume", () {
+      expect(UnitConverter.convert(15, inputUnit: "lb", outputUnit: "L", 
+        volumeWeightRatio: 1.4), equals(4.86));
     });
   });
 }
