@@ -1,46 +1,83 @@
 class WeightUnit {
+  final double toG;
   final String short;
   final String long;
-  final double toG;
+  final String nextLevel;
 
-  WeightUnit(this.short, this.long, this.toG);
+  WeightUnit(this.short, this.long, this.toG, this.nextLevel);
 }
 
 class VolumeUnit {
+  final double toML;
   final String short;
   final String long;
-  final double toML;
+  final String nextLevel;
 
-  VolumeUnit(this.short, this.long, this.toML);
+  VolumeUnit(this.short, this.long, this.toML, this.nextLevel);
 }
 
 final weightUnits = {
-  "oz": WeightUnit("oz", "ounce", 28.35),
-  "g": WeightUnit("g", "gram", 1),
-  "kg": WeightUnit("kg", "kilograms", 1000),
-  "lb": WeightUnit("lb", "pound", 453.6)
+  "oz": WeightUnit("oz", "ounce", 28.35, "lb"),
+  "g": WeightUnit("g", "gram", 1, "kg"),
+  "kg": WeightUnit("kg", "kilograms", 1000, null),
+  "lb": WeightUnit("lb", "pound", 453.6, null)
 };
 
 final volumeUnits = {
-  "tsp": VolumeUnit("tsp", "teaspoon", 4.929),
-  "tbsp": VolumeUnit("tbsp", "tablespoon", 14.787),
-  "cup": VolumeUnit("cup", "cup", 237),
-  "mL": VolumeUnit("mL", "millilitre", 1),
-  "L": VolumeUnit("L", "litre", 1000),
-  "gal": VolumeUnit("gal", "gallon", 3785),
-  "qt": VolumeUnit("qt", "quart", 946)
+  "tsp": VolumeUnit("tsp", "teaspoon", 4.929, "tbsp"),
+  "tbsp": VolumeUnit("tbsp", "tablespoon", 14.787, "cup"),
+  "cup": VolumeUnit("cup", "cup", 237, "qt"),
+  "mL": VolumeUnit("mL", "millilitre", 1, "L"),
+  "L": VolumeUnit("L", "litre", 1000, null),
+  "gal": VolumeUnit("gal", "gallon", 3785, null),
+  "qt": VolumeUnit("qt", "quart", 946, "gal")
 };
 
 class UnitConverter {
+  static double _convertUp(double qty, String inputUnit, String outputUnit) {
+    if (inputUnit != null && outputUnit != null) {
+      final converted = convert(qty, inputUnit: inputUnit, outputUnit: outputUnit);
+      if (converted > 1) {
+        return converted;
+      }
+    }
+
+    return null;
+  }
+
   static String qtyWithUnit(double qty, String unit) {
-    final isInteger = qty == qty.toInt();
+    var currQty = qty;
+    var shownUnit = unit;
+
+    if (weightUnits.containsKey(shownUnit)) {
+      final nextLevel = weightUnits[shownUnit].nextLevel;
+      final converted = _convertUp(currQty, shownUnit, nextLevel);
+      if (converted != null && converted > 1) {
+        currQty = converted;
+        shownUnit = nextLevel;
+      }
+    } else if (volumeUnits.containsKey(shownUnit)) {
+      var nextLevel;
+      var converted;
+      do {
+        nextLevel = volumeUnits[shownUnit].nextLevel;
+        converted = _convertUp(currQty, shownUnit, nextLevel);
+
+        if (converted != null && converted > 1) {
+          currQty = converted;
+          shownUnit = nextLevel;
+        }
+      } while (nextLevel != null && converted != null && converted > 1); 
+    }
+
+    final isInteger = currQty == currQty.toInt();
     final shownQty =
-        isInteger ? qty.toInt().toString() : qty.toStringAsPrecision(2);
+        isInteger ? currQty.toInt().toString() : currQty.toStringAsPrecision(2);
 
     if (unit == null) {
       return shownQty;
     } else {
-      return "$shownQty $unit";
+      return "$shownQty $shownUnit";
     }
   }
 
