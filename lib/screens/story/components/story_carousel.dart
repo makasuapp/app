@@ -4,7 +4,6 @@ import 'package:kitchen/screens/story/components/story_items_indicator.dart';
 import 'package:kitchen/styles.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:kitchen/scoped_models/scoped_story.dart';
-
 import '../story_styles.dart';
 
 class StoryCarousel extends StatelessWidget {

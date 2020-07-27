@@ -1,69 +1,101 @@
 import 'dart:core';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:kitchen/models/day_prep.dart';
 import 'package:kitchen/models/step_input.dart';
 import 'package:kitchen/services/unit_converter.dart';
 import 'package:kitchen/styles.dart';
 
-class StepInputItem extends StatelessWidget {
-  final StepInput input;
-  final TextStyle defaultTextStyle;
-  final TextStyle remainingIngredientsStyle;
-  final TextStyle totalIngredientsStyle;
-  final DayPrep prep;
+enum InputItemStyles { regular, original, adjusted }
 
-  StepInputItem(this.input,
-      {this.defaultTextStyle,
-      this.remainingIngredientsStyle,
-      this.totalIngredientsStyle,
-      this.prep});
+class StepInputItem extends StatelessWidget {
+  // final StepInput input;
+  final String inputName;
+  final double originalInputQty;
+  final String inputType;
+  final String originalInputUnit;
+  final double adjustedInputQty;
+  final TextStyle regularTextStyle;
+  final TextStyle adjustedQtyStyle;
+  final TextStyle originalQtyStyle;
+
+  StepInputItem(
+    this.inputName,
+    this.originalInputQty,
+    this.inputType,
+    this.originalInputUnit, {
+    this.regularTextStyle,
+    this.adjustedQtyStyle,
+    this.originalQtyStyle,
+    this.adjustedInputQty,
+  });
+
+  factory StepInputItem.fromStepInputItem(StepInput input,
+      {double adjustedInputQty,
+      TextStyle regularTextStyle,
+      TextStyle adjustedQtyStyle,
+      TextStyle originalQtyStyle}) {
+    return StepInputItem(
+      input.name,
+      input.quantity,
+      input.inputableType,
+      input.unit,
+      regularTextStyle: regularTextStyle,
+      adjustedQtyStyle: adjustedQtyStyle,
+      originalQtyStyle: originalQtyStyle,
+      adjustedInputQty: adjustedInputQty,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     var widgets = List<Widget>();
-    double toMakeConversion;
 
-    if (this.prep != null &&
-        this.prep.madeQty != null &&
-        this.prep.madeQty < this.prep.expectedQty) {
-      toMakeConversion =
-          (this.prep.expectedQty - this.prep.madeQty) / this.prep.expectedQty;
-    }
-
-    if (input.inputableType == "RecipeStep" &&
-        input.unit == null &&
-        input.quantity == 1) {
-      widgets.add(Text(input.name, style: _setStyle(this.defaultTextStyle)));
-    } else {
-      final totalQty = this.prep != null
-          ? input.quantity * this.prep.expectedQty
-          : input.quantity;
-
-      if (toMakeConversion != null) {
-        final remainingQty = totalQty * toMakeConversion;
-        widgets.add(Text(
-            "${UnitConverter.qtyWithUnit(remainingQty, input.unit)} ",
-            style: _setStyle(this.remainingIngredientsStyle)));
-        widgets.add(Text(UnitConverter.qtyWithUnit(totalQty, input.unit),
-            style: _setStyle(this.totalIngredientsStyle)));
-      } else {
-        widgets.add(Text(UnitConverter.qtyWithUnit(totalQty, input.unit),
-            style: _setStyle(this.defaultTextStyle)));
-      }
+    if (this.inputType == "RecipeStep" &&
+        this.originalInputUnit == null &&
+        this.originalInputQty == 1 &&
+        this.adjustedInputQty == null) {
       widgets
-          .add(Text(" ${input.name}", style: _setStyle(this.defaultTextStyle)));
+          .add(Text(this.inputName, style: _setStyle(InputItemStyles.regular)));
+    } else {
+      widgets.add(Text(
+        "${UnitConverter.qtyWithUnit(this.originalInputQty, this.originalInputUnit)}",
+        style: (this.adjustedInputQty == null)
+            ? _setStyle(InputItemStyles.regular)
+            : _setStyle(InputItemStyles.original),
+      ));
+      if(adjustedInputQty != null) {
+        widgets.add(Text(
+          " ${UnitConverter.qtyWithUnit(
+              this.adjustedInputQty, this.originalInputUnit)}",
+          style: _setStyle(InputItemStyles.adjusted),
+        ));
+      }
+
+      widgets.add(Text(
+        " ${this.inputName}",
+        style: _setStyle(InputItemStyles.regular),
+      ));
     }
 
-    return Wrap(children: widgets);
+
+    return Wrap(
+      alignment: WrapAlignment.start,
+      crossAxisAlignment: WrapCrossAlignment.start,
+      direction: Axis.horizontal,
+      children: widgets,
+    );
   }
 
-  TextStyle _setStyle(TextStyle style) {
-    if (style == null) {
-      if (this.defaultTextStyle == null) {
+  TextStyle _setStyle(InputItemStyles style) {
+    switch (style) {
+      case InputItemStyles.original:
+        return this.originalQtyStyle ?? Styles.originalQtyStyle;
+      case InputItemStyles.adjusted:
+        return this.adjustedQtyStyle ?? Styles.adjustedQtyStyle;
+      case InputItemStyles.regular:
+        return this.regularTextStyle ?? Styles.regularTextStyle;
+      default:
         return Styles.textDefault;
-      }
-      return this.defaultTextStyle;
     }
-    return style;
   }
 }

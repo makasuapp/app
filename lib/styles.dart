@@ -46,6 +46,19 @@ class Styles {
     height: 1.2,
   );
 
+  static final TextStyle regularTextStyle = TextStyle(
+    fontSize: textSizeDefault,
+    color: textColorDefault,
+  );
+  static final TextStyle adjustedQtyStyle = TextStyle(
+      fontSize: textSizeDefault,
+      color: textColorFaint,
+      decoration: TextDecoration.lineThrough);
+  static final TextStyle originalQtyStyle = TextStyle(
+    fontSize: textSizeDefault,
+    color: Colors.red,
+  );
+
   static final cancelBtnColor = Colors.grey;
   static final submitBtnColor = Colors.blue;
   static final submitBtnTextColor = Colors.white;

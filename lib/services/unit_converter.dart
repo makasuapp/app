@@ -34,6 +34,7 @@ final volumeUnits = {
 };
 
 class UnitConverter {
+
   static double _convertUp(double qty, String inputUnit, String outputUnit) {
     if (inputUnit != null && outputUnit != null) {
       final converted =
@@ -91,6 +92,7 @@ class UnitConverter {
     String convertedString = ((hours > 0) ? "$hours hour(s) " : "") +
         ((mins > 0) ? "$mins min(s) " : "") +
         ((secs > 0) ? "$secs sec(s)" : "");
+
     return convertedString.trim();
   }
 
@@ -102,6 +104,7 @@ class UnitConverter {
     final outputIsW = weightUnits.containsKey(outputUnit);
 
     return (inputUnit == outputUnit) ||
+
         (inputIsV && outputIsV) ||
         (inputIsW && outputIsW) ||
         (((inputIsV && outputIsW) || (inputIsW && outputIsV)) &&
@@ -114,6 +117,7 @@ class UnitConverter {
       return inputQty;
     } else if (canConvert(inputUnit, outputUnit,
         volumeWeightRatio: volumeWeightRatio)) {
+
       final inputV = volumeUnits[inputUnit];
       final inputW = weightUnits[inputUnit];
       final outputV = volumeUnits[outputUnit];

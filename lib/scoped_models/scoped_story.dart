@@ -22,4 +22,10 @@ class ScopedStory extends Model {
       notifyListeners();
     }
   }
+
+  void updateStory(StoryItem updatedItem) {
+    storyItems.last = updatedItem;
+    currentItem = storyItems.last;
+    notifyListeners();
+  }
 }

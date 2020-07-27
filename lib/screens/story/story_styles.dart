@@ -2,16 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:kitchen/styles.dart';
 
 class StoryStyles {
-
   static final pulldownBackground = Colors.grey.withOpacity(0.1);
 
   static final double progressBarVerticalPadding = 15;
   static final double indicatorHeightPageBar = 3.0;
   static final double indicatorEdgeRadius = 4.0;
   static final double indicatorSpacing = 2.0;
+  static final double unitPickerIconSize = 24;
+  static final double unitPickerUnderlineHeight = 3;
 
   static final Color currentPageBarColor = Colors.blue;
   static final Color defaultPageBarColor = Colors.grey;
+  static final Color unitPickerTextColor = Colors.deepPurple;
+  static final Color unitPickerUnderlineColor = Colors.deepPurpleAccent;
+
+  static final Icon unitPickerIcon = Icon(Icons.arrow_downward);
 
   static final itemPadding = EdgeInsets.fromLTRB(
       Styles.horizontalPaddingDefault, 0, Styles.horizontalPaddingDefault, 20);
@@ -29,4 +34,13 @@ class StoryStyles {
       fontSize: Styles.textSizeDefault, fontWeight: FontWeight.normal);
   static final storyHeaderLarge =
       TextStyle(fontSize: Styles.textSizeLarge, fontWeight: FontWeight.bold);
+
+  static final adjustedQtyText = TextStyle(
+    fontSize: Styles.textSizeDefault,
+    color: Colors.red,
+  );
+  static final initialQtyText = TextStyle(
+      fontSize: Styles.textSizeDefault,
+      decoration: TextDecoration.lineThrough,
+      color: Styles.textColorFaint);
 }

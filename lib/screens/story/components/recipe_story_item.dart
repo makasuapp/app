@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:kitchen/screens/common/step_input_item.dart';
+import 'package:kitchen/services/unit_converter.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:kitchen/scoped_models/scoped_story.dart';
 import 'package:kitchen/scoped_models/scoped_data.dart';
+import '../../../styles.dart';
 import './story_item.dart';
 import './recipe_step_story_item.dart';
 import '../../../models/recipe.dart';
@@ -12,22 +14,50 @@ import '../story_styles.dart';
 class RecipeStoryItem extends StoryItem {
   final Recipe recipe;
 
-  RecipeStoryItem(this.recipe);
+  RecipeStoryItem(this.recipe, {String outputUnits, double servingSize})
+      : super(outputUnits ?? recipe.unit, servingSize ?? recipe.outputQty);
 
   @override
   Widget renderContent() {
     return ScopedModelDescendant<ScopedStory>(
         builder: (context, child, scopedStory) =>
             ScopedModelDescendant<ScopedData>(
-                builder: (context, child, scopedData) => Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: _renderAllInputs(scopedData, scopedStory) +
-                        _renderAllSteps(scopedData, scopedStory))));
+                builder: (context, child, scopedData) {
+              return Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: _renderInfo(scopedData, scopedStory, this.servingSize));
+            }));
+  }
+
+  @override
+  StoryItem getUpdatedStoryItem(String outputUnits, double servingSize) {
+    return RecipeStoryItem(this.recipe,
+        outputUnits: outputUnits, servingSize: servingSize);
+  }
+
+  List<Widget> _renderInfo(
+      ScopedData scopedData, ScopedStory scopedStory, double servingSize) {
+    var widgets = List<Widget>();
+
+    widgets.add(_renderTitle());
+    widgets.addAll(_renderAllInputs(scopedData, scopedStory, servingSize));
+    widgets.addAll(_renderAllSteps(scopedData, scopedStory));
+
+    return widgets;
+  }
+
+  Widget _renderTitle() {
+    return Container(
+        padding: Styles.spacerPadding,
+        child: Text(
+          "${this.recipe.name}",
+          style: StoryStyles.storyHeaderLarge,
+        ));
   }
 
   List<Widget> _renderAllInputs(
-      ScopedData scopedData, ScopedStory scopedStory) {
+      ScopedData scopedData, ScopedStory scopedStory, double servingSize) {
     var widgets = List<Widget>();
 
     widgets.add(_renderHeader("Ingredients"));
@@ -46,16 +76,14 @@ class RecipeStoryItem extends StoryItem {
 
     inputs.forEach((input) {
       if (input.inputableType == InputType.Ingredient) {
-        widgets
-            .add(StepInputItem(input, defaultTextStyle: StoryStyles.storyText));
+        widgets.add(_renderInput(input, servingSize));
       } else if (input.inputableType == InputType.Recipe) {
         final recipe = scopedData.recipesMap[input.inputableId];
         widgets.add(InkWell(
             onTap: () {
               scopedStory.push(RecipeStoryItem(recipe));
             },
-            child:
-                StepInputItem(input, defaultTextStyle: StoryStyles.storyText)));
+            child: _renderInput(input, servingSize)));
       }
     });
 
@@ -90,9 +118,29 @@ class RecipeStoryItem extends StoryItem {
     return ids.map((id) {
       final recipeStep = scopedData.recipeStepsMap[id];
       return InkWell(
-          onTap: () => scopedStory.push(RecipeStepStoryItem(recipeStep)),
+          onTap: () {
+            scopedStory.push(RecipeStepStoryItem(recipeStep));
+          },
           child: Text("${recipeStep.number}. ${recipeStep.instruction}",
               style: StoryStyles.storyText));
     }).toList();
+  }
+
+  Widget _renderInput(StepInput input, double servingSize) {
+
+    double servingsInRecipeUnits = UnitConverter.convert(servingSize,
+        inputUnit: this.displayedUnits, outputUnit: this.recipe.unit);
+
+    double newQty = (servingsInRecipeUnits != this.recipe.outputQty)
+        ? (input.quantity * servingsInRecipeUnits) / recipe.outputQty
+        : null;
+
+    return StepInputItem.fromStepInputItem(
+      input,
+      adjustedInputQty: newQty,
+      regularTextStyle: StoryStyles.storyText,
+      adjustedQtyStyle: StoryStyles.adjustedQtyText,
+      originalQtyStyle: StoryStyles.initialQtyText,
+    );
   }
 }
