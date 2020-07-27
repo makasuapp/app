@@ -36,7 +36,8 @@ final volumeUnits = {
 class UnitConverter {
   static double _convertUp(double qty, String inputUnit, String outputUnit) {
     if (inputUnit != null && outputUnit != null) {
-      final converted = convert(qty, inputUnit: inputUnit, outputUnit: outputUnit);
+      final converted =
+          convert(qty, inputUnit: inputUnit, outputUnit: outputUnit);
       if (converted > 1) {
         return converted;
       }
@@ -67,7 +68,7 @@ class UnitConverter {
           currQty = converted;
           shownUnit = nextLevel;
         }
-      } while (nextLevel != null && converted != null && converted > 1); 
+      } while (nextLevel != null && converted != null && converted > 1);
     }
 
     final isInteger = currQty == currQty.toInt();
@@ -89,30 +90,29 @@ class UnitConverter {
     String convertedString = ((hours > 0) ? "$hours hour(s) " : "") +
         ((mins > 0) ? "$mins min(s) " : "") +
         ((secs > 0) ? "$secs sec(s)" : "");
-   /* if (convertedString.length > 0 &&
-        convertedString[convertedString.length - 1] == ' ') {
-      return convertedString.substring(0, convertedString.length - 1);
-    } */
     return convertedString.trim();
   }
 
-  static bool canConvert(String inputUnit, String outputUnit, {double volumeWeightRatio}) {
+  static bool canConvert(String inputUnit, String outputUnit,
+      {double volumeWeightRatio}) {
     final inputIsV = volumeUnits.containsKey(inputUnit);
     final inputIsW = weightUnits.containsKey(inputUnit);
     final outputIsV = volumeUnits.containsKey(outputUnit);
     final outputIsW = weightUnits.containsKey(outputUnit);
 
-    return (inputUnit == outputUnit) || 
-      (inputIsV && outputIsV) || (inputIsW && outputIsW) ||
-      (((inputIsV && outputIsW) || (inputIsW && outputIsV)) && volumeWeightRatio != null);
+    return (inputUnit == outputUnit) ||
+        (inputIsV && outputIsV) ||
+        (inputIsW && outputIsW) ||
+        (((inputIsV && outputIsW) || (inputIsW && outputIsV)) &&
+            volumeWeightRatio != null);
   }
 
-  static double convert(double inputQty,  
-    {String inputUnit, String outputUnit, double volumeWeightRatio}) {
-
+  static double convert(double inputQty,
+      {String inputUnit, String outputUnit, double volumeWeightRatio}) {
     if (inputUnit == outputUnit) {
       return inputQty;
-    } else if (canConvert(inputUnit, outputUnit, volumeWeightRatio: volumeWeightRatio)) {
+    } else if (canConvert(inputUnit, outputUnit,
+        volumeWeightRatio: volumeWeightRatio)) {
       final inputV = volumeUnits[inputUnit];
       final inputW = weightUnits[inputUnit];
       final outputV = volumeUnits[outputUnit];
@@ -131,6 +131,7 @@ class UnitConverter {
       }
     }
 
-    throw Exception("Can't convert between these units. input=$inputUnit, output=$outputUnit, volume_weight_ratio=$volumeWeightRatio");
+    throw Exception(
+        "Can't convert between these units. input=$inputUnit, output=$outputUnit, volume_weight_ratio=$volumeWeightRatio");
   }
 }

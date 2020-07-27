@@ -35,7 +35,8 @@ class RecipeStoryItem extends StoryItem {
         .map((id) => scopedData.recipeStepsMap[id])
         .toList();
     var inputs = Set<StepInput>();
-    //TODO: combine ingredients that are the same
+    //TODO: combine ingredients that are the same as a result of subrecipes
+    //or list subrecipes as subheaders with their ingredients under
     steps.forEach((step) => step.inputs.forEach((input) {
           if (input.inputableType == InputType.Ingredient ||
               input.inputableType == InputType.Recipe) {

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:kitchen/service_locator.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:kitchen/scoped_models/scoped_order.dart';
 import 'package:kitchen/scoped_models/scoped_data.dart';
