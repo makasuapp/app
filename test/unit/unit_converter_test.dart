@@ -20,6 +20,7 @@ void main() {
       expect(UnitConverter.qtyWithUnit(32, "oz"), equals("2 lb"));
       expect(UnitConverter.qtyWithUnit(1500, "mL"), equals("1.5 L"));
       expect(UnitConverter.qtyWithUnit(998.4, "tsp"), equals("1.3 gal"));
+      expect(UnitConverter.qtyWithUnit(3, "tsp"), equals("1 tbsp"));
     });
   });
 
@@ -106,8 +107,10 @@ void main() {
     });
 
     test("is true when volume <-> weight volumeWeightRatio", () {
-      expect(UnitConverter.canConvert("tbsp", "kg", volumeWeightRatio: 1.5), isTrue);
-      expect(UnitConverter.canConvert("lb", "tsp", volumeWeightRatio: 1.5), isTrue);
+      expect(UnitConverter.canConvert("tbsp", "kg", volumeWeightRatio: 1.5),
+          isTrue);
+      expect(UnitConverter.canConvert("lb", "tsp", volumeWeightRatio: 1.5),
+          isTrue);
     });
   });
 
@@ -117,26 +120,33 @@ void main() {
     });
 
     test("with one unit errors", () {
-      expect(() => UnitConverter.convert(1.5, outputUnit: "g"), throwsException);
+      expect(
+          () => UnitConverter.convert(1.5, outputUnit: "g"), throwsException);
       expect(() => UnitConverter.convert(1.5, inputUnit: "g"), throwsException);
     });
 
     test("of weight", () {
-      expect(UnitConverter.convert(16, inputUnit: "oz", outputUnit: "lb"), equals(1));
+      expect(UnitConverter.convert(16, inputUnit: "oz", outputUnit: "lb"),
+          equals(1));
     });
 
     test("of volume", () {
-      expect(UnitConverter.convert(1.5, inputUnit: "tbsp", outputUnit: "tsp"), equals(4.5));
+      expect(UnitConverter.convert(1.5, inputUnit: "tbsp", outputUnit: "tsp"),
+          equals(4.5));
     });
 
     test("of volume to weight", () {
-      expect(UnitConverter.convert(2, inputUnit: "gal", outputUnit: "kg", 
-        volumeWeightRatio: 1.5), equals(11.355));
+      expect(
+          UnitConverter.convert(2,
+              inputUnit: "gal", outputUnit: "kg", volumeWeightRatio: 1.5),
+          equals(11.355));
     });
 
     test("of weight to volume", () {
-      expect(UnitConverter.convert(15, inputUnit: "lb", outputUnit: "L", 
-        volumeWeightRatio: 1.4), equals(4.86));
+      expect(
+          UnitConverter.convert(15,
+              inputUnit: "lb", outputUnit: "L", volumeWeightRatio: 1.4),
+          equals(4.86));
     });
   });
 }

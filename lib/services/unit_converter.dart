@@ -2,18 +2,18 @@ class WeightUnit {
   final double toG;
   final String short;
   final String long;
-  final String nextLevel;
+  final String nextUnitUp;
 
-  WeightUnit(this.short, this.long, this.toG, this.nextLevel);
+  WeightUnit(this.short, this.long, this.toG, this.nextUnitUp);
 }
 
 class VolumeUnit {
   final double toML;
   final String short;
   final String long;
-  final String nextLevel;
+  final String nextUnitUp;
 
-  VolumeUnit(this.short, this.long, this.toML, this.nextLevel);
+  VolumeUnit(this.short, this.long, this.toML, this.nextUnitUp);
 }
 
 final weightUnits = {
@@ -38,7 +38,8 @@ class UnitConverter {
     if (inputUnit != null && outputUnit != null) {
       final converted =
           convert(qty, inputUnit: inputUnit, outputUnit: outputUnit);
-      if (converted > 1) {
+      //we only want to convert up if it's actually more readable
+      if (converted >= 1) {
         return converted;
       }
     }
@@ -51,24 +52,24 @@ class UnitConverter {
     var shownUnit = unit;
 
     if (weightUnits.containsKey(shownUnit)) {
-      final nextLevel = weightUnits[shownUnit].nextLevel;
-      final converted = _convertUp(currQty, shownUnit, nextLevel);
-      if (converted != null && converted > 1) {
+      final nextUnitUp = weightUnits[shownUnit].nextUnitUp;
+      final converted = _convertUp(currQty, shownUnit, nextUnitUp);
+      if (converted != null) {
         currQty = converted;
-        shownUnit = nextLevel;
+        shownUnit = nextUnitUp;
       }
     } else if (volumeUnits.containsKey(shownUnit)) {
-      var nextLevel;
+      var nextUnitUp;
       var converted;
       do {
-        nextLevel = volumeUnits[shownUnit].nextLevel;
-        converted = _convertUp(currQty, shownUnit, nextLevel);
+        nextUnitUp = volumeUnits[shownUnit].nextUnitUp;
+        converted = _convertUp(currQty, shownUnit, nextUnitUp);
 
-        if (converted != null && converted > 1) {
+        if (converted != null) {
           currQty = converted;
-          shownUnit = nextLevel;
+          shownUnit = nextUnitUp;
         }
-      } while (nextLevel != null && converted != null && converted > 1);
+      } while (nextUnitUp != null && converted != null);
     }
 
     final isInteger = currQty == currQty.toInt();
