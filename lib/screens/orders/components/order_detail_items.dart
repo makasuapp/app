@@ -6,7 +6,7 @@ import '../../../models/order.dart';
 import '../../../models/order_item.dart';
 import '../order_styles.dart';
 import '../components/order_item.dart';
-import '../../story/components/recipe_story_item.dart';
+import '../../story/components/cook_story_item.dart';
 import '../../story/story.dart';
 import '../../common/swipable.dart';
 
@@ -49,7 +49,9 @@ class OrderDetailItems extends StatelessWidget {
             scopedOrder.markItemsDoneTime({item.id: item}, null),
         child: InkWell(
             onTap: () => StoryView.render(
-                context, RecipeStoryItem(scopedData.recipesMap[item.recipeId])),
+                context,
+                CookStoryItem(scopedData.recipesMap[item.recipeId],
+                    servingSize: item.quantity.toDouble())),
             child: Container(
                 width: MediaQuery.of(context).size.width,
                 padding: OrderStyles.orderDetailItemPadding,

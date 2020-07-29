@@ -26,7 +26,7 @@ class RecipeStoryItem extends StoryItem {
               return Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: _renderInfo(scopedData, scopedStory, this.servingSize));
+                  children: _renderInfo(scopedData, scopedStory));
             }));
   }
 
@@ -36,12 +36,11 @@ class RecipeStoryItem extends StoryItem {
         outputUnits: outputUnits, servingSize: servingSize);
   }
 
-  List<Widget> _renderInfo(
-      ScopedData scopedData, ScopedStory scopedStory, double servingSize) {
+  List<Widget> _renderInfo(ScopedData scopedData, ScopedStory scopedStory) {
     var widgets = List<Widget>();
 
     widgets.add(_renderTitle());
-    widgets.addAll(_renderAllInputs(scopedData, scopedStory, servingSize));
+    widgets.addAll(_renderAllInputs(scopedData, scopedStory));
     widgets.addAll(_renderAllSteps(scopedData, scopedStory));
 
     return widgets;
@@ -57,14 +56,14 @@ class RecipeStoryItem extends StoryItem {
   }
 
   List<Widget> _renderAllInputs(
-      ScopedData scopedData, ScopedStory scopedStory, double servingSize) {
+      ScopedData scopedData, ScopedStory scopedStory) {
     var widgets = List<Widget>();
 
     widgets.add(_renderHeader("Ingredients"));
     final steps = (this.recipe.prepStepIds + this.recipe.cookStepIds)
         .map((id) => scopedData.recipeStepsMap[id])
         .toList();
-    var inputs = Set<StepInput>();
+    var inputs = List<StepInput>();
     //TODO: combine ingredients that are the same as a result of subrecipes
     //or list subrecipes as subheaders with their ingredients under
     steps.forEach((step) => step.inputs.forEach((input) {
@@ -76,14 +75,14 @@ class RecipeStoryItem extends StoryItem {
 
     inputs.forEach((input) {
       if (input.inputableType == InputType.Ingredient) {
-        widgets.add(_renderInput(input, servingSize));
+        widgets.add(_renderInput(input));
       } else if (input.inputableType == InputType.Recipe) {
         final recipe = scopedData.recipesMap[input.inputableId];
         widgets.add(InkWell(
             onTap: () {
               scopedStory.push(RecipeStoryItem(recipe));
             },
-            child: _renderInput(input, servingSize)));
+            child: _renderInput(input)));
       }
     });
 
@@ -126,11 +125,9 @@ class RecipeStoryItem extends StoryItem {
     }).toList();
   }
 
-  Widget _renderInput(StepInput input, double servingSize) {
-
-    double servingsInRecipeUnits = UnitConverter.convert(servingSize,
+  Widget _renderInput(StepInput input) {
+    double servingsInRecipeUnits = UnitConverter.convert(this.servingSize,
         inputUnit: this.displayedUnits, outputUnit: this.recipe.unit);
-
     double newQty = (servingsInRecipeUnits != this.recipe.outputQty)
         ? (input.quantity * servingsInRecipeUnits) / recipe.outputQty
         : null;
