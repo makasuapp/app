@@ -10,11 +10,12 @@ class StoryAdjustQuantityPage extends StatefulWidget {
   final double currentServingSize;
   final String unit;
 
-  //final bool adjustUnits;
+  final bool canConvertAllUnits;
   final void Function(double qty, String unit, BuildContext qtyViewContext)
       onSubmit;
 
-  StoryAdjustQuantityPage({this.onSubmit, this.currentServingSize, this.unit})
+  StoryAdjustQuantityPage(this.canConvertAllUnits,
+      {this.onSubmit, this.currentServingSize, this.unit})
       : assert(onSubmit != null);
 
   @override
@@ -63,7 +64,12 @@ class _StoryAdjustQuantityPageState extends State<StoryAdjustQuantityPage> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         _renderQtyPicker(),
-        (this.widget.unit != null) ? _renderUnitPicker() : Container()
+        (this._setUnit != null)
+            ? (weightUnits.containsKey(this._setUnit) ||
+                    volumeUnits.containsKey(this._setUnit))
+                ? _renderUnitPicker()
+                : Text("${this._setUnit}")
+            : Container()
       ],
     );
   }
@@ -86,39 +92,54 @@ class _StoryAdjustQuantityPageState extends State<StoryAdjustQuantityPage> {
   }
 
   Widget _renderUnitPicker() {
-    if (weightUnits.containsKey(this._setUnit) ||
-        volumeUnits.containsKey(this._setUnit)) {
-      return DropdownButton<String>(
-        value: this._setUnit,
-        icon: StoryStyles.unitPickerIcon,
-        iconSize: StoryStyles.unitPickerIconSize,
-        style: TextStyle(color: StoryStyles.unitPickerTextColor),
-        underline: Container(
-          height: StoryStyles.unitPickerUnderlineHeight,
-          color: StoryStyles.unitPickerUnderlineColor,
-        ),
-        items: (weightUnits.containsKey(this._setUnit))
-            ? weightUnits.keys.map<DropdownMenuItem<String>>((String value) {
+    var dropdownItems;
+    if (this.widget.canConvertAllUnits) {
+      dropdownItems =
+          weightUnits.keys.map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
                   child: Text(value),
                 );
-              }).toList()
-            : volumeUnits.keys.map<DropdownMenuItem<String>>((String value) {
+              }).toList() +
+              volumeUnits.keys.map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
                   child: Text(value),
                 );
-              }).toList(),
-        onChanged: (input) {
-          setState(() {
-            this._setUnit = input;
-          });
-        },
-      );
+              }).toList();
+    } else if (weightUnits.containsKey(this._setUnit)) {
+      dropdownItems =
+          weightUnits.keys.map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList();
     } else {
-      return Text("${this._setUnit}");
+      dropdownItems =
+          volumeUnits.keys.map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList();
     }
+    return DropdownButton<String>(
+      value: this._setUnit,
+      icon: StoryStyles.unitPickerIcon,
+      iconSize: StoryStyles.unitPickerIconSize,
+      style: TextStyle(color: StoryStyles.unitPickerTextColor),
+      underline: Container(
+        height: StoryStyles.unitPickerUnderlineHeight,
+        color: StoryStyles.unitPickerUnderlineColor,
+      ),
+      items: dropdownItems,
+      onChanged: (input) {
+        setState(() {
+          this._setUnit = input;
+        });
+      },
+    );
   }
 
   Widget _renderButtons(BuildContext context) {

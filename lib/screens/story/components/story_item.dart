@@ -17,6 +17,8 @@ abstract class StoryItem extends StatelessWidget {
 
   StoryItem getUpdatedStoryItem(String outputUnits, double servingSize);
 
+  bool hasVolumeWeightRatio();
+
   @override
   Widget build(BuildContext context) {
     //common layouting for stories goes here
@@ -46,19 +48,18 @@ abstract class StoryItem extends StatelessWidget {
             InkWell(
               onTap: () {
                 Navigator.push(context, MaterialPageRoute(builder: (_) {
-                  return StoryAdjustQuantityPage(
+                  return StoryAdjustQuantityPage(this.hasVolumeWeightRatio(),
                       currentServingSize: this.servingSize,
-                      unit: this.displayedUnits,
-                      onSubmit: (double newQty, String newUnits,
-                          BuildContext qtyViewContext) {
-                        scopedStory.updateStory(
-                            this.getUpdatedStoryItem(newUnits, newQty));
-                        Navigator.pop(qtyViewContext);
-                      });
+                      unit: this.displayedUnits, onSubmit: (double newQty,
+                          String newUnits, BuildContext qtyViewContext) {
+                    scopedStory.updateStory(
+                        this.getUpdatedStoryItem(newUnits, newQty));
+                    Navigator.pop(qtyViewContext);
+                  });
                 }));
               },
               child: Text(
-                "Serving Size: ${UnitConverter.qtyWithUnit(this.servingSize, this.displayedUnits)}",
+                "Serving Size: ${UnitConverter.qtyWithUnit(this.servingSize, this.displayedUnits, convertUp: false)}",
                 style: StoryStyles.storyText,
               ),
             )

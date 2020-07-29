@@ -85,8 +85,12 @@ class PrepList extends StatelessWidget {
           _notifyQtyUpdate("Prep done", context, prep, scopedPrep, originalQty);
         },
         child: InkWell(
-            onTap: () => StoryView.render(context,
-                RecipeStepStoryItem(ScopedDayPrep.recipeStepFor(prep))),
+            onTap: () {
+              StoryView.render(
+                  context,
+                  RecipeStepStoryItem(ScopedDayPrep.recipeStepFor(prep),
+                      servingSize: prep.expectedQty - (prep.madeQty ?? 0)));
+            },
             child: PrepItem(prep, onEdit: () {
               Navigator.push(context, MaterialPageRoute(builder: (_) {
                 return PrepAdjustQuantityPage(prep,
