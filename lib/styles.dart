@@ -69,6 +69,8 @@ class Styles {
   static final Color swipeRightColor = Colors.green;
   static final Color swipeLeftColor = Colors.red;
 
+  static final Color doneBackgroundColor = Colors.grey[300];
+
   static Color hexToColor(String code) {
     return Color(int.parse(code.substring(0, 6), radix: 16) + 0xFF000000);
   }

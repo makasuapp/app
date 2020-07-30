@@ -57,16 +57,17 @@ class StepInputItem extends StatelessWidget {
       widgets
           .add(Text(this.inputName, style: _setStyle(InputItemStyles.regular)));
     } else {
+      final hasAdjusted = this.adjustedInputQty != null &&
+          this.adjustedInputQty != this.originalInputQty;
       widgets.add(Text(
         "${UnitConverter.qtyWithUnit(this.originalInputQty, this.originalInputUnit)}",
-        style: (this.adjustedInputQty == null)
-            ? _setStyle(InputItemStyles.regular)
-            : _setStyle(InputItemStyles.original),
+        style: (hasAdjusted)
+            ? _setStyle(InputItemStyles.original)
+            : _setStyle(InputItemStyles.regular),
       ));
-      if(adjustedInputQty != null) {
+      if (hasAdjusted) {
         widgets.add(Text(
-          " ${UnitConverter.qtyWithUnit(
-              this.adjustedInputQty, this.originalInputUnit)}",
+          " ${UnitConverter.qtyWithUnit(this.adjustedInputQty, this.originalInputUnit)}",
           style: _setStyle(InputItemStyles.adjusted),
         ));
       }
@@ -76,7 +77,6 @@ class StepInputItem extends StatelessWidget {
         style: _setStyle(InputItemStyles.regular),
       ));
     }
-
 
     return Wrap(
       alignment: WrapAlignment.start,

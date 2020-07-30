@@ -30,7 +30,7 @@ class MorningList extends StatelessWidget {
     scopedIngredient.ingredients.forEach((ingredient) => {
           if (ingredient.hadQty == null)
             {uncheckedIngredients.add(ingredient)}
-          else if (ingredient.expectedQty != ingredient.hadQty)
+          else if (ingredient.expectedQty > ingredient.hadQty)
             {missingIngredients.add(ingredient)}
           else
             {checkedIngredients.add(ingredient)}

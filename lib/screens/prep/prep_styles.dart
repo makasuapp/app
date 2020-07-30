@@ -36,6 +36,7 @@ class PrepStyles {
       fontSize: Styles.textSizeSmall,
       color: Styles.textColorFaint,
       decoration: TextDecoration.lineThrough);
+  static final doneItemColor = Styles.doneBackgroundColor;
 
   static final adjustQuantityTopPadding =
       EdgeInsets.symmetric(vertical: 20.0, horizontal: 0);

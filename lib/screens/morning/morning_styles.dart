@@ -33,6 +33,7 @@ class MorningStyles {
       fontSize: Styles.textSizeLarge,
       color: Styles.textColorFaint,
       decoration: TextDecoration.lineThrough);
+  static final checkedItemColor = Styles.doneBackgroundColor;
 
   static final adjustQuantityTopPadding =
       EdgeInsets.symmetric(vertical: 20.0, horizontal: 0);

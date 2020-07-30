@@ -29,9 +29,12 @@ class PrepItem extends StatelessWidget {
           _renderButtons()
         ]));
 
+    final isDone =
+        this.prep.madeQty != null && this.prep.madeQty >= this.prep.expectedQty;
     return Container(
         padding: PrepStyles.listItemPadding,
-        decoration: PrepStyles.listItemBorder,
+        decoration: isDone ? null : PrepStyles.listItemBorder,
+        color: isDone ? PrepStyles.doneItemColor : null,
         width: MediaQuery.of(context).size.width,
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.start, children: widgets));
