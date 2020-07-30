@@ -44,6 +44,8 @@ class WebApi {
       ._fetchJson('/op_days', queryParameters: {"env": EnvironmentConfig.ENV});
   Future<String> fetchOrdersJson() => this
       ._fetchJson('/orders', queryParameters: {"env": EnvironmentConfig.ENV});
+  Future<String> fetchProcurementJson() => this._fetchJson('/procurement',
+      queryParameters: {"env": EnvironmentConfig.ENV});
 
   Future<dynamic> _postJson(String endpoint, dynamic body) async {
     final uri = this.uri(endpoint);
