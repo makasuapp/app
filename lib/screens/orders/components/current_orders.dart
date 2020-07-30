@@ -6,7 +6,7 @@ import '../../common/swipable.dart';
 import '../../../models/order.dart';
 import '../../../models/order_item.dart';
 import '../order_styles.dart';
-import '../../story/components/recipe_story_item.dart';
+import '../../story/components/cook_story_item.dart';
 import '../../story/story.dart';
 
 class CurrentOrders extends StatefulWidget {
@@ -108,7 +108,7 @@ class _CurrentOrdersState extends State<CurrentOrders> {
         onSwipeRight: (_) => _onItemDismissed(item, scopedOrder),
         child: InkWell(
             onTap: () => StoryView.render(
-                context, RecipeStoryItem(scopedData.recipesMap[item.recipeId])),
+                context, CookStoryItem(scopedData.recipesMap[item.recipeId])),
             child: Container(
                 width: double.infinity,
                 padding: OrderStyles.orderDetailItemPadding,

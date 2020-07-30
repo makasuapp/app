@@ -5,15 +5,14 @@ import 'package:kitchen/scoped_models/scoped_data.dart';
 import '../../../models/order.dart';
 import '../../../models/order_item.dart';
 import '../order_styles.dart';
-import '../components/order_item.dart';
 import '../../story/components/cook_story_item.dart';
 import '../../story/story.dart';
 import '../../common/swipable.dart';
 
-class OrderDetailItems extends StatelessWidget {
+class OrderItems extends StatelessWidget {
   final int orderId;
 
-  OrderDetailItems(this.orderId);
+  OrderItems(this.orderId);
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +54,16 @@ class OrderDetailItems extends StatelessWidget {
             child: Container(
                 width: MediaQuery.of(context).size.width,
                 padding: OrderStyles.orderDetailItemPadding,
-                child: OrderItemItem(item))));
+                child: _renderItemText(scopedData, item))));
+  }
+
+  Widget _renderItemText(ScopedData scopedData, OrderItem item) {
+    final recipe = scopedData.recipesMap[item.recipeId];
+    final text = "${item.quantity} ${recipe.name}";
+
+    return Text(text,
+        style: item.doneAtSec != null
+            ? OrderStyles.doneItemText
+            : OrderStyles.orderItemText);
   }
 }

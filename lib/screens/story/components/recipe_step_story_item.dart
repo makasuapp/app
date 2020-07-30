@@ -6,6 +6,7 @@ import 'package:kitchen/models/step_input.dart';
 import 'package:kitchen/models/tool.dart';
 import 'package:kitchen/scoped_models/scoped_story.dart';
 import 'package:kitchen/screens/common/step_input_item.dart';
+import 'package:kitchen/screens/common/submit_button.dart';
 import 'package:kitchen/screens/story/components/recipe_story_item.dart';
 import 'package:kitchen/services/unit_converter.dart';
 import 'package:kitchen/styles.dart';
@@ -54,6 +55,16 @@ class RecipeStepStoryItem extends StoryItem {
     );
   }
 
+  Widget _fullRecipeButton(ScopedStory scopedStory, ScopedData scopedData) {
+    final recipe = scopedData.recipesMap[this.recipeStep.recipeId];
+    final servingSize = this.servingSize * recipe.outputQty;
+
+    return SubmitButton(
+        () => scopedStory.push(RecipeStoryItem(recipe,
+            outputUnits: recipe.unit, servingSize: servingSize)),
+        btnText: "View Full Recipe");
+  }
+
   static Widget _textHeader(String header) {
     return Container(
       child: Text(header, style: StoryStyles.storyHeader),
@@ -65,6 +76,7 @@ class RecipeStepStoryItem extends StoryItem {
       BuildContext context, ScopedData scopedData, ScopedStory scopedStory) {
     var widgets = List<Widget>();
     widgets.add(_renderInstruction());
+    widgets.add(_fullRecipeButton(scopedStory, scopedData));
     widgets.addAll(_renderListDuration());
     widgets.addAll(_renderListTools());
     widgets.addAll(_renderListDetailedInstructions());

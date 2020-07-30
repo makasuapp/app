@@ -16,12 +16,18 @@ class OrderStyles {
 
   static final orderItemsTopPadding =
       EdgeInsets.symmetric(vertical: 5.0, horizontal: 0);
-  static final orderItemText = Styles.textDefault;
+  static final orderItemsTopBorder = BoxDecoration(
+      border:
+          Border(bottom: BorderSide(width: 0.5, color: Styles.textColorFaint)));
+  static final orderItemText = TextStyle(
+    fontSize: Styles.textSizeLarge,
+    color: Styles.textColorDefault,
+  );
   static final doneItemText = TextStyle(
-      fontSize: Styles.textSizeDefault,
+      fontSize: Styles.textSizeLarge,
       color: Styles.textColorDefault,
       decoration: TextDecoration.lineThrough);
 
   static final orderDetailItemPadding =
-      EdgeInsets.symmetric(vertical: 8.0, horizontal: 0);
+      EdgeInsets.symmetric(vertical: 12.0, horizontal: 0);
 }

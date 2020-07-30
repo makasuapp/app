@@ -3,7 +3,7 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:kitchen/scoped_models/scoped_order.dart';
 import 'package:kitchen/scoped_models/scoped_data.dart';
 import 'package:intl/intl.dart';
-import './components/order_detail_items.dart';
+import 'components/order_items.dart';
 import '../../models/order.dart';
 import './order_styles.dart';
 import '../../service_locator.dart';
@@ -31,7 +31,7 @@ class OrderDetailsPage extends StatelessWidget {
 
     contentWidgets.addAll(_renderInfo());
     contentWidgets.add(Container(padding: OrderStyles.orderItemsTopPadding));
-    contentWidgets.add(OrderDetailItems(this.order.id));
+    contentWidgets.add(OrderItems(this.order.id));
 
     return Container(
         padding: OrderStyles.orderCardPadding,

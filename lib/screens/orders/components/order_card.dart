@@ -5,7 +5,7 @@ import 'package:kitchen/scoped_models/scoped_order.dart';
 import '../../../models/order.dart';
 import '../order_styles.dart';
 import '../order_details.dart';
-import './order_item.dart';
+import './order_items.dart';
 
 class OrderCard extends StatelessWidget {
   final Order order;
@@ -15,23 +15,19 @@ class OrderCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<ScopedOrder>(
-        builder: (context, child, scopedOrder) => InkWell(
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (_) => OrderDetailsPage(this.order)));
-            },
-            child: _renderContent(context, scopedOrder)));
+        builder: (context, child, scopedOrder) =>
+            _renderContent(context, scopedOrder));
   }
 
   Widget _renderContent(BuildContext context, ScopedOrder scopedOrder) {
     var contentWidgets = List<Widget>();
 
-    contentWidgets.add(_renderTop(scopedOrder));
-    contentWidgets.add(Container(padding: OrderStyles.orderItemsTopPadding));
+    contentWidgets.add(_renderTop(context, scopedOrder));
+    contentWidgets.add(Container(
+        decoration: OrderStyles.orderItemsTopBorder,
+        padding: OrderStyles.orderItemsTopPadding));
 
-    this.order.items.forEach((item) => contentWidgets.add(OrderItemItem(item)));
+    contentWidgets.add(OrderItems(this.order.id));
 
     return Container(
         padding: OrderStyles.orderCardPadding,
@@ -46,13 +42,19 @@ class OrderCard extends StatelessWidget {
             children: contentWidgets));
   }
 
-  Widget _renderTop(ScopedOrder scopedOrder) {
-    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: _renderInfo()),
-      Row(children: _renderButtons(scopedOrder))
-    ]);
+  Widget _renderTop(BuildContext context, ScopedOrder scopedOrder) {
+    return InkWell(
+        onTap: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (_) => OrderDetailsPage(this.order)));
+        },
+        child:
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: _renderInfo()),
+          Row(children: _renderButtons(scopedOrder))
+        ]));
   }
 
   List<Widget> _renderInfo() {
