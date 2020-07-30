@@ -40,6 +40,11 @@ class CookStoryItem extends StoryItem {
         outputUnits: outputUnits, servingSize: servingSize);
   }
 
+  @override
+  bool hasVolumeWeightRatio() {
+    return (this.recipe.volumeWeightRatio != null);
+  }
+
   List<Widget> _renderInfo(ScopedData scopedData, ScopedStory scopedStory) {
     var widgets = List<Widget>();
 
@@ -63,10 +68,9 @@ class CookStoryItem extends StoryItem {
   }
 
   Widget _fullRecipeButton(ScopedStory scopedStory) {
-    //TODO(anubha): persist servings correctly
     return SubmitButton(
         () => scopedStory.push(RecipeStoryItem(this.recipe,
-            outputUnits: this.recipe.unit, servingSize: this.recipe.outputQty)),
+            outputUnits: this.displayedUnits, servingSize: this.servingSize)),
         btnText: "View Full Recipe");
   }
 
@@ -92,19 +96,18 @@ class CookStoryItem extends StoryItem {
       } else if (input.inputableType == InputType.Recipe) {
         final recipe = scopedData.recipesMap[input.inputableId];
         return InkWell(
-            //TODO(anubha): persist servings correctly
             onTap: () {
               scopedStory.push(RecipeStoryItem(recipe,
-                  outputUnits: input.unit, servingSize: input.quantity));
+                  outputUnits: input.unit,
+                  servingSize: _getAdjustedQty(input.quantity)));
             },
             child: _renderInput(input));
       } else if (input.inputableType == InputType.RecipeStep) {
         final recipeStep = scopedData.recipeStepsMap[input.inputableId];
         return InkWell(
-          //TODO(anubha): persist servings correctly
           onTap: () {
-            scopedStory.push(
-                RecipeStepStoryItem(recipeStep, servingSize: input.quantity));
+            scopedStory.push(RecipeStepStoryItem(recipeStep,
+                servingSize: _getAdjustedQty(input.quantity)));
           },
           child: _renderInput(input),
         );
@@ -120,8 +123,8 @@ class CookStoryItem extends StoryItem {
       final recipeStep = scopedData.recipeStepsMap[id];
       return InkWell(
           onTap: () {
-            scopedStory.push(
-                RecipeStepStoryItem(recipeStep, servingSize: this.servingSize));
+            scopedStory.push(RecipeStepStoryItem(recipeStep,
+                servingSize: _getAdjustedQty(1.0)));
           },
           child: _renderCookStep(recipeStep));
     }).toList();
@@ -156,12 +159,17 @@ class CookStoryItem extends StoryItem {
   }
 
   Widget _renderInput(StepInput input, {TextStyle style}) {
-    double servingsInRecipeUnits = UnitConverter.convert(this.servingSize,
-        inputUnit: this.displayedUnits, outputUnit: this.recipe.unit);
-    double qty = (input.quantity * servingsInRecipeUnits) / recipe.outputQty;
-
     //don't need crossing out for cook. however many servings is what we expect
-    return StepInputItem(input.name, qty, input.inputableType, input.unit,
+    return StepInputItem(input.name, _getAdjustedQty(input.quantity),
+        input.inputableType, input.unit,
         regularTextStyle: style ?? StoryStyles.storyText);
+  }
+
+  double _getAdjustedQty(double inputQty) {
+    final servingsInRecipeUnits = UnitConverter.convert(servingSize,
+        inputUnit: this.displayedUnits,
+        outputUnit: this.recipe.unit,
+        volumeWeightRatio: this.recipe.volumeWeightRatio);
+    return (inputQty * servingsInRecipeUnits) / recipe.outputQty;
   }
 }

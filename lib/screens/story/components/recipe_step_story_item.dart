@@ -39,6 +39,11 @@ class RecipeStepStoryItem extends StoryItem {
     return RecipeStepStoryItem(this.recipeStep, servingSize: servingSize);
   }
 
+  @override
+  bool hasVolumeWeightRatio() {
+    return false;
+  }
+
   static Widget _renderTextBody(String text) {
     return Container(
       child: Text(
@@ -137,7 +142,11 @@ class RecipeStepStoryItem extends StoryItem {
           inputsList.add(Container(
             child: InkWell(
                 onTap: () {
-                  scopedStory.push(RecipeStoryItem(recipe));
+                  scopedStory.push(RecipeStoryItem(
+                    recipe,
+                    servingSize: _getAdjustedQty(input),
+                    outputUnits: input.unit,
+                  ));
                 },
                 child: _renderInput(input)),
             padding: StoryStyles.itemPadding,
@@ -147,7 +156,8 @@ class RecipeStepStoryItem extends StoryItem {
           inputsList.add(Container(
             child: InkWell(
               onTap: () {
-                scopedStory.push(RecipeStepStoryItem(recipeStep));
+                scopedStory.push(RecipeStepStoryItem(recipeStep,
+                    servingSize: _getAdjustedQty(input)));
               },
               child: _renderInput(input),
             ),
@@ -160,14 +170,19 @@ class RecipeStepStoryItem extends StoryItem {
   }
 
   Widget _renderInput(StepInput input) {
-    final newQty =
-        (this.servingSize != 1) ? this.servingSize * input.quantity : null;
     return StepInputItem.fromStepInputItem(
       input,
-      adjustedInputQty: newQty,
+      adjustedInputQty:
+          (this.servingSize.toStringAsPrecision(2) != 1.toStringAsPrecision(2))
+              ? _getAdjustedQty(input)
+              : null,
       regularTextStyle: StoryStyles.storyText,
       adjustedQtyStyle: StoryStyles.adjustedQtyText,
       originalQtyStyle: StoryStyles.initialQtyText,
     );
+  }
+
+  double _getAdjustedQty(StepInput input) {
+    return this.servingSize * input.quantity;
   }
 }

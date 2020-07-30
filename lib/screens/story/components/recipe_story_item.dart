@@ -36,6 +36,11 @@ class RecipeStoryItem extends StoryItem {
         outputUnits: outputUnits, servingSize: servingSize);
   }
 
+  @override
+  bool hasVolumeWeightRatio() {
+    return (this.recipe.volumeWeightRatio != null);
+  }
+
   List<Widget> _renderInfo(ScopedData scopedData, ScopedStory scopedStory) {
     var widgets = List<Widget>();
 
@@ -75,14 +80,19 @@ class RecipeStoryItem extends StoryItem {
 
     inputs.forEach((input) {
       if (input.inputableType == InputType.Ingredient) {
-        widgets.add(_renderInput(input));
+        widgets.add(_renderInput(scopedData, input));
       } else if (input.inputableType == InputType.Recipe) {
         final recipe = scopedData.recipesMap[input.inputableId];
         widgets.add(InkWell(
             onTap: () {
-              scopedStory.push(RecipeStoryItem(recipe));
+              scopedStory.push(RecipeStoryItem(
+                recipe,
+                servingSize: _getAdjustedQty(
+                    input.quantity),
+                outputUnits: input.unit,
+              ));
             },
-            child: _renderInput(input)));
+            child: _renderInput(scopedData, input)));
       }
     });
 
@@ -118,26 +128,37 @@ class RecipeStoryItem extends StoryItem {
       final recipeStep = scopedData.recipeStepsMap[id];
       return InkWell(
           onTap: () {
-            scopedStory.push(RecipeStepStoryItem(recipeStep));
+            scopedStory.push(RecipeStepStoryItem(recipeStep,
+                servingSize: _getAdjustedQty(1.0)));
           },
           child: Text("${recipeStep.number}. ${recipeStep.instruction}",
               style: StoryStyles.storyText));
     }).toList();
   }
 
-  Widget _renderInput(StepInput input) {
-    double servingsInRecipeUnits = UnitConverter.convert(this.servingSize,
-        inputUnit: this.displayedUnits, outputUnit: this.recipe.unit);
-    double newQty = (servingsInRecipeUnits != this.recipe.outputQty)
-        ? (input.quantity * servingsInRecipeUnits) / recipe.outputQty
-        : null;
-
+  Widget _renderInput(ScopedData scopedData, StepInput input) {
+    final servingsInRecipeUnits = UnitConverter.convert(servingSize,
+        inputUnit: this.displayedUnits,
+        outputUnit: this.recipe.unit,
+        volumeWeightRatio: this.recipe.volumeWeightRatio);
     return StepInputItem.fromStepInputItem(
       input,
-      adjustedInputQty: newQty,
+      adjustedInputQty: (servingsInRecipeUnits
+                  .toStringAsPrecision(2) !=
+              this.recipe.outputQty.toStringAsPrecision(2))
+          ? _getAdjustedQty(input.quantity)
+          : null,
       regularTextStyle: StoryStyles.storyText,
       adjustedQtyStyle: StoryStyles.adjustedQtyText,
       originalQtyStyle: StoryStyles.initialQtyText,
     );
+  }
+
+  double _getAdjustedQty(double inputQty) {
+    double servingsInRecipeUnits = UnitConverter.convert(servingSize,
+        inputUnit: this.displayedUnits,
+        outputUnit: this.recipe.unit,
+        volumeWeightRatio: this.recipe.volumeWeightRatio);
+    return (inputQty * servingsInRecipeUnits) / recipe.outputQty;
   }
 }

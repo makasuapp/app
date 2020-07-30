@@ -48,29 +48,31 @@ class UnitConverter {
     return null;
   }
 
-  static String qtyWithUnit(double qty, String unit) {
+  static String qtyWithUnit(double qty, String unit,{bool convertUp = true}) {
     var currQty = qty;
     var shownUnit = unit;
 
-    if (weightUnits.containsKey(shownUnit)) {
-      final nextUnitUp = weightUnits[shownUnit].nextUnitUp;
-      final converted = _convertUp(currQty, shownUnit, nextUnitUp);
-      if (converted != null) {
-        currQty = converted;
-        shownUnit = nextUnitUp;
-      }
-    } else if (volumeUnits.containsKey(shownUnit)) {
-      var nextUnitUp;
-      var converted;
-      do {
-        nextUnitUp = volumeUnits[shownUnit].nextUnitUp;
-        converted = _convertUp(currQty, shownUnit, nextUnitUp);
-
+    if(convertUp) {
+      if (weightUnits.containsKey(shownUnit)) {
+        final nextUnitUp = weightUnits[shownUnit].nextUnitUp;
+        final converted = _convertUp(currQty, shownUnit, nextUnitUp);
         if (converted != null) {
           currQty = converted;
           shownUnit = nextUnitUp;
         }
-      } while (nextUnitUp != null && converted != null);
+      } else if (volumeUnits.containsKey(shownUnit)) {
+        var nextUnitUp;
+        var converted;
+        do {
+          nextUnitUp = volumeUnits[shownUnit].nextUnitUp;
+          converted = _convertUp(currQty, shownUnit, nextUnitUp);
+
+          if (converted != null) {
+            currQty = converted;
+            shownUnit = nextUnitUp;
+          }
+        } while (nextUnitUp != null && converted != null);
+      }
     }
 
     final isInteger = currQty == currQty.toInt();
