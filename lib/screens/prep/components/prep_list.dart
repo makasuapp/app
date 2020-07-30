@@ -8,8 +8,8 @@ import '../prep_styles.dart';
 import './prep_item.dart';
 import '../../story/components/recipe_step_story_item.dart';
 import '../../story/story.dart';
-import '../../common/swipable.dart';
-import '../adjust_quantity.dart';
+import '../../common/components/swipable.dart';
+import '../adjust_done.dart';
 
 class PrepList extends StatelessWidget {
   @override
@@ -93,7 +93,7 @@ class PrepList extends StatelessWidget {
             },
             child: PrepItem(prep, onEdit: () {
               Navigator.push(context, MaterialPageRoute(builder: (_) {
-                return PrepAdjustQuantityPage(prep,
+                return AdjustPrepDonePage(prep,
                     onSubmit: (double setQty, BuildContext qtyViewContext) {
                   final originalQty = prep.madeQty;
                   scopedPrep.updatePrepQty(prep, setQty);

@@ -1,27 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:math';
-import '../common/cancel_button.dart';
-import '../common/submit_button.dart';
+import '../common/components/cancel_button.dart';
+import '../common/components/submit_button.dart';
 import '../../models/day_prep.dart';
-import './prep_styles.dart';
+import 'prep_styles.dart';
 import '../../service_locator.dart';
 import '../../scoped_models/scoped_data.dart';
 
-class PrepAdjustQuantityPage extends StatefulWidget {
+class AdjustPrepDonePage extends StatefulWidget {
   final DayPrep prep;
   final void Function(double qty, BuildContext qtyViewContext) onSubmit;
 
-  PrepAdjustQuantityPage(this.prep, {this.onSubmit}) : assert(onSubmit != null);
+  AdjustPrepDonePage(this.prep, {this.onSubmit}) : assert(onSubmit != null);
 
   @override
-  createState() => _PrepAdjustQuantityPageState();
+  createState() => _AdjustPrepDonePageState();
 }
 
-class _PrepAdjustQuantityPageState extends State<PrepAdjustQuantityPage> {
+class _AdjustPrepDonePageState extends State<AdjustPrepDonePage> {
   double _setQty;
   final scopedData = locator<ScopedData>();
-  TextEditingController _controller;
 
   @override
   void initState() {
@@ -32,13 +31,6 @@ class _PrepAdjustQuantityPageState extends State<PrepAdjustQuantityPage> {
     } else {
       this._setQty = prep.expectedQty;
     }
-    _controller = TextEditingController(text: "100");
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
   }
 
   @override
@@ -61,9 +53,9 @@ class _PrepAdjustQuantityPageState extends State<PrepAdjustQuantityPage> {
     return Container(
         width: 180,
         child: TextField(
-          controller: _controller,
           keyboardType: TextInputType.number,
           decoration: InputDecoration(
+            hintText: "100",
             labelText: '% of total expected done',
           ),
           onChanged: (input) {

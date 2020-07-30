@@ -5,8 +5,8 @@ import 'package:kitchen/models/detailed_instruction.dart';
 import 'package:kitchen/models/step_input.dart';
 import 'package:kitchen/models/tool.dart';
 import 'package:kitchen/scoped_models/scoped_story.dart';
-import 'package:kitchen/screens/common/step_input_item.dart';
-import 'package:kitchen/screens/common/submit_button.dart';
+import 'package:kitchen/screens/common/components/step_input_item.dart';
+import 'package:kitchen/screens/common/components/submit_button.dart';
 import 'package:kitchen/screens/story/components/recipe_story_item.dart';
 import 'package:kitchen/services/unit_converter.dart';
 import 'package:kitchen/styles.dart';
@@ -185,7 +185,7 @@ class RecipeStepStoryItem extends StoryItem {
     return StepInputItem.fromStepInputItem(
       input,
       adjustedInputQty:
-          (this.servingSize.toStringAsPrecision(2) != 1.toStringAsPrecision(2))
+          (this.servingSize.toStringAsFixed(2) != 1.toStringAsFixed(2))
               ? _getAdjustedQty(input)
               : null,
       regularTextStyle: StoryStyles.storyText,

@@ -4,7 +4,7 @@ import 'package:kitchen/scoped_models/scoped_story.dart';
 import 'package:kitchen/scoped_models/scoped_data.dart';
 import 'components/story_item.dart';
 import 'components/story_carousel.dart';
-import '../common/transparent_route.dart';
+import '../common/components/transparent_route.dart';
 import '../../service_locator.dart';
 import './story_styles.dart';
 

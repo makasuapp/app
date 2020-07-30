@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../screens/common/progress_bar.dart';
+import 'progress_bar.dart';
 import 'package:scoped_model/scoped_model.dart';
-import '../../scoped_models/scoped_op_day.dart';
+import '../../../scoped_models/scoped_op_day.dart';
 
 class OpDayProgressBar extends StatelessWidget {
   @override

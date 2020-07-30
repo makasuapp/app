@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kitchen/screens/common/step_input_item.dart';
+import 'package:kitchen/screens/common/components/step_input_item.dart';
 import 'package:kitchen/services/unit_converter.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:kitchen/scoped_models/scoped_story.dart';
@@ -87,8 +87,7 @@ class RecipeStoryItem extends StoryItem {
             onTap: () {
               scopedStory.push(RecipeStoryItem(
                 recipe,
-                servingSize: _getAdjustedQty(
-                    input.quantity),
+                servingSize: _getAdjustedQty(input.quantity),
                 outputUnits: input.unit,
               ));
             },
@@ -143,9 +142,8 @@ class RecipeStoryItem extends StoryItem {
         volumeWeightRatio: this.recipe.volumeWeightRatio);
     return StepInputItem.fromStepInputItem(
       input,
-      adjustedInputQty: (servingsInRecipeUnits
-                  .toStringAsPrecision(2) !=
-              this.recipe.outputQty.toStringAsPrecision(2))
+      adjustedInputQty: (servingsInRecipeUnits.toStringAsFixed(2) !=
+              this.recipe.outputQty.toStringAsFixed(2))
           ? _getAdjustedQty(input.quantity)
           : null,
       regularTextStyle: StoryStyles.storyText,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kitchen/screens/common/step_input_item.dart';
-import 'package:kitchen/screens/common/submit_button.dart';
+import 'package:kitchen/screens/common/components/step_input_item.dart';
+import 'package:kitchen/screens/common/components/submit_button.dart';
 import 'package:kitchen/services/unit_converter.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:kitchen/scoped_models/scoped_story.dart';

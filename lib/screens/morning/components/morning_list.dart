@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flushbar/flushbar.dart';
 import 'package:kitchen/styles.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:kitchen/scoped_models/scoped_day_ingredient.dart';
-import '../../common/swipable.dart';
 import '../../../models/day_ingredient.dart';
-import '../adjust_quantity.dart';
 import '../morning_styles.dart';
 import './morning_item.dart';
 
@@ -38,22 +35,16 @@ class MorningList extends StatelessWidget {
 
     var viewItems = List<Widget>();
     viewItems.add(_headerText("Unchecked Ingredients"));
-    viewItems.addAll(uncheckedIngredients
-        .map((i) => _renderListItem(context, i, scopedIngredient))
-        .toList());
+    viewItems.addAll(uncheckedIngredients.map((i) => MorningItem(i)).toList());
 
     if (missingIngredients.length > 0) {
       viewItems.add(_headerText("Missing Ingredients"));
-      viewItems.addAll(missingIngredients
-          .map((i) => _renderListItem(context, i, scopedIngredient))
-          .toList());
+      viewItems.addAll(missingIngredients.map((i) => MorningItem(i)).toList());
     }
 
     if (checkedIngredients.length > 0) {
       viewItems.add(_headerText("Checked Ingredients"));
-      viewItems.addAll(checkedIngredients
-          .map((i) => _renderListItem(context, i, scopedIngredient))
-          .toList());
+      viewItems.addAll(checkedIngredients.map((i) => MorningItem(i)).toList());
     }
 
     viewItems.add(Container(padding: Styles.spacerPadding));
@@ -65,60 +56,5 @@ class MorningList extends StatelessWidget {
     return Container(
         padding: MorningStyles.listHeaderPadding,
         child: Text(text.toUpperCase(), style: MorningStyles.listHeader));
-  }
-
-  Widget _renderListItem(BuildContext context, DayIngredient ingredient,
-      ScopedDayIngredient scopedIngredient) {
-    final originalQty = ingredient.hadQty;
-
-    return Swipable(
-        canSwipeLeft: () => Future.value(ingredient.hadQty != null),
-        canSwipeRight: () => Future.value(ingredient.hadQty == null ||
-            ingredient.hadQty < ingredient.expectedQty),
-        onSwipeLeft: (context) {
-          scopedIngredient.updateIngredientQty(ingredient, null);
-          _notifyQtyUpdate("Ingredient unchecked", context, ingredient,
-              scopedIngredient, originalQty);
-        },
-        onSwipeRight: (context) {
-          scopedIngredient.updateIngredientQty(
-              ingredient, ingredient.expectedQty);
-          _notifyQtyUpdate("Ingredient checked", context, ingredient,
-              scopedIngredient, originalQty);
-        },
-        child: InkWell(
-            onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (_) {
-                return IngredientAdjustQtyPage(ingredient,
-                    onSubmit: (double setQty, BuildContext qtyViewContext) {
-                  final originalQty = ingredient.hadQty;
-                  scopedIngredient.updateIngredientQty(ingredient, setQty);
-                  Navigator.pop(qtyViewContext);
-                  _notifyQtyUpdate("Ingredient updated", context, ingredient,
-                      scopedIngredient, originalQty);
-                });
-              }));
-            },
-            child: MorningItem(ingredient)));
-  }
-
-  void _notifyQtyUpdate(
-      String notificationText,
-      BuildContext context,
-      DayIngredient ingredient,
-      ScopedDayIngredient scopedIngredient,
-      double originalQty) {
-    Flushbar flush;
-    flush = Flushbar(
-        message: notificationText,
-        duration: Duration(seconds: 3),
-        isDismissible: true,
-        mainButton: InkWell(
-            onTap: () {
-              scopedIngredient.updateIngredientQty(ingredient, originalQty);
-              flush.dismiss();
-            },
-            child: Text("Undo", style: Styles.textHyperlink)))
-      ..show(context);
   }
 }

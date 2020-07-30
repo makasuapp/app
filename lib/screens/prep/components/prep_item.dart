@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
 import 'package:kitchen/models/step_input.dart';
-import 'package:kitchen/screens/common/step_input_item.dart';
+import 'package:kitchen/scoped_models/scoped_data.dart';
+import 'package:kitchen/screens/common/components/step_input_item.dart';
 import '../../../models/day_prep.dart';
 import '../prep_styles.dart';
-import '../../../scoped_models/scoped_day_prep.dart';
 
 class PrepItem extends StatelessWidget {
   final DayPrep prep;
@@ -13,14 +14,21 @@ class PrepItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _renderContent(context);
+    return ScopedModelDescendant<ScopedData>(
+        builder: (context, child, scopedData) =>
+            _renderContent(context, scopedData));
   }
 
-  Widget _renderContent(BuildContext context) {
+  Widget _renderContent(BuildContext context, ScopedData scopedData) {
     var widgets = List<Widget>();
-    final recipeStep = ScopedDayPrep.recipeStepFor(prep);
+    final recipeStep = scopedData.recipeStepsMap[prep.recipeStepId];
+    final recipe = scopedData.recipesMap[recipeStep.recipeId];
 
     widgets.add(Text(recipeStep.instruction, style: PrepStyles.listItemText));
+    widgets.add(Container(
+        padding: PrepStyles.ingredientsHeaderPadding,
+        child:
+            Text("Recipe: ${recipe.name}", style: PrepStyles.ingredientText)));
 
     widgets.add(Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

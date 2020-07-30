@@ -8,15 +8,9 @@ class StoryStyles {
   static final double indicatorHeightPageBar = 3.0;
   static final double indicatorEdgeRadius = 4.0;
   static final double indicatorSpacing = 2.0;
-  static final double unitPickerIconSize = 24;
-  static final double unitPickerUnderlineHeight = 3;
 
   static final Color currentPageBarColor = Colors.blue;
   static final Color defaultPageBarColor = Colors.grey;
-  static final Color unitPickerTextColor = Colors.deepPurple;
-  static final Color unitPickerUnderlineColor = Colors.deepPurpleAccent;
-
-  static final Icon unitPickerIcon = Icon(Icons.arrow_downward);
 
   static final itemPadding = EdgeInsets.fromLTRB(
       Styles.horizontalPaddingDefault, 0, Styles.horizontalPaddingDefault, 20);

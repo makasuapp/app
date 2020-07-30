@@ -34,7 +34,6 @@ final volumeUnits = {
 };
 
 class UnitConverter {
-
   static double _convertUp(double qty, String inputUnit, String outputUnit) {
     if (inputUnit != null && outputUnit != null) {
       final converted =
@@ -48,11 +47,11 @@ class UnitConverter {
     return null;
   }
 
-  static String qtyWithUnit(double qty, String unit,{bool convertUp = true}) {
+  static String qtyWithUnit(double qty, String unit, {bool convertUp = true}) {
     var currQty = qty;
     var shownUnit = unit;
 
-    if(convertUp) {
+    if (convertUp) {
       if (weightUnits.containsKey(shownUnit)) {
         final nextUnitUp = weightUnits[shownUnit].nextUnitUp;
         final converted = _convertUp(currQty, shownUnit, nextUnitUp);
@@ -77,7 +76,7 @@ class UnitConverter {
 
     final isInteger = currQty == currQty.toInt();
     final shownQty =
-        isInteger ? currQty.toInt().toString() : currQty.toStringAsPrecision(2);
+        isInteger ? currQty.toInt().toString() : currQty.toStringAsFixed(2);
 
     if (unit == null) {
       return shownQty;
@@ -106,7 +105,6 @@ class UnitConverter {
     final outputIsW = weightUnits.containsKey(outputUnit);
 
     return (inputUnit == outputUnit) ||
-
         (inputIsV && outputIsV) ||
         (inputIsW && outputIsW) ||
         (((inputIsV && outputIsW) || (inputIsW && outputIsV)) &&
@@ -119,7 +117,6 @@ class UnitConverter {
       return inputQty;
     } else if (canConvert(inputUnit, outputUnit,
         volumeWeightRatio: volumeWeightRatio)) {
-
       final inputV = volumeUnits[inputUnit];
       final inputW = weightUnits[inputUnit];
       final outputV = volumeUnits[outputUnit];

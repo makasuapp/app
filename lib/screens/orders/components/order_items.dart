@@ -7,7 +7,7 @@ import '../../../models/order_item.dart';
 import '../order_styles.dart';
 import '../../story/components/cook_story_item.dart';
 import '../../story/story.dart';
-import '../../common/swipable.dart';
+import '../../common/components/swipable.dart';
 
 class OrderItems extends StatelessWidget {
   final int orderId;

@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:kitchen/navigation_menu.dart';
 import 'package:scoped_model/scoped_model.dart';
 import './components/prep_list.dart';
-import '../op_day/op_day_progress_bar.dart';
+import '../common/components/op_day_progress_bar.dart';
 import 'package:kitchen/scoped_models/scoped_op_day.dart';
 import 'package:kitchen/scoped_models/scoped_day_prep.dart';
+import 'package:kitchen/scoped_models/scoped_data.dart';
 import '../../service_locator.dart';
 
 class PrepChecklistPage extends StatefulWidget {
@@ -19,6 +20,7 @@ class PrepChecklistPage extends StatefulWidget {
 
 class _PrepChecklistPageState extends State<PrepChecklistPage> {
   final opDay = locator<ScopedOpDay>();
+  final data = locator<ScopedData>();
 
   _PrepChecklistPageState();
 
@@ -37,11 +39,13 @@ class _PrepChecklistPageState extends State<PrepChecklistPage> {
             model: this.opDay,
             child: ScopedModel<ScopedDayPrep>(
                 model: this.opDay.scopedDayPrep,
-                child: RefreshIndicator(
-                    onRefresh: () => opDay.loadOpDay(forceLoad: true),
-                    child: Column(children: [
-                      OpDayProgressBar(),
-                      Expanded(child: PrepList())
-                    ])))));
+                child: ScopedModel<ScopedData>(
+                    model: this.data,
+                    child: RefreshIndicator(
+                        onRefresh: () => opDay.loadOpDay(forceLoad: true),
+                        child: Column(children: [
+                          OpDayProgressBar(),
+                          Expanded(child: PrepList())
+                        ]))))));
   }
 }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:kitchen/scoped_models/scoped_order.dart';
 import 'package:kitchen/scoped_models/scoped_data.dart';
-import '../../common/swipable.dart';
+import '../../common/components/swipable.dart';
 import '../../../models/order.dart';
 import '../../../models/order_item.dart';
 import '../order_styles.dart';

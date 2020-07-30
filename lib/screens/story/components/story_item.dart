@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:kitchen/scoped_models/scoped_story.dart';
 import 'package:kitchen/services/unit_converter.dart';
 import 'package:scoped_model/scoped_model.dart';
-import '../adjust_quantity.dart';
+import '../../common/adjust_quantity.dart';
 import '../story_styles.dart';
 
 abstract class StoryItem extends StatelessWidget {
@@ -48,14 +48,17 @@ abstract class StoryItem extends StatelessWidget {
             InkWell(
               onTap: () {
                 Navigator.push(context, MaterialPageRoute(builder: (_) {
-                  return StoryAdjustQuantityPage(this.hasVolumeWeightRatio(),
-                      currentServingSize: this.servingSize,
-                      unit: this.displayedUnits, onSubmit: (double newQty,
-                          String newUnits, BuildContext qtyViewContext) {
-                    scopedStory.updateStory(
-                        this.getUpdatedStoryItem(newUnits, newQty));
-                    Navigator.pop(qtyViewContext);
-                  });
+                  return AdjustQuantityPage(
+                      title: "Adjust Servings",
+                      canConvertAllUnits: this.hasVolumeWeightRatio(),
+                      initQty: this.servingSize,
+                      initUnit: this.displayedUnits,
+                      onSubmit: (double newQty, String newUnits,
+                          BuildContext qtyViewContext) {
+                        scopedStory.updateStory(
+                            this.getUpdatedStoryItem(newUnits, newQty));
+                        Navigator.pop(qtyViewContext);
+                      });
                 }));
               },
               child: Text(
