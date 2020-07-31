@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:kitchen/models/step_input.dart';
 import 'package:kitchen/scoped_models/scoped_lookup.dart';
-import 'package:kitchen/screens/common/components/step_input_item.dart';
+import 'package:kitchen/screens/common/components/input_with_quantity.dart';
 import '../../../models/day_prep.dart';
 import '../prep_styles.dart';
 
@@ -65,7 +65,7 @@ class PrepItem extends StatelessWidget {
           remainingQty = originalQty * toMakeConversion;
         }
 
-        widgets.add(StepInputItem(
+        widgets.add(InputWithQuantity(
             input.name, originalQty, input.inputableType, input.unit,
             adjustedInputQty: remainingQty,
             regularTextStyle: PrepStyles.ingredientText,

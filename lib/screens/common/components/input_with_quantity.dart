@@ -7,18 +7,18 @@ import 'package:kitchen/styles.dart';
 
 enum InputItemStyles { regular, original, adjusted }
 
-class StepInputItem extends StatelessWidget {
-  // final StepInput input;
+class InputWithQuantity extends StatelessWidget {
   final String inputName;
   final double originalInputQty;
   final String inputType;
   final String originalInputUnit;
   final double adjustedInputQty;
+  final String adjustedInputUnit;
   final TextStyle regularTextStyle;
   final TextStyle adjustedQtyStyle;
   final TextStyle originalQtyStyle;
 
-  StepInputItem(
+  InputWithQuantity(
     this.inputName,
     this.originalInputQty,
     this.inputType,
@@ -27,14 +27,16 @@ class StepInputItem extends StatelessWidget {
     this.adjustedQtyStyle,
     this.originalQtyStyle,
     this.adjustedInputQty,
+    this.adjustedInputUnit,
   });
 
-  factory StepInputItem.fromStepInputItem(StepInput input,
+  factory InputWithQuantity.fromStepInput(StepInput input,
       {double adjustedInputQty,
+      String adjustedInputUnit,
       TextStyle regularTextStyle,
       TextStyle adjustedQtyStyle,
       TextStyle originalQtyStyle}) {
-    return StepInputItem(
+    return InputWithQuantity(
       input.name,
       input.quantity,
       input.inputableType,
@@ -43,6 +45,7 @@ class StepInputItem extends StatelessWidget {
       adjustedQtyStyle: adjustedQtyStyle,
       originalQtyStyle: originalQtyStyle,
       adjustedInputQty: adjustedInputQty,
+      adjustedInputUnit: adjustedInputUnit,
     );
   }
 
@@ -50,7 +53,7 @@ class StepInputItem extends StatelessWidget {
   Widget build(BuildContext context) {
     var widgets = List<Widget>();
 
-    if (this.inputType == "RecipeStep" &&
+    if (this.inputType == InputType.RecipeStep &&
         this.originalInputUnit == null &&
         this.originalInputQty == 1 &&
         this.adjustedInputQty == null) {
@@ -66,8 +69,10 @@ class StepInputItem extends StatelessWidget {
             : _setStyle(InputItemStyles.regular),
       ));
       if (hasAdjusted) {
+        final qtyWithUnit = UnitConverter.qtyWithUnit(this.adjustedInputQty,
+            this.adjustedInputUnit ?? this.originalInputUnit);
         widgets.add(Text(
-          " ${UnitConverter.qtyWithUnit(this.adjustedInputQty, this.originalInputUnit)}",
+          " $qtyWithUnit",
           style: _setStyle(InputItemStyles.adjusted),
         ));
       }

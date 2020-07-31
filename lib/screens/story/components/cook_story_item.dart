@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kitchen/screens/common/components/step_input_item.dart';
+import 'package:kitchen/screens/common/components/input_with_quantity.dart';
 import 'package:kitchen/screens/common/components/submit_button.dart';
 import 'package:kitchen/services/unit_converter.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -160,7 +160,7 @@ class CookStoryItem extends StoryItem {
 
   Widget _renderInput(StepInput input, {TextStyle style}) {
     //don't need crossing out for cook. however many servings is what we expect
-    return StepInputItem(input.name, _getAdjustedQty(input.quantity),
+    return InputWithQuantity(input.name, _getAdjustedQty(input.quantity),
         input.inputableType, input.unit,
         regularTextStyle: style ?? StoryStyles.storyText);
   }
