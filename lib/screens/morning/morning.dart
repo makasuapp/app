@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kitchen/navigation_menu.dart';
 import 'package:scoped_model/scoped_model.dart';
 import './components/morning_list.dart';
-import '../common/components/op_day_progress_bar.dart';
+import '../common/components/scoped_progress_bar.dart';
 import 'package:kitchen/scoped_models/scoped_day_ingredient.dart';
 import 'package:kitchen/scoped_models/scoped_op_day.dart';
 import '../../service_locator.dart';
@@ -40,7 +40,7 @@ class _MorningChecklistPageState extends State<MorningChecklistPage> {
                 child: RefreshIndicator(
                     onRefresh: () => opDay.loadOpDay(forceLoad: true),
                     child: Column(children: [
-                      OpDayProgressBar(),
+                      ScopedProgressBar<ScopedOpDay>(),
                       Expanded(child: MorningList())
                     ])))));
   }

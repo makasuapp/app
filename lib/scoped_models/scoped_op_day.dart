@@ -1,5 +1,5 @@
-import 'package:scoped_model/scoped_model.dart';
 import 'dart:convert';
+import './scoped_data_model.dart';
 import './scoped_day_ingredient.dart';
 import './scoped_day_prep.dart';
 import '../models/op_day.dart';
@@ -10,10 +10,9 @@ const SAVE_BUFFER_SECONDS = 15;
 const RETRY_WAIT_SECONDS = 2;
 const NUM_RETRIES = 3;
 
-class ScopedOpDay extends Model {
+class ScopedOpDay extends ScopedDataModel {
   ScopedDayIngredient scopedDayIngredient;
   ScopedDayPrep scopedDayPrep;
-  bool isLoading = false;
   WebApi api;
 
   DateTime _lastLoaded;

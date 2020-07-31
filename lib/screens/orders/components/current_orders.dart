@@ -21,7 +21,7 @@ class _CurrentOrdersState extends State<CurrentOrders> {
   @override
   void initState() {
     super.initState();
-    _height = _minHeight;
+    _height = _minHeight + 30.0;
   }
 
   @override
@@ -71,6 +71,9 @@ class _CurrentOrdersState extends State<CurrentOrders> {
   Widget _renderOrders(
       List<Order> orders, ScopedOrder scopedOrder, ScopedData scopedData) {
     var widgets = List<Widget>();
+    widgets.add(Icon(Icons.drag_handle, color: Colors.black));
+    widgets.add(_renderHeader());
+
     var itemsByRecipe = Map<int, CurrentOrderItem>();
     orders.forEach(
         (o) => o.items.where((oi) => oi.doneAtSec == null).forEach((oi) {
@@ -82,7 +85,6 @@ class _CurrentOrdersState extends State<CurrentOrders> {
               }
             }));
 
-    widgets.add(_renderHeader());
     widgets.addAll(itemsByRecipe.values
         .map((coi) => _renderOrderItem(coi, scopedOrder, scopedData))
         .toList());

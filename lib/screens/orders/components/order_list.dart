@@ -9,12 +9,9 @@ class OrderList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<ScopedOrder>(
-        builder: (context, child, scopedOrder) => SingleChildScrollView(
+        builder: (context, child, scopedOrder) => ListView(
             physics: AlwaysScrollableScrollPhysics(),
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: _renderView(context, scopedOrder))));
+            children: _renderView(context, scopedOrder)));
   }
 
   List<Widget> _renderView(BuildContext context, ScopedOrder scopedOrder) {

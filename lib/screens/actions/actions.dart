@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../morning/morning.dart';
 import '../prep/prep.dart';
 import '../orders/upcoming_orders.dart';
+import '../procurement/shopping.dart';
 import 'package:kitchen/styles.dart';
 
 class Action {
@@ -20,7 +21,8 @@ class ActionsPage extends StatelessWidget {
   static final List<Action> actions = [
     Action(0, "Morning Checklist", (id, t) => MorningChecklistPage(id, t)),
     Action(1, "Prep Checklist", (id, t) => PrepChecklistPage(id, t)),
-    Action(2, "Upcoming Orders", (id, t) => UpcomingOrdersPage(id, t))
+    Action(2, "Upcoming Orders", (id, t) => UpcomingOrdersPage(id, t)),
+    Action(3, "Shopping Lists", (id, t) => ShoppingListsPage(id, t))
   ];
 
   @override

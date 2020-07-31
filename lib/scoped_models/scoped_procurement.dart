@@ -1,11 +1,11 @@
-import 'package:scoped_model/scoped_model.dart';
 import 'dart:convert';
 import '../services/web_api.dart';
 import '../service_locator.dart';
 import '../models/procurement_order.dart';
 import './scoped_data.dart';
+import './scoped_data_model.dart';
 
-class ScopedProcurement extends Model {
+class ScopedProcurement extends ScopedDataModel {
   List<ProcurementOrder> orders;
   bool isLoading = false;
   WebApi api;
