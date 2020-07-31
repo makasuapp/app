@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:kitchen/models/step_input.dart';
-import 'package:kitchen/scoped_models/scoped_data.dart';
+import 'package:kitchen/scoped_models/scoped_lookup.dart';
 import 'package:kitchen/screens/common/components/step_input_item.dart';
 import '../../../models/day_prep.dart';
 import '../prep_styles.dart';
@@ -14,15 +14,15 @@ class PrepItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant<ScopedData>(
-        builder: (context, child, scopedData) =>
-            _renderContent(context, scopedData));
+    return ScopedModelDescendant<ScopedLookup>(
+        builder: (context, child, scopedLookup) =>
+            _renderContent(context, scopedLookup));
   }
 
-  Widget _renderContent(BuildContext context, ScopedData scopedData) {
+  Widget _renderContent(BuildContext context, ScopedLookup scopedLookup) {
     var widgets = List<Widget>();
-    final recipeStep = scopedData.recipeStepsMap[prep.recipeStepId];
-    final recipe = scopedData.recipesMap[recipeStep.recipeId];
+    final recipeStep = scopedLookup.recipeStepsMap[prep.recipeStepId];
+    final recipe = scopedLookup.recipesMap[recipeStep.recipeId];
 
     widgets.add(Text(recipeStep.instruction, style: PrepStyles.listItemText));
     widgets.add(Container(

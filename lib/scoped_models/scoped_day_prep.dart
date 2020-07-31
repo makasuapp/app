@@ -5,7 +5,7 @@ import '../services/web_api.dart';
 import '../api/prep_update.dart';
 import 'package:meta/meta.dart';
 import '../service_locator.dart';
-import 'scoped_data.dart';
+import 'scoped_lookup.dart';
 import '../services/logger.dart';
 
 const RETRY_WAIT_SECONDS = 2;
@@ -21,24 +21,24 @@ class ScopedDayPrep extends Model {
   int retryCount = 0;
   Map<int, Set<int>> _recipeDependencies = Map();
 
-  static ScopedData _scopedData = locator<ScopedData>();
+  static ScopedLookup _scopedLookup = locator<ScopedLookup>();
 
   ScopedDayPrep(
       {List<DayPrep> prep,
       WebApi api,
       List<PrepUpdate> unsavedUpdates,
-      ScopedData scopedData}) {
+      ScopedLookup scopedLookup}) {
     this.unsavedUpdates = unsavedUpdates ?? [];
     this.prep = prep ?? [];
     this.api = api ?? locator<WebApi>();
 
-    if (scopedData != null) {
-      _scopedData = scopedData;
+    if (scopedLookup != null) {
+      _scopedLookup = scopedLookup;
     }
   }
 
   static RecipeStep recipeStepFor(DayPrep prep) {
-    return _scopedData.recipeStepsMap[prep.recipeStepId];
+    return _scopedLookup.recipeStepsMap[prep.recipeStepId];
   }
 
   Future<void> addFetched(List<DayPrep> fetchedPrep) async {

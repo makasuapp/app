@@ -6,7 +6,7 @@ import '../common/components/submit_button.dart';
 import '../../models/day_prep.dart';
 import 'prep_styles.dart';
 import '../../service_locator.dart';
-import '../../scoped_models/scoped_data.dart';
+import '../../scoped_models/scoped_lookup.dart';
 
 class AdjustPrepDonePage extends StatefulWidget {
   final DayPrep prep;
@@ -20,7 +20,7 @@ class AdjustPrepDonePage extends StatefulWidget {
 
 class _AdjustPrepDonePageState extends State<AdjustPrepDonePage> {
   double _setQty;
-  final scopedData = locator<ScopedData>();
+  final scopedLookup = locator<ScopedLookup>();
 
   @override
   void initState() {
@@ -36,7 +36,7 @@ class _AdjustPrepDonePageState extends State<AdjustPrepDonePage> {
   @override
   Widget build(BuildContext context) {
     final recipeStep =
-        this.scopedData.recipeStepsMap[this.widget.prep.recipeStepId];
+        this.scopedLookup.recipeStepsMap[this.widget.prep.recipeStepId];
 
     return Scaffold(
         appBar: AppBar(title: Text("Adjust Quantity")),

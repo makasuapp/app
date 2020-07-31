@@ -1,5 +1,5 @@
 import 'dart:convert';
-import './scoped_data_model.dart';
+import 'scoped_api_model.dart';
 import './scoped_day_ingredient.dart';
 import './scoped_day_prep.dart';
 import '../models/op_day.dart';
@@ -10,44 +10,27 @@ const SAVE_BUFFER_SECONDS = 15;
 const RETRY_WAIT_SECONDS = 2;
 const NUM_RETRIES = 3;
 
-class ScopedOpDay extends ScopedDataModel {
+class ScopedOpDay extends ScopedApiModel {
   ScopedDayIngredient scopedDayIngredient;
   ScopedDayPrep scopedDayPrep;
-  WebApi api;
-
-  DateTime _lastLoaded;
 
   ScopedOpDay(
       {ScopedDayIngredient scopedDayIngredient,
       ScopedDayPrep scopedDayPrep,
-      WebApi api}) {
-    this.api = api ?? locator<WebApi>();
+      WebApi api})
+      : super(api: api) {
     this.scopedDayIngredient =
         scopedDayIngredient ?? locator<ScopedDayIngredient>();
     this.scopedDayPrep = scopedDayPrep ?? locator<ScopedDayPrep>();
   }
 
   Future<void> loadOpDay({forceLoad = false}) async {
-    final now = DateTime.now();
-    final lastMidnight = new DateTime(now.year, now.month, now.day);
-
-    if (forceLoad ||
-        this._lastLoaded == null ||
-        this._lastLoaded.millisecondsSinceEpoch <
-            lastMidnight.millisecondsSinceEpoch) {
-      this.isLoading = true;
-      notifyListeners();
-
+    loadData(() async {
       final opDay = await _fetchOpDay();
 
       this.scopedDayIngredient.addFetched(opDay.ingredients);
       this.scopedDayPrep.addFetched(opDay.prep);
-
-      this.isLoading = false;
-      this._lastLoaded = now;
-
-      notifyListeners();
-    }
+    }, forceLoad: forceLoad);
   }
 
   Future<OpDay> _fetchOpDay() async {

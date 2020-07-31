@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:kitchen/scoped_models/scoped_story.dart';
-import 'package:kitchen/scoped_models/scoped_data.dart';
+import 'package:kitchen/scoped_models/scoped_lookup.dart';
 import 'components/story_item.dart';
 import 'components/story_carousel.dart';
 import '../common/components/transparent_route.dart';
@@ -19,8 +19,8 @@ class StoryView extends StatelessWidget {
     return Scaffold(
         body: ScopedModel<ScopedStory>(
             model: ScopedStory(this.initStory),
-            child: ScopedModel<ScopedData>(
-                model: locator<ScopedData>(),
+            child: ScopedModel<ScopedLookup>(
+                model: locator<ScopedLookup>(),
                 child: SafeArea(
                     child: Dismissible(
                         background:

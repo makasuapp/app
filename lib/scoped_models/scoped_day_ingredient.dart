@@ -6,7 +6,7 @@ import '../api/ingredient_update.dart';
 import 'package:meta/meta.dart';
 import '../service_locator.dart';
 import '../services/logger.dart';
-import './scoped_data.dart';
+import 'scoped_lookup.dart';
 
 const SAVE_BUFFER_SECONDS = 15;
 const RETRY_WAIT_SECONDS = 2;
@@ -15,7 +15,7 @@ const NUM_RETRIES = 3;
 class ScopedDayIngredient extends Model {
   List<DayIngredient> ingredients;
   WebApi api;
-  static ScopedData _scopedData = locator<ScopedData>();
+  static ScopedLookup _scopedLookup = locator<ScopedLookup>();
 
   @visibleForTesting
   List<IngredientUpdate> unsavedUpdates;
@@ -29,13 +29,13 @@ class ScopedDayIngredient extends Model {
       {List<DayIngredient> ingredients,
       WebApi api,
       List<IngredientUpdate> unsavedUpdates,
-      ScopedData scopedData}) {
+      ScopedLookup scopedLookup}) {
     this.unsavedUpdates = unsavedUpdates ?? [];
     this.ingredients = ingredients ?? [];
     this.api = api ?? locator<WebApi>();
 
-    if (scopedData != null) {
-      _scopedData = scopedData;
+    if (scopedLookup != null) {
+      _scopedLookup = scopedLookup;
     }
   }
 
@@ -45,7 +45,7 @@ class ScopedDayIngredient extends Model {
   }
 
   static Ingredient ingredientFor(DayIngredient ingredient) {
-    return _scopedData.ingredientsMap[ingredient.ingredientId];
+    return _scopedLookup.ingredientsMap[ingredient.ingredientId];
   }
 
   void updateIngredientQty(DayIngredient ingredient, double qty,

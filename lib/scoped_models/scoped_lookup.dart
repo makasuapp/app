@@ -3,12 +3,12 @@ import '../models/ingredient.dart';
 import '../models/recipe.dart';
 import '../models/recipe_step.dart';
 
-class ScopedData extends Model {
+class ScopedLookup extends Model {
   Map<int, Recipe> recipesMap = Map();
   Map<int, RecipeStep> recipeStepsMap = Map();
   Map<int, Ingredient> ingredientsMap = Map();
 
-  ScopedData({
+  ScopedLookup({
     List<Recipe> recipes,
     List<RecipeStep> recipeSteps,
     List<Ingredient> ingredients,

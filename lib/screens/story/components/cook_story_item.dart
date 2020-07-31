@@ -4,7 +4,7 @@ import 'package:kitchen/screens/common/components/submit_button.dart';
 import 'package:kitchen/services/unit_converter.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:kitchen/scoped_models/scoped_story.dart';
-import 'package:kitchen/scoped_models/scoped_data.dart';
+import 'package:kitchen/scoped_models/scoped_lookup.dart';
 import '../../../styles.dart';
 import '../../../models/recipe.dart';
 import '../../../models/recipe_step.dart';
@@ -25,12 +25,12 @@ class CookStoryItem extends StoryItem {
   Widget renderContent() {
     return ScopedModelDescendant<ScopedStory>(
         builder: (context, child, scopedStory) =>
-            ScopedModelDescendant<ScopedData>(
-                builder: (context, child, scopedData) {
+            ScopedModelDescendant<ScopedLookup>(
+                builder: (context, child, scopedLookup) {
               return Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: _renderInfo(scopedData, scopedStory));
+                  children: _renderInfo(scopedLookup, scopedStory));
             }));
   }
 
@@ -45,15 +45,15 @@ class CookStoryItem extends StoryItem {
     return (this.recipe.volumeWeightRatio != null);
   }
 
-  List<Widget> _renderInfo(ScopedData scopedData, ScopedStory scopedStory) {
+  List<Widget> _renderInfo(ScopedLookup scopedLookup, ScopedStory scopedStory) {
     var widgets = List<Widget>();
 
     widgets.add(_renderTitle());
     widgets.add(_fullRecipeButton(scopedStory));
     widgets.add(_renderHeader("Ingredients On Order"));
-    widgets.addAll(_renderCookInputs(scopedData, scopedStory));
+    widgets.addAll(_renderCookInputs(scopedLookup, scopedStory));
     widgets.add(_renderHeader("Cook Steps"));
-    widgets.addAll(_renderCookSteps(scopedData, scopedStory));
+    widgets.addAll(_renderCookSteps(scopedLookup, scopedStory));
 
     return widgets;
   }
@@ -75,16 +75,16 @@ class CookStoryItem extends StoryItem {
   }
 
   List<Widget> _renderCookInputs(
-      ScopedData scopedData, ScopedStory scopedStory) {
+      ScopedLookup scopedLookup, ScopedStory scopedStory) {
     final cookInputs = this
         .recipe
         .cookStepIds
-        .map((id) => scopedData.recipeStepsMap[id])
+        .map((id) => scopedLookup.recipeStepsMap[id])
         .expand((step) => step.inputs)
         .where((input) {
       //drop cook steps
       if (input.inputableType == InputType.RecipeStep) {
-        final recipeStep = scopedData.recipeStepsMap[input.inputableId];
+        final recipeStep = scopedLookup.recipeStepsMap[input.inputableId];
         return recipeStep.stepType == "prep";
       } else
         return true;
@@ -94,7 +94,7 @@ class CookStoryItem extends StoryItem {
       if (input.inputableType == InputType.Ingredient) {
         return _renderInput(input);
       } else if (input.inputableType == InputType.Recipe) {
-        final recipe = scopedData.recipesMap[input.inputableId];
+        final recipe = scopedLookup.recipesMap[input.inputableId];
         return InkWell(
             onTap: () {
               scopedStory.push(RecipeStoryItem(recipe,
@@ -103,7 +103,7 @@ class CookStoryItem extends StoryItem {
             },
             child: _renderInput(input));
       } else if (input.inputableType == InputType.RecipeStep) {
-        final recipeStep = scopedData.recipeStepsMap[input.inputableId];
+        final recipeStep = scopedLookup.recipeStepsMap[input.inputableId];
         return InkWell(
           onTap: () {
             scopedStory.push(RecipeStepStoryItem(recipeStep,
@@ -118,9 +118,9 @@ class CookStoryItem extends StoryItem {
   }
 
   List<Widget> _renderCookSteps(
-      ScopedData scopedData, ScopedStory scopedStory) {
+      ScopedLookup scopedLookup, ScopedStory scopedStory) {
     return this.recipe.cookStepIds.map((id) {
-      final recipeStep = scopedData.recipeStepsMap[id];
+      final recipeStep = scopedLookup.recipeStepsMap[id];
       return InkWell(
           onTap: () {
             scopedStory.push(RecipeStepStoryItem(recipeStep,

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:kitchen/scoped_models/scoped_data_model.dart';
+import 'package:kitchen/scoped_models/scoped_api_model.dart';
 import 'progress_bar.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-class ScopedProgressBar<T extends ScopedDataModel> extends StatelessWidget {
+class ScopedProgressBar<T extends ScopedApiModel> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<T>(

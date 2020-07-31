@@ -1,4 +1,3 @@
-import 'package:scoped_model/scoped_model.dart';
 import 'dart:convert';
 import 'package:meta/meta.dart';
 import '../api/load_orders_response.dart';
@@ -8,43 +7,26 @@ import '../services/logger.dart';
 import '../service_locator.dart';
 import '../models/order.dart';
 import '../models/order_item.dart';
-import './scoped_data.dart';
+import './scoped_api_model.dart';
+import 'scoped_lookup.dart';
 
-class ScopedOrder extends Model {
+class ScopedOrder extends ScopedApiModel {
   List<Order> orders;
-  bool isLoading = false;
-  WebApi api;
-  static ScopedData _scopedData = locator<ScopedData>();
+  static ScopedLookup _scopedLookup = locator<ScopedLookup>();
 
-  DateTime _lastLoaded;
-
-  ScopedOrder({List<Order> orders, WebApi api, ScopedData scopedData}) {
-    this.api = api ?? locator<WebApi>();
+  ScopedOrder({List<Order> orders, WebApi api, ScopedLookup scopedLookup})
+      : super(api: api) {
     this.orders = orders ?? List();
 
-    if (scopedData != null) {
-      _scopedData = scopedData;
+    if (scopedLookup != null) {
+      _scopedLookup = scopedLookup;
     }
   }
 
   Future<void> loadOrders({forceLoad = false}) async {
-    final now = DateTime.now();
-    final lastMidnight = new DateTime(now.year, now.month, now.day);
-
-    if (forceLoad ||
-        this._lastLoaded == null ||
-        this._lastLoaded.millisecondsSinceEpoch <
-            lastMidnight.millisecondsSinceEpoch) {
-      this.isLoading = true;
-      notifyListeners();
-
+    loadData(() async {
       await _fetchOrders();
-
-      this.isLoading = false;
-      this._lastLoaded = now;
-
-      notifyListeners();
-    }
+    }, forceLoad: forceLoad);
   }
 
   @visibleForTesting
@@ -58,7 +40,7 @@ class ScopedOrder extends Model {
     final decodedResp = json.decode(resp);
     final loadOrdersResp = LoadOrdersResponse.fromJson(decodedResp);
 
-    _scopedData.addData(
+    _scopedLookup.addData(
         recipes: loadOrdersResp.recipes,
         recipeSteps: loadOrdersResp.recipeSteps,
         ingredients: loadOrdersResp.ingredients);

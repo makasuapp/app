@@ -4,7 +4,7 @@ import 'scoped_models/scoped_day_ingredient.dart';
 import 'scoped_models/scoped_day_prep.dart';
 import 'scoped_models/scoped_op_day.dart';
 import 'scoped_models/scoped_order.dart';
-import 'scoped_models/scoped_data.dart';
+import 'scoped_models/scoped_lookup.dart';
 import 'scoped_models/scoped_procurement.dart';
 
 GetIt locator = GetIt.instance;
@@ -17,6 +17,6 @@ void setupLocator() {
   locator.registerLazySingleton<ScopedDayPrep>(() => ScopedDayPrep());
   locator.registerLazySingleton<ScopedOpDay>(() => ScopedOpDay());
   locator.registerLazySingleton<ScopedOrder>(() => ScopedOrder());
-  locator.registerLazySingleton<ScopedData>(() => ScopedData());
+  locator.registerLazySingleton<ScopedLookup>(() => ScopedLookup());
   locator.registerLazySingleton<ScopedProcurement>(() => ScopedProcurement());
 }

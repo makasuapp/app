@@ -14,7 +14,7 @@ import 'package:scoped_model/scoped_model.dart';
 import '../story_styles.dart';
 import './story_item.dart';
 import '../../../models/recipe_step.dart';
-import 'package:kitchen/scoped_models/scoped_data.dart';
+import 'package:kitchen/scoped_models/scoped_lookup.dart';
 
 class RecipeStepStoryItem extends StoryItem {
   final RecipeStep recipeStep;
@@ -26,12 +26,12 @@ class RecipeStepStoryItem extends StoryItem {
   Widget renderContent() {
     return ScopedModelDescendant<ScopedStory>(
         builder: (context, child, scopedStory) =>
-            ScopedModelDescendant<ScopedData>(
-                builder: (context, child, scopedData) {
+            ScopedModelDescendant<ScopedLookup>(
+                builder: (context, child, scopedLookup) {
               return Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: _renderInfo(context, scopedData, scopedStory));
+                  children: _renderInfo(context, scopedLookup, scopedStory));
             }));
   }
 
@@ -55,8 +55,8 @@ class RecipeStepStoryItem extends StoryItem {
     );
   }
 
-  Widget _fullRecipeButton(ScopedStory scopedStory, ScopedData scopedData) {
-    final recipe = scopedData.recipesMap[this.recipeStep.recipeId];
+  Widget _fullRecipeButton(ScopedStory scopedStory, ScopedLookup scopedLookup) {
+    final recipe = scopedLookup.recipesMap[this.recipeStep.recipeId];
     final servingSize = this.servingSize * recipe.outputQty;
 
     return SubmitButton(
@@ -72,15 +72,15 @@ class RecipeStepStoryItem extends StoryItem {
     );
   }
 
-  List<Widget> _renderInfo(
-      BuildContext context, ScopedData scopedData, ScopedStory scopedStory) {
+  List<Widget> _renderInfo(BuildContext context, ScopedLookup scopedLookup,
+      ScopedStory scopedStory) {
     var widgets = List<Widget>();
     widgets.add(_renderInstruction());
-    widgets.add(_fullRecipeButton(scopedStory, scopedData));
+    widgets.add(_fullRecipeButton(scopedStory, scopedLookup));
     widgets.addAll(_renderListDuration());
     widgets.addAll(_renderListTools());
     widgets.addAll(_renderListDetailedInstructions());
-    widgets.addAll(_renderInputList(context, scopedStory, scopedData));
+    widgets.addAll(_renderInputList(context, scopedStory, scopedLookup));
     return widgets;
   }
 
@@ -139,8 +139,8 @@ class RecipeStepStoryItem extends StoryItem {
     return instructions;
   }
 
-  List<Widget> _renderInputList(
-      BuildContext context, ScopedStory scopedStory, ScopedData scopedData) {
+  List<Widget> _renderInputList(BuildContext context, ScopedStory scopedStory,
+      ScopedLookup scopedLookup) {
     var inputsList = List<Widget>();
     if (recipeStep.inputs.length > 0) {
       inputsList.add(_textHeader("Inputs"));
@@ -150,7 +150,7 @@ class RecipeStepStoryItem extends StoryItem {
           inputsList.add(Container(
               child: _renderInput(input), padding: StoryStyles.itemPadding));
         } else if (input.inputableType == InputType.Recipe) {
-          final recipe = scopedData.recipesMap[input.inputableId];
+          final recipe = scopedLookup.recipesMap[input.inputableId];
           inputsList.add(Container(
             child: InkWell(
                 onTap: () {
@@ -164,7 +164,7 @@ class RecipeStepStoryItem extends StoryItem {
             padding: StoryStyles.itemPadding,
           ));
         } else if (input.inputableType == InputType.RecipeStep) {
-          final recipeStep = scopedData.recipeStepsMap[input.inputableId];
+          final recipeStep = scopedLookup.recipeStepsMap[input.inputableId];
           inputsList.add(Container(
             child: InkWell(
               onTap: () {

@@ -3,7 +3,7 @@ import 'package:kitchen/screens/common/components/step_input_item.dart';
 import 'package:kitchen/services/unit_converter.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:kitchen/scoped_models/scoped_story.dart';
-import 'package:kitchen/scoped_models/scoped_data.dart';
+import 'package:kitchen/scoped_models/scoped_lookup.dart';
 import '../../../styles.dart';
 import './story_item.dart';
 import './recipe_step_story_item.dart';
@@ -21,12 +21,12 @@ class RecipeStoryItem extends StoryItem {
   Widget renderContent() {
     return ScopedModelDescendant<ScopedStory>(
         builder: (context, child, scopedStory) =>
-            ScopedModelDescendant<ScopedData>(
-                builder: (context, child, scopedData) {
+            ScopedModelDescendant<ScopedLookup>(
+                builder: (context, child, scopedLookup) {
               return Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: _renderInfo(scopedData, scopedStory));
+                  children: _renderInfo(scopedLookup, scopedStory));
             }));
   }
 
@@ -41,12 +41,12 @@ class RecipeStoryItem extends StoryItem {
     return (this.recipe.volumeWeightRatio != null);
   }
 
-  List<Widget> _renderInfo(ScopedData scopedData, ScopedStory scopedStory) {
+  List<Widget> _renderInfo(ScopedLookup scopedLookup, ScopedStory scopedStory) {
     var widgets = List<Widget>();
 
     widgets.add(_renderTitle());
-    widgets.addAll(_renderAllInputs(scopedData, scopedStory));
-    widgets.addAll(_renderAllSteps(scopedData, scopedStory));
+    widgets.addAll(_renderAllInputs(scopedLookup, scopedStory));
+    widgets.addAll(_renderAllSteps(scopedLookup, scopedStory));
 
     return widgets;
   }
@@ -61,12 +61,12 @@ class RecipeStoryItem extends StoryItem {
   }
 
   List<Widget> _renderAllInputs(
-      ScopedData scopedData, ScopedStory scopedStory) {
+      ScopedLookup scopedLookup, ScopedStory scopedStory) {
     var widgets = List<Widget>();
 
     widgets.add(_renderHeader("Ingredients"));
     final steps = (this.recipe.prepStepIds + this.recipe.cookStepIds)
-        .map((id) => scopedData.recipeStepsMap[id])
+        .map((id) => scopedLookup.recipeStepsMap[id])
         .toList();
     var inputs = List<StepInput>();
     //TODO: combine ingredients that are the same as a result of subrecipes
@@ -80,9 +80,9 @@ class RecipeStoryItem extends StoryItem {
 
     inputs.forEach((input) {
       if (input.inputableType == InputType.Ingredient) {
-        widgets.add(_renderInput(scopedData, input));
+        widgets.add(_renderInput(scopedLookup, input));
       } else if (input.inputableType == InputType.Recipe) {
-        final recipe = scopedData.recipesMap[input.inputableId];
+        final recipe = scopedLookup.recipesMap[input.inputableId];
         widgets.add(InkWell(
             onTap: () {
               scopedStory.push(RecipeStoryItem(
@@ -91,25 +91,26 @@ class RecipeStoryItem extends StoryItem {
                 outputUnits: input.unit,
               ));
             },
-            child: _renderInput(scopedData, input)));
+            child: _renderInput(scopedLookup, input)));
       }
     });
 
     return widgets;
   }
 
-  List<Widget> _renderAllSteps(ScopedData scopedData, ScopedStory scopedStory) {
+  List<Widget> _renderAllSteps(
+      ScopedLookup scopedLookup, ScopedStory scopedStory) {
     var widgets = List<Widget>();
 
     if (this.recipe.prepStepIds.length > 0) {
       widgets.add(_renderHeader("Prep"));
       widgets.addAll(
-          _renderSteps(scopedData, scopedStory, this.recipe.prepStepIds));
+          _renderSteps(scopedLookup, scopedStory, this.recipe.prepStepIds));
     }
     if (this.recipe.cookStepIds.length > 0) {
       widgets.add(_renderHeader("Cook"));
       widgets.addAll(
-          _renderSteps(scopedData, scopedStory, this.recipe.cookStepIds));
+          _renderSteps(scopedLookup, scopedStory, this.recipe.cookStepIds));
     }
 
     return widgets;
@@ -122,9 +123,9 @@ class RecipeStoryItem extends StoryItem {
   }
 
   List<Widget> _renderSteps(
-      ScopedData scopedData, ScopedStory scopedStory, List<int> ids) {
+      ScopedLookup scopedLookup, ScopedStory scopedStory, List<int> ids) {
     return ids.map((id) {
-      final recipeStep = scopedData.recipeStepsMap[id];
+      final recipeStep = scopedLookup.recipeStepsMap[id];
       return InkWell(
           onTap: () {
             scopedStory.push(RecipeStepStoryItem(recipeStep,
@@ -135,7 +136,7 @@ class RecipeStoryItem extends StoryItem {
     }).toList();
   }
 
-  Widget _renderInput(ScopedData scopedData, StepInput input) {
+  Widget _renderInput(ScopedLookup scopedLookup, StepInput input) {
     final servingsInRecipeUnits = UnitConverter.convert(servingSize,
         inputUnit: this.displayedUnits,
         outputUnit: this.recipe.unit,

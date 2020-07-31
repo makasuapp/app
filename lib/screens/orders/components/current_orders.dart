@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:kitchen/scoped_models/scoped_order.dart';
-import 'package:kitchen/scoped_models/scoped_data.dart';
+import 'package:kitchen/scoped_models/scoped_lookup.dart';
 import '../../common/components/swipable.dart';
 import '../../../models/order.dart';
 import '../../../models/order_item.dart';
@@ -27,13 +27,13 @@ class _CurrentOrdersState extends State<CurrentOrders> {
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<ScopedOrder>(
-        builder: (_, __, scopedOrder) => ScopedModelDescendant<ScopedData>(
-            builder: (_, __, scopedData) =>
-                _renderSheet(context, scopedOrder, scopedData)));
+        builder: (_, __, scopedOrder) => ScopedModelDescendant<ScopedLookup>(
+            builder: (_, __, scopedLookup) =>
+                _renderSheet(context, scopedOrder, scopedLookup)));
   }
 
-  Widget _renderSheet(
-      BuildContext context, ScopedOrder scopedOrder, ScopedData scopedData) {
+  Widget _renderSheet(BuildContext context, ScopedOrder scopedOrder,
+      ScopedLookup scopedLookup) {
     final currentState = OrderState.started();
     //started orders with not yet done items
     final currentOrders = scopedOrder.orders
@@ -50,7 +50,7 @@ class _CurrentOrdersState extends State<CurrentOrders> {
           height: _height,
           width: MediaQuery.of(context).size.width,
           child: _dragSizable(
-              _renderOrders(currentOrders, scopedOrder, scopedData)));
+              _renderOrders(currentOrders, scopedOrder, scopedLookup)));
     } else {
       return Container(height: 0);
     }
@@ -69,7 +69,7 @@ class _CurrentOrdersState extends State<CurrentOrders> {
   }
 
   Widget _renderOrders(
-      List<Order> orders, ScopedOrder scopedOrder, ScopedData scopedData) {
+      List<Order> orders, ScopedOrder scopedOrder, ScopedLookup scopedLookup) {
     var widgets = List<Widget>();
     widgets.add(Icon(Icons.drag_handle, color: Colors.black));
     widgets.add(_renderHeader());
@@ -86,7 +86,7 @@ class _CurrentOrdersState extends State<CurrentOrders> {
             }));
 
     widgets.addAll(itemsByRecipe.values
-        .map((coi) => _renderOrderItem(coi, scopedOrder, scopedData))
+        .map((coi) => _renderOrderItem(coi, scopedOrder, scopedLookup))
         .toList());
 
     return Wrap(children: [
@@ -102,15 +102,15 @@ class _CurrentOrdersState extends State<CurrentOrders> {
         width: double.infinity, child: Text("Remaining Started Items"));
   }
 
-  Widget _renderOrderItem(
-      CurrentOrderItem item, ScopedOrder scopedOrder, ScopedData scopedData) {
-    final recipe = scopedData.recipesMap[item.recipeId];
+  Widget _renderOrderItem(CurrentOrderItem item, ScopedOrder scopedOrder,
+      ScopedLookup scopedLookup) {
+    final recipe = scopedLookup.recipesMap[item.recipeId];
 
     return Swipable(
         onSwipeRight: (_) => _onItemDismissed(item, scopedOrder),
         child: InkWell(
             onTap: () => StoryView.render(
-                context, CookStoryItem(scopedData.recipesMap[item.recipeId])),
+                context, CookStoryItem(scopedLookup.recipesMap[item.recipeId])),
             child: Container(
                 width: double.infinity,
                 padding: OrderStyles.orderDetailItemPadding,

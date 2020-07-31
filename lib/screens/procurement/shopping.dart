@@ -4,7 +4,7 @@ import 'package:kitchen/screens/common/components/progress_bar.dart';
 import 'package:kitchen/screens/common/components/scoped_progress_bar.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:kitchen/scoped_models/scoped_procurement.dart';
-import 'package:kitchen/scoped_models/scoped_data.dart';
+import 'package:kitchen/scoped_models/scoped_lookup.dart';
 import '../../service_locator.dart';
 import './components/shopping_lists.dart';
 
@@ -20,7 +20,7 @@ class ShoppingListsPage extends StatefulWidget {
 
 class _ShoppingListsPageState extends State<ShoppingListsPage> {
   final procurement = locator<ScopedProcurement>();
-  final data = locator<ScopedData>();
+  final data = locator<ScopedLookup>();
 
   _ShoppingListsPageState();
 
@@ -37,7 +37,7 @@ class _ShoppingListsPageState extends State<ShoppingListsPage> {
         drawer: NavigationMenu(this.widget.pageId),
         body: ScopedModel<ScopedProcurement>(
             model: this.procurement,
-            child: ScopedModel<ScopedData>(
+            child: ScopedModel<ScopedLookup>(
                 model: this.data,
                 child: RefreshIndicator(
                     onRefresh: () => procurement.loadOrders(forceLoad: true),

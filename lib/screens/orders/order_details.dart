@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:kitchen/scoped_models/scoped_order.dart';
-import 'package:kitchen/scoped_models/scoped_data.dart';
+import 'package:kitchen/scoped_models/scoped_lookup.dart';
 import 'package:intl/intl.dart';
 import 'components/order_items.dart';
 import '../../models/order.dart';
@@ -11,7 +11,7 @@ import '../../service_locator.dart';
 class OrderDetailsPage extends StatelessWidget {
   final Order order;
   final scopedOrder = locator<ScopedOrder>();
-  final scopedData = locator<ScopedData>();
+  final scopedLookup = locator<ScopedLookup>();
 
   OrderDetailsPage(this.order);
 
@@ -21,8 +21,8 @@ class OrderDetailsPage extends StatelessWidget {
         appBar: AppBar(title: Text("Order ${this.order.id}")),
         body: ScopedModel<ScopedOrder>(
             model: this.scopedOrder,
-            child: ScopedModel<ScopedData>(
-                model: this.scopedData,
+            child: ScopedModel<ScopedLookup>(
+                model: this.scopedLookup,
                 child: Container(child: _renderContent(context)))));
   }
 
