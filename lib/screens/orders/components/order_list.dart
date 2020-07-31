@@ -15,15 +15,10 @@ class OrderList extends StatelessWidget {
   }
 
   List<Widget> _renderView(BuildContext context, ScopedOrder scopedOrder) {
-    var viewItems = List<Widget>();
-
-    viewItems.addAll(scopedOrder.orders
-        .where((o) => o.orderState() != OrderState.delivered())
-        .map((o) => OrderCard(o))
-        .toList());
-
-    viewItems.add(Container(padding: Styles.spacerPadding));
-
-    return viewItems;
+    return scopedOrder.orders
+            .where((o) => o.orderState() != OrderState.delivered())
+            .map<Widget>((o) => OrderCard(o))
+            .toList() +
+        <Widget>[Container(padding: Styles.spacerPadding)];
   }
 }

@@ -46,16 +46,14 @@ class CookStoryItem extends StoryItem {
   }
 
   List<Widget> _renderInfo(ScopedLookup scopedLookup, ScopedStory scopedStory) {
-    var widgets = List<Widget>();
-
-    widgets.add(_renderTitle());
-    widgets.add(_fullRecipeButton(scopedStory));
-    widgets.add(_renderHeader("Ingredients On Order"));
-    widgets.addAll(_renderCookInputs(scopedLookup, scopedStory));
-    widgets.add(_renderHeader("Cook Steps"));
-    widgets.addAll(_renderCookSteps(scopedLookup, scopedStory));
-
-    return widgets;
+    return <Widget>[
+          _renderTitle(),
+          _fullRecipeButton(scopedStory),
+          _renderHeader("Ingredients On Order")
+        ] +
+        _renderCookInputs(scopedLookup, scopedStory) +
+        <Widget>[_renderHeader("Cook Steps")] +
+        _renderCookSteps(scopedLookup, scopedStory);
   }
 
   Widget _renderTitle() {

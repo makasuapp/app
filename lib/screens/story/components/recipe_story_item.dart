@@ -42,13 +42,9 @@ class RecipeStoryItem extends StoryItem {
   }
 
   List<Widget> _renderInfo(ScopedLookup scopedLookup, ScopedStory scopedStory) {
-    var widgets = List<Widget>();
-
-    widgets.add(_renderTitle());
-    widgets.addAll(_renderAllInputs(scopedLookup, scopedStory));
-    widgets.addAll(_renderAllSteps(scopedLookup, scopedStory));
-
-    return widgets;
+    return <Widget>[_renderTitle()] +
+        _renderAllInputs(scopedLookup, scopedStory) +
+        _renderAllSteps(scopedLookup, scopedStory);
   }
 
   Widget _renderTitle() {

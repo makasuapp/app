@@ -74,14 +74,14 @@ class RecipeStepStoryItem extends StoryItem {
 
   List<Widget> _renderInfo(BuildContext context, ScopedLookup scopedLookup,
       ScopedStory scopedStory) {
-    var widgets = List<Widget>();
-    widgets.add(_renderInstruction());
-    widgets.add(_fullRecipeButton(scopedStory, scopedLookup));
-    widgets.addAll(_renderListDuration());
-    widgets.addAll(_renderListTools());
-    widgets.addAll(_renderListDetailedInstructions());
-    widgets.addAll(_renderInputList(context, scopedStory, scopedLookup));
-    return widgets;
+    return <Widget>[
+          _renderInstruction(),
+          _fullRecipeButton(scopedStory, scopedLookup)
+        ] +
+        _renderListDuration() +
+        _renderListTools() +
+        _renderListDetailedInstructions() +
+        _renderInputList(context, scopedStory, scopedLookup);
   }
 
   Widget _renderInstruction() {

@@ -70,10 +70,6 @@ class _CurrentOrdersState extends State<CurrentOrders> {
 
   Widget _renderOrders(
       List<Order> orders, ScopedOrder scopedOrder, ScopedLookup scopedLookup) {
-    var widgets = List<Widget>();
-    widgets.add(Icon(Icons.drag_handle, color: Colors.black));
-    widgets.add(_renderHeader());
-
     var itemsByRecipe = Map<int, CurrentOrderItem>();
     orders.forEach(
         (o) => o.items.where((oi) => oi.doneAtSec == null).forEach((oi) {
@@ -85,15 +81,19 @@ class _CurrentOrdersState extends State<CurrentOrders> {
               }
             }));
 
-    widgets.addAll(itemsByRecipe.values
-        .map((coi) => _renderOrderItem(coi, scopedOrder, scopedLookup))
-        .toList());
-
     return Wrap(children: [
       Container(
           width: double.infinity,
           padding: OrderStyles.currentOrdersPadding,
-          child: Column(children: widgets))
+          child: Column(
+              children: <Widget>[
+                    Icon(Icons.drag_handle, color: Colors.black),
+                    _renderHeader()
+                  ] +
+                  itemsByRecipe.values
+                      .map((coi) =>
+                          _renderOrderItem(coi, scopedOrder, scopedLookup))
+                      .toList()))
     ]);
   }
 
