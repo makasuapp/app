@@ -20,15 +20,6 @@ class OrderCard extends StatelessWidget {
   }
 
   Widget _renderContent(BuildContext context, ScopedOrder scopedOrder) {
-    var contentWidgets = List<Widget>();
-
-    contentWidgets.add(_renderTop(context, scopedOrder));
-    contentWidgets.add(Container(
-        decoration: OrderStyles.orderItemsTopBorder,
-        padding: OrderStyles.orderItemsTopPadding));
-
-    contentWidgets.add(OrderItems(this.order.id));
-
     return Container(
         padding: OrderStyles.orderCardPadding,
         decoration: BoxDecoration(
@@ -39,7 +30,13 @@ class OrderCard extends StatelessWidget {
         width: MediaQuery.of(context).size.width,
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: contentWidgets));
+            children: <Widget>[
+              _renderTop(context, scopedOrder),
+              Container(
+                  decoration: OrderStyles.orderItemsTopBorder,
+                  padding: OrderStyles.orderItemsTopPadding),
+              OrderItems(this.order.id)
+            ]));
   }
 
   Widget _renderTop(BuildContext context, ScopedOrder scopedOrder) {

@@ -27,32 +27,29 @@ class OrderDetailsPage extends StatelessWidget {
   }
 
   Widget _renderContent(BuildContext context) {
-    var contentWidgets = List<Widget>();
-
-    contentWidgets.addAll(_renderInfo());
-    contentWidgets.add(Container(padding: OrderStyles.orderItemsTopPadding));
-    contentWidgets.add(OrderItems(this.order.id));
-
     return Container(
         padding: OrderStyles.orderCardPadding,
         width: MediaQuery.of(context).size.width,
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: contentWidgets));
+            children: _renderInfo() +
+                <Widget>[
+                  Container(padding: OrderStyles.orderItemsTopPadding),
+                  OrderItems(this.order.id)
+                ]));
   }
 
   List<Widget> _renderInfo() {
     final orderState = this.order.orderState();
-    var info = List<Widget>();
     final forTime = DateFormat('M/dd K:mm a').format(this.order.forTime());
 
-    info.add(_renderText("Order ID: ${this.order.id}"));
-    info.add(_renderText("For: $forTime"));
-    info.add(_renderText("Status: ${orderState.text}"));
-    info.add(_renderText("Type: ${this.order.orderType}"));
-    info.add(_renderText("Customer Info: ${this.order.customer.info()}"));
-
-    return info;
+    return <Widget>[
+      _renderText("Order ID: ${this.order.id}"),
+      _renderText("For: $forTime"),
+      _renderText("Status: ${orderState.text}"),
+      _renderText("Type: ${this.order.orderType}"),
+      _renderText("Customer Info: ${this.order.customer.info()}"),
+    ];
   }
 
   Widget _renderText(String text) {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kitchen/screens/common/components/step_input_item.dart';
+import 'package:kitchen/screens/common/components/input_with_quantity.dart';
 import 'package:kitchen/services/unit_converter.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:kitchen/scoped_models/scoped_story.dart';
@@ -42,13 +42,9 @@ class RecipeStoryItem extends StoryItem {
   }
 
   List<Widget> _renderInfo(ScopedLookup scopedLookup, ScopedStory scopedStory) {
-    var widgets = List<Widget>();
-
-    widgets.add(_renderTitle());
-    widgets.addAll(_renderAllInputs(scopedLookup, scopedStory));
-    widgets.addAll(_renderAllSteps(scopedLookup, scopedStory));
-
-    return widgets;
+    return <Widget>[_renderTitle()] +
+        _renderAllInputs(scopedLookup, scopedStory) +
+        _renderAllSteps(scopedLookup, scopedStory);
   }
 
   Widget _renderTitle() {
@@ -141,7 +137,7 @@ class RecipeStoryItem extends StoryItem {
         inputUnit: this.displayedUnits,
         outputUnit: this.recipe.unit,
         volumeWeightRatio: this.recipe.volumeWeightRatio);
-    return StepInputItem.fromStepInputItem(
+    return InputWithQuantity.fromStepInput(
       input,
       adjustedInputQty: (servingsInRecipeUnits.toStringAsFixed(2) !=
               this.recipe.outputQty.toStringAsFixed(2))

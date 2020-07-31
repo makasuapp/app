@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kitchen/navigation_menu.dart';
-import 'package:kitchen/screens/common/components/progress_bar.dart';
 import 'package:kitchen/screens/common/components/scoped_progress_bar.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:kitchen/scoped_models/scoped_procurement.dart';

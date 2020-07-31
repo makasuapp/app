@@ -3,7 +3,7 @@ import 'package:flushbar/flushbar.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:kitchen/styles.dart';
 import 'package:kitchen/models/step_input.dart';
-import 'package:kitchen/screens/common/components/step_input_item.dart';
+import 'package:kitchen/screens/common/components/input_with_quantity.dart';
 import 'package:kitchen/services/unit_converter.dart';
 import '../../common/components/swipable.dart';
 import '../../common/adjust_quantity.dart';
@@ -72,8 +72,11 @@ class MorningItem extends StatelessWidget {
             : null,
         width: MediaQuery.of(context).size.width,
         padding: MorningStyles.listItemPadding,
-        child: StepInputItem(ScopedDayIngredient.ingredientFor(ingredient).name,
-            ingredient.expectedQty, InputType.Ingredient, ingredient.unit,
+        child: InputWithQuantity(
+            ScopedDayIngredient.ingredientFor(ingredient).name,
+            ingredient.expectedQty,
+            InputType.Ingredient,
+            ingredient.unit,
             adjustedInputQty: ingredient.hadQty,
             regularTextStyle: MorningStyles.listItemText,
             originalQtyStyle: MorningStyles.expectedItemText,

@@ -1,4 +1,3 @@
-import 'package:kitchen/env.dart';
 import 'package:kitchen/scoped_models/scoped_procurement.dart';
 import 'package:kitchen/services/web_api.dart';
 import 'package:mockito/mockito.dart';

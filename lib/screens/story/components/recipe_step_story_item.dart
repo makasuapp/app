@@ -5,7 +5,7 @@ import 'package:kitchen/models/detailed_instruction.dart';
 import 'package:kitchen/models/step_input.dart';
 import 'package:kitchen/models/tool.dart';
 import 'package:kitchen/scoped_models/scoped_story.dart';
-import 'package:kitchen/screens/common/components/step_input_item.dart';
+import 'package:kitchen/screens/common/components/input_with_quantity.dart';
 import 'package:kitchen/screens/common/components/submit_button.dart';
 import 'package:kitchen/screens/story/components/recipe_story_item.dart';
 import 'package:kitchen/services/unit_converter.dart';
@@ -74,14 +74,14 @@ class RecipeStepStoryItem extends StoryItem {
 
   List<Widget> _renderInfo(BuildContext context, ScopedLookup scopedLookup,
       ScopedStory scopedStory) {
-    var widgets = List<Widget>();
-    widgets.add(_renderInstruction());
-    widgets.add(_fullRecipeButton(scopedStory, scopedLookup));
-    widgets.addAll(_renderListDuration());
-    widgets.addAll(_renderListTools());
-    widgets.addAll(_renderListDetailedInstructions());
-    widgets.addAll(_renderInputList(context, scopedStory, scopedLookup));
-    return widgets;
+    return <Widget>[
+          _renderInstruction(),
+          _fullRecipeButton(scopedStory, scopedLookup)
+        ] +
+        _renderListDuration() +
+        _renderListTools() +
+        _renderListDetailedInstructions() +
+        _renderInputList(context, scopedStory, scopedLookup);
   }
 
   Widget _renderInstruction() {
@@ -182,7 +182,7 @@ class RecipeStepStoryItem extends StoryItem {
   }
 
   Widget _renderInput(StepInput input) {
-    return StepInputItem.fromStepInputItem(
+    return InputWithQuantity.fromStepInput(
       input,
       adjustedInputQty:
           (this.servingSize.toStringAsFixed(2) != 1.toStringAsFixed(2))

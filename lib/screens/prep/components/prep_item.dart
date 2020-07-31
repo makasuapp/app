@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:kitchen/models/step_input.dart';
 import 'package:kitchen/scoped_models/scoped_lookup.dart';
-import 'package:kitchen/screens/common/components/step_input_item.dart';
+import 'package:kitchen/screens/common/components/input_with_quantity.dart';
 import '../../../models/day_prep.dart';
+import '../../../models/recipe.dart';
 import '../prep_styles.dart';
 
 class PrepItem extends StatelessWidget {
@@ -20,32 +21,34 @@ class PrepItem extends StatelessWidget {
   }
 
   Widget _renderContent(BuildContext context, ScopedLookup scopedLookup) {
-    var widgets = List<Widget>();
     final recipeStep = scopedLookup.recipeStepsMap[prep.recipeStepId];
     final recipe = scopedLookup.recipesMap[recipeStep.recipeId];
 
-    widgets.add(Text(recipeStep.instruction, style: PrepStyles.listItemText));
-    widgets.add(Container(
-        padding: PrepStyles.ingredientsHeaderPadding,
-        child:
-            Text("Recipe: ${recipe.name}", style: PrepStyles.ingredientText)));
-
-    widgets.add(Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(child: _renderIngredients(recipeStep.inputs)),
-          _renderButtons()
-        ]));
-
     final isDone =
         this.prep.madeQty != null && this.prep.madeQty >= this.prep.expectedQty;
+
     return Container(
         padding: PrepStyles.listItemPadding,
         decoration: isDone ? null : PrepStyles.listItemBorder,
         color: isDone ? PrepStyles.doneItemColor : null,
         width: MediaQuery.of(context).size.width,
         child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start, children: widgets));
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(recipeStep.instruction, style: PrepStyles.listItemText),
+              _renderRecipe(recipe),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                Expanded(child: _renderIngredients(recipeStep.inputs)),
+                _renderButtons()
+              ])
+            ]));
+  }
+
+  Widget _renderRecipe(Recipe recipe) {
+    return Container(
+        padding: PrepStyles.ingredientsHeaderPadding,
+        child:
+            Text("Recipe: ${recipe.name}", style: PrepStyles.ingredientText));
   }
 
   Widget _renderIngredients(List<StepInput> inputs) {
@@ -65,7 +68,7 @@ class PrepItem extends StatelessWidget {
           remainingQty = originalQty * toMakeConversion;
         }
 
-        widgets.add(StepInputItem(
+        widgets.add(InputWithQuantity(
             input.name, originalQty, input.inputableType, input.unit,
             adjustedInputQty: remainingQty,
             regularTextStyle: PrepStyles.ingredientText,

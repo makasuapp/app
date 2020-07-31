@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kitchen/screens/common/components/step_input_item.dart';
+import 'package:kitchen/screens/common/components/input_with_quantity.dart';
 import 'package:kitchen/screens/common/components/submit_button.dart';
 import 'package:kitchen/services/unit_converter.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -46,16 +46,14 @@ class CookStoryItem extends StoryItem {
   }
 
   List<Widget> _renderInfo(ScopedLookup scopedLookup, ScopedStory scopedStory) {
-    var widgets = List<Widget>();
-
-    widgets.add(_renderTitle());
-    widgets.add(_fullRecipeButton(scopedStory));
-    widgets.add(_renderHeader("Ingredients On Order"));
-    widgets.addAll(_renderCookInputs(scopedLookup, scopedStory));
-    widgets.add(_renderHeader("Cook Steps"));
-    widgets.addAll(_renderCookSteps(scopedLookup, scopedStory));
-
-    return widgets;
+    return <Widget>[
+          _renderTitle(),
+          _fullRecipeButton(scopedStory),
+          _renderHeader("Ingredients On Order")
+        ] +
+        _renderCookInputs(scopedLookup, scopedStory) +
+        <Widget>[_renderHeader("Cook Steps")] +
+        _renderCookSteps(scopedLookup, scopedStory);
   }
 
   Widget _renderTitle() {
@@ -160,7 +158,7 @@ class CookStoryItem extends StoryItem {
 
   Widget _renderInput(StepInput input, {TextStyle style}) {
     //don't need crossing out for cook. however many servings is what we expect
-    return StepInputItem(input.name, _getAdjustedQty(input.quantity),
+    return InputWithQuantity(input.name, _getAdjustedQty(input.quantity),
         input.inputableType, input.unit,
         regularTextStyle: style ?? StoryStyles.storyText);
   }
