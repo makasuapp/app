@@ -64,6 +64,7 @@ class RecipeStoryItem extends StoryItem {
     final steps = (this.recipe.prepStepIds + this.recipe.cookStepIds)
         .map((id) => scopedLookup.recipeStepsMap[id])
         .toList();
+
     var inputs = List<StepInput>();
     //TODO: combine ingredients that are the same as a result of subrecipes
     //or list subrecipes as subheaders with their ingredients under

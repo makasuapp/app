@@ -50,11 +50,11 @@ class Styles {
     fontSize: textSizeDefault,
     color: textColorDefault,
   );
-  static final TextStyle adjustedQtyStyle = TextStyle(
+  static final TextStyle originalQtyStyle = TextStyle(
       fontSize: textSizeDefault,
       color: textColorFaint,
       decoration: TextDecoration.lineThrough);
-  static final TextStyle originalQtyStyle = TextStyle(
+  static final TextStyle adjustedQtyStyle = TextStyle(
     fontSize: textSizeDefault,
     color: Colors.red,
   );
