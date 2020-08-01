@@ -61,7 +61,8 @@ class InputWithQuantity extends StatelessWidget {
           .add(Text(this.inputName, style: _setStyle(InputItemStyles.regular)));
     } else {
       final hasAdjusted = this.adjustedInputQty != null &&
-          this.adjustedInputQty != this.originalInputQty;
+          (this.adjustedInputQty != this.originalInputQty ||
+              this.adjustedInputUnit != this.originalInputUnit);
 
       widgets.add(Text(
         "${UnitConverter.qtyWithUnit(this.originalInputQty, this.originalInputUnit)}",

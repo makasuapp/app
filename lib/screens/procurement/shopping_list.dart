@@ -27,21 +27,28 @@ class ShoppingListPage extends StatelessWidget {
   }
 
   Widget _renderContent() {
-    return Container(
-        padding: ShoppingStyles.listCardPadding,
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-                  ShoppingListTop(this.order),
-                  Container(padding: ShoppingStyles.listItemsTopPadding),
-                ] +
-                this
-                    .order
-                    .items
-                    .map(
-                      (item) => SwipableShoppingItem(item),
-                    )
-                    .toList()));
+    return ScopedModelDescendant<ScopedProcurement>(
+        builder: (_, __, scopedProcurement) {
+      //we don't want to use the page's order since it might be out of date
+      final order = scopedProcurement.orders
+          .where((o) => o.id == this.order.id)
+          .toList()
+          .first;
+      return Container(
+          padding: ShoppingStyles.listCardPadding,
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                    ShoppingListTop(order),
+                    Container(padding: ShoppingStyles.listItemsTopPadding),
+                  ] +
+                  //TODO: group items that are the same ingredient
+                  order.items
+                      .map(
+                        (item) => SwipableShoppingItem(item),
+                      )
+                      .toList()));
+    });
   }
 }

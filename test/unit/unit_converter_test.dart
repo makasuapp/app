@@ -4,22 +4,22 @@ import 'package:test/test.dart';
 void main() {
   group('qtyWithUnit', () {
     test('null unit shows no unit', () {
-      expect(UnitConverter.qtyWithUnit(1.5, null), equals("1.5"));
+      expect(UnitConverter.qtyWithUnit(1.5, null), equals("1.50"));
     });
 
     test('non-convertable shows unit as is', () {
-      expect(UnitConverter.qtyWithUnit(1.512345, "lb"), equals("1.5 lb"));
+      expect(UnitConverter.qtyWithUnit(1.512345, "lb"), equals("1.51 lb"));
       expect(UnitConverter.qtyWithUnit(1, "g"), equals("1 g"));
       expect(UnitConverter.qtyWithUnit(3, "L"), equals("3 L"));
-      expect(UnitConverter.qtyWithUnit(1.5, "tbsp"), equals("1.5 tbsp"));
-      expect(UnitConverter.qtyWithUnit(2.5, "handful"), equals("2.5 handful"));
+      expect(UnitConverter.qtyWithUnit(1.5, "tbsp"), equals("1.50 tbsp"));
+      expect(UnitConverter.qtyWithUnit(2.5, "handful"), equals("2.50 handful"));
     });
 
     test('converts up', () {
-      expect(UnitConverter.qtyWithUnit(1500, "g"), equals("1.5 kg"));
+      expect(UnitConverter.qtyWithUnit(1500, "g"), equals("1.50 kg"));
       expect(UnitConverter.qtyWithUnit(32, "oz"), equals("2 lb"));
-      expect(UnitConverter.qtyWithUnit(1500, "mL"), equals("1.5 L"));
-      expect(UnitConverter.qtyWithUnit(998.4, "tsp"), equals("1.3 gal"));
+      expect(UnitConverter.qtyWithUnit(1500, "mL"), equals("1.50 L"));
+      expect(UnitConverter.qtyWithUnit(998.4, "tsp"), equals("1.30 gal"));
       expect(UnitConverter.qtyWithUnit(3, "tsp"), equals("1 tbsp"));
     });
   });

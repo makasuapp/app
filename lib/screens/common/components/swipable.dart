@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:kitchen/styles.dart';
 
+/// makes the child able to swipe left and right
+///
+/// child and onSwipeRight required
 class Swipable extends StatelessWidget {
   final Future<bool> Function() canSwipeLeft;
   final Future<bool> Function() canSwipeRight;

@@ -31,7 +31,7 @@ class ScopedOrder extends ScopedApiModel {
 
   @visibleForTesting
   //TODO: move done to the back? and delivered to very back
-  int sortOrderList(Order a, Order b) {
+  int compareForOrderList(Order a, Order b) {
     return a.forTimeSec() - b.forTimeSec();
   }
 
@@ -45,7 +45,7 @@ class ScopedOrder extends ScopedApiModel {
         recipeSteps: loadOrdersResp.recipeSteps,
         ingredients: loadOrdersResp.ingredients);
     var orders = loadOrdersResp.orders;
-    orders.sort((a, b) => sortOrderList(a, b));
+    orders.sort((a, b) => compareForOrderList(a, b));
     this.orders = orders;
   }
 
