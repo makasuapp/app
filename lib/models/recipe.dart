@@ -23,12 +23,15 @@ class Recipe {
   List<int> cookStepIds = List();
 
   Recipe(this.id, this.name,
-      {this.prepStepIds,
-      this.cookStepIds,
+      {List<int> prepStepIds,
+      List<int> cookStepIds,
       this.outputQty,
       this.unit,
       this.volumeWeightRatio,
-      this.publish = false});
+      this.publish = false}) {
+    this.prepStepIds = prepStepIds ?? [];
+    this.cookStepIds = cookStepIds ?? [];
+  }
 
   factory Recipe.fromJson(Map<String, dynamic> json) => _$RecipeFromJson(json);
 
