@@ -22,6 +22,7 @@ class _MorningChecklistPageState extends State<MorningChecklistPage> {
 
   _MorningChecklistPageState();
 
+  //TODO: show alert if couldn't load
   @override
   void initState() {
     super.initState();

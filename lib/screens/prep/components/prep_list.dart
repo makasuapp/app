@@ -24,31 +24,20 @@ class PrepList extends StatelessWidget {
   }
 
   List<Widget> _renderView(BuildContext context, ScopedDayPrep scopedPrep) {
-    var notStartedPrep = List<DayPrep>();
-    var unfinishedPrep = List<DayPrep>();
+    var todoPrep = List<DayPrep>();
     var donePrep = List<DayPrep>();
 
     scopedPrep.prep.forEach((prep) => {
-          if (prep.madeQty == null)
-            {notStartedPrep.add(prep)}
-          else if (prep.expectedQty != prep.madeQty)
-            {unfinishedPrep.add(prep)}
-          else
+          if (prep.madeQty != null && prep.madeQty >= prep.expectedQty)
             {donePrep.add(prep)}
+          else
+            {todoPrep.add(prep)}
         });
 
     var viewItems = List<Widget>();
-    viewItems.add(_headerText("Not Started"));
-    viewItems.addAll(notStartedPrep
-        .map((i) => _renderListItem(context, i, scopedPrep))
-        .toList());
-
-    if (unfinishedPrep.length > 0) {
-      viewItems.add(_headerText("Unfinished"));
-      viewItems.addAll(unfinishedPrep
-          .map((i) => _renderListItem(context, i, scopedPrep))
-          .toList());
-    }
+    viewItems.add(_headerText("To do"));
+    viewItems.addAll(
+        todoPrep.map((i) => _renderListItem(context, i, scopedPrep)).toList());
 
     if (donePrep.length > 0) {
       viewItems.add(_headerText("Done"));

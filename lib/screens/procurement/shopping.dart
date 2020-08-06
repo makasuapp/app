@@ -23,6 +23,7 @@ class _ShoppingListsPageState extends State<ShoppingListsPage> {
 
   _ShoppingListsPageState();
 
+  //TODO: show alert if couldn't load
   @override
   void initState() {
     super.initState();

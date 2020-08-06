@@ -24,6 +24,7 @@ class _PrepChecklistPageState extends State<PrepChecklistPage> {
 
   _PrepChecklistPageState();
 
+  //TODO: show alert if couldn't load
   @override
   void initState() {
     super.initState();
