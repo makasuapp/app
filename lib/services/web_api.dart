@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../api/ingredient_update.dart';
 import '../api/prep_update.dart';
+import '../api/procurement_update.dart';
 import '../api/order_item_update.dart';
 import '../models/order.dart';
 import '../env.dart';
@@ -70,6 +71,11 @@ class WebApi {
   Future<void> postOpDaySavePrepQty(List<PrepUpdate> updates) {
     final body = jsonEncode({'updates': updates});
     return this._postJson('/op_days/save_prep_qty', body);
+  }
+
+  Future<void> postProcurementItemUpdates(List<ProcurementUpdate> updates) {
+    final body = jsonEncode({'updates': updates});
+    return this._postJson('/orders/update_items', body);
   }
 
   Future<void> postOrderItemUpdates(List<OrderItemUpdate> updates) {

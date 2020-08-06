@@ -65,6 +65,7 @@ class Styles {
   static const defaultBtnPadding =
       EdgeInsets.symmetric(vertical: 10, horizontal: 20);
   static final defaultBtnText = TextStyle(fontSize: textSizeDefault);
+  static final cancelBtnText = textBrightDefault;
 
   static final Color swipeRightColor = Colors.green;
   static final Color swipeLeftColor = Colors.red;

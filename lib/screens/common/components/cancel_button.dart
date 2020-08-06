@@ -14,6 +14,6 @@ class CancelButton extends StatelessWidget {
         padding: Styles.defaultBtnPadding,
         onPressed: this.onCancel,
         child: Text(this.btnText != null ? this.btnText : "Cancel",
-            style: Styles.defaultBtnText));
+            style: Styles.cancelBtnText));
   }
 }

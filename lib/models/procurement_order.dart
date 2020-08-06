@@ -25,4 +25,10 @@ class ProcurementOrder {
   DateTime forDate() {
     return DateTime.fromMillisecondsSinceEpoch(this.forDateSec * 1000);
   }
+
+  factory ProcurementOrder.clone(
+      ProcurementOrder orig, List<ProcurementItem> items) {
+    return ProcurementOrder(
+        orig.id, orig.forDateSec, orig.orderType, orig.vendorName, items);
+  }
 }

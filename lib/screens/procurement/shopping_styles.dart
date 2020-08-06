@@ -7,6 +7,10 @@ class ShoppingStyles {
   static final betweenCardPadding = EdgeInsets.fromLTRB(5, 10, 5, 0);
   static final listItemsTopPadding =
       EdgeInsets.symmetric(vertical: 5.0, horizontal: 0);
+  static final listItemPadding =
+      EdgeInsets.symmetric(vertical: 5.0, horizontal: 0);
+  static final moreItemsPadding =
+      EdgeInsets.symmetric(vertical: 0.0, horizontal: 10);
 
   static final listCardBorder = Colors.grey;
 

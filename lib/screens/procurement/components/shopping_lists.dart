@@ -26,12 +26,14 @@ class ShoppingLists extends StatelessWidget {
       return Container(
           padding: ShoppingStyles.betweenCardPadding,
           child: InkWell(
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => ShoppingListPage(order)));
-              },
+              onTap: () => _openShoppingList(context, order),
               child: _renderListCard(context, order, scopedLookup)));
     }).toList();
+  }
+
+  _openShoppingList(BuildContext context, ProcurementOrder order) {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (_) => ShoppingListPage(order)));
   }
 
   Widget _renderListCard(
@@ -46,11 +48,11 @@ class ShoppingLists extends StatelessWidget {
         width: MediaQuery.of(context).size.width,
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: _listCardContent(order, scopedLookup)));
+            children: _listCardContent(context, order, scopedLookup)));
   }
 
   List<Widget> _listCardContent(
-      ProcurementOrder order, ScopedLookup scopedLookup) {
+      BuildContext context, ProcurementOrder order, ScopedLookup scopedLookup) {
     const previewAmount = 3;
     return <Widget>[
           ShoppingListTop(order),
@@ -59,15 +61,21 @@ class ShoppingLists extends StatelessWidget {
         order.items.take(previewAmount).toList().asMap().entries.map((entry) {
           final idx = entry.key;
           final item = entry.value;
+          final shoppingItem =
+              ShoppingListItem(item, (_) => _openShoppingList(context, order));
 
           //last item and there's more - show ...
           if (order.items.length > previewAmount && idx == previewAmount - 1) {
-            return Wrap(children: [
-              ShoppingListItem(item),
-              Text("...", style: ShoppingStyles.listItemText)
-            ]);
+            return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  shoppingItem,
+                  Container(
+                      padding: ShoppingStyles.moreItemsPadding,
+                      child: Text("...", style: ShoppingStyles.listItemText))
+                ]);
           } else {
-            return ShoppingListItem(item);
+            return shoppingItem;
           }
         }).toList();
   }
