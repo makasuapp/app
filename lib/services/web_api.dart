@@ -75,7 +75,7 @@ class WebApi {
 
   Future<void> postProcurementItemUpdates(List<ProcurementUpdate> updates) {
     final body = jsonEncode({'updates': updates});
-    return this._postJson('/orders/update_items', body);
+    return this._postJson('/procurement/update_items', body);
   }
 
   Future<void> postOrderItemUpdates(List<OrderItemUpdate> updates) {
