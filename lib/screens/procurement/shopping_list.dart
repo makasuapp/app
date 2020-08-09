@@ -23,7 +23,9 @@ class ShoppingListPage extends StatelessWidget {
             model: this.scopedProcurement,
             child: ScopedModel<ScopedLookup>(
                 model: this.scopedLookup,
-                child: Container(child: _renderContent()))));
+                child: SingleChildScrollView(
+                    physics: AlwaysScrollableScrollPhysics(),
+                    child: _renderContent()))));
   }
 
   Widget _renderContent() {

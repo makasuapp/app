@@ -42,9 +42,10 @@ class ScopedProcurement extends ScopedApiModel {
   }
 
   @visibleForTesting
+  //gotten at the bottom, else sort by ingredient id
   int compareOrderItems(ProcurementItem a, ProcurementItem b) {
     if (a.gotQty == null && b.gotQty == null) {
-      return a.id - b.id;
+      return a.ingredientId - b.ingredientId;
     } else if (a.gotQty == null) {
       return -1;
     } else {
