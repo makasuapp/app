@@ -37,6 +37,7 @@ class PrepStyles {
       color: Styles.textColorFaint,
       decoration: TextDecoration.lineThrough);
   static final doneItemColor = Styles.doneBackgroundColor;
+  static final Color subrecipeItemColor = Color.fromRGBO(209, 236, 237, 100);
 
   static final adjustQuantityTopPadding =
       EdgeInsets.symmetric(vertical: 20.0, horizontal: 0);
@@ -44,6 +45,10 @@ class PrepStyles {
   static final listItemBorder = BoxDecoration(
       border:
           Border(top: BorderSide(width: 0.5, color: Styles.textColorFaint)));
+
+  static final listItemBorderDoneItems = BoxDecoration(
+      border: Border(top: BorderSide(width: 0.5, color: Styles.textColorFaint)),
+      color: PrepStyles.doneItemColor);
 
   static final ingredientsHeaderPadding = EdgeInsets.fromLTRB(0, 10.0, 0, 0);
   static final ingredientsHeader = TextStyle(
