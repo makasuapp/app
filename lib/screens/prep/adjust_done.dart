@@ -54,7 +54,7 @@ class _AdjustPrepDonePageState extends State<AdjustPrepDonePage> {
     return Container(
         width: 180,
         child: TextField(
-          keyboardType: TextInputType.number,
+          keyboardType: TextInputType.numberWithOptions(decimal: true),
           decoration: InputDecoration(
             hintText: "100",
             labelText: '% of total expected done',

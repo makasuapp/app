@@ -84,7 +84,7 @@ class _AdjustQuantityPageState extends State<AdjustQuantityPage> {
           style: AdjustQuantityStyles.qtyPickerText,
           decoration:
               InputDecoration(hintText: this.widget.initQty.toStringAsFixed(2)),
-          keyboardType: TextInputType.number,
+          keyboardType: TextInputType.numberWithOptions(decimal: true),
           onChanged: (input) {
             setState(() {
               this._setQty = double.tryParse(input);
