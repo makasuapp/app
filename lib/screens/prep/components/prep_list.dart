@@ -51,6 +51,9 @@ class PrepList extends StatelessWidget {
       final recipe = scopedLookup.recipesMap[recipeStep.recipeId];
 
       final done = prep.madeQty != null && prep.expectedQty <= prep.madeQty;
+      if(prep.id == 270){
+        print(done);
+      }
 
       if (recipe.publish) {
         prepsMap[prep.id] = done;
@@ -69,7 +72,7 @@ class PrepList extends StatelessWidget {
 
     orderedItems.forEach((element) {
       if (element is DayPrep) {
-        (prepsMap[element] == true)
+        (prepsMap[element.id])
             ? doneItems.add(element)
             : notDoneItems.add(element);
       } else if (element is Recipe) {
@@ -111,6 +114,8 @@ class PrepList extends StatelessWidget {
           });
         },
         onSwipeRight: (context) {
+          print("swiped");
+          print(prep.id);
           scopedPrep.updatePrepQty(prep, prep.expectedQty);
           _notifyQtyUpdate("Prep done", context, () {
             scopedPrep.updatePrepQty(prep, originalQty);
