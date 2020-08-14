@@ -51,7 +51,6 @@ class PrepList extends StatelessWidget {
       final recipe = scopedLookup.recipesMap[recipeStep.recipeId];
 
       final done = prep.madeQty != null && prep.expectedQty <= prep.madeQty;
-
       if (recipe.publish) {
         prepsMap[prep.id] = done;
         orderedItems.add(prep);
@@ -69,7 +68,7 @@ class PrepList extends StatelessWidget {
 
     orderedItems.forEach((element) {
       if (element is DayPrep) {
-        (prepsMap[element] == true)
+        (prepsMap[element.id])
             ? doneItems.add(element)
             : notDoneItems.add(element);
       } else if (element is Recipe) {
@@ -172,19 +171,21 @@ class PrepList extends StatelessWidget {
           decoration: (prepsDone)
               ? PrepStyles.listItemBorderDoneItems
               : PrepStyles.listItemBorder,
-          child: ExpansionTile(
-              title: Text(
-                "Prepare ${subrecipeData.recipe.name}",
-                style: PrepStyles.listItemText,
-              ),
-              subtitle: _renderSubRecipeIngredients(
-                  subrecipeData.inputs, subrecipeData.prepQtyForInput),
-              backgroundColor:
-                  (!prepsDone) ? PrepStyles.subrecipeItemColor : null,
-              children: subrecipeData.preps
-                  .map((e) =>
-                      _renderListItem(context, e, scopedPrep, scopedLookup))
-                  .toList()),
+          child: ListTileTheme(
+            contentPadding: PrepStyles.subrecipeTilePadding,
+              child: ExpansionTile(
+                  title: Text(
+                    "Prepare ${subrecipeData.recipe.name}",
+                    style: PrepStyles.listItemText,
+                  ),
+                  subtitle: _renderSubRecipeIngredients(
+                      subrecipeData.inputs, subrecipeData.prepQtyForInput),
+                  backgroundColor:
+                      (!prepsDone) ? PrepStyles.subrecipeItemColor : null,
+                  children: subrecipeData.preps
+                      .map((e) =>
+                          _renderListItem(context, e, scopedPrep, scopedLookup))
+                      .toList())),
         ));
   }
 
@@ -300,7 +301,9 @@ class SubrecipeData {
   }
 
   addInputs(List<StepInput> inputs, DayPrep prep) {
-    inputs.forEach((element) {
+    inputs
+        .where((element) => element.inputableType != InputType.RecipeStep)
+        .forEach((element) {
       final originalQty = prep.expectedQty * element.quantity;
       if (this.prepQtyForInput == null ||
           this.prepQtyForInput[element.name] == null) {

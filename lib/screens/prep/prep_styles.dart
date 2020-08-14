@@ -21,6 +21,9 @@ class PrepStyles {
   static final listItemPadding = EdgeInsets.symmetric(
       vertical: listItemVerticalPadding,
       horizontal: Styles.horizontalPaddingDefault);
+  static const subrecipeTileVerticalPadding = 10.0;
+  static const subrecipeTileHorizontalPadding = 20.0;
+  static final subrecipeTilePadding = EdgeInsets.symmetric(vertical: subrecipeTileVerticalPadding, horizontal: subrecipeTileHorizontalPadding);
   static final listItemText = TextStyle(
     fontSize: Styles.textSizeLarge,
     color: Styles.textColorDefault,
