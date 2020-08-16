@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "974332229291",
+    "firebase_url": "https://makasuapp.firebaseio.com",
+    "project_id": "makasuapp",
+    "storage_bucket": "makasuapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:974332229291:android:03f931c216af8a641de9ee",
+        "android_client_info": {
+          "package_name": "com.makasu.kitchen"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "974332229291-ri5cphta3op51ovm4bfdm2trem9fqgfv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJR5foF6d2ebUeHvEi3eBQYeC4VqwFoq0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "974332229291-ri5cphta3op51ovm4bfdm2trem9fqgfv.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "974332229291-ct6fdamqe5sa45l0c6ujlsjotochlc32.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.makasu.Makasu"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

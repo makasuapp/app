@@ -33,6 +33,9 @@ dependencies:
   get_it: ^4.0.2
   intl: ^0.16.1
   sentry: ">=3.0.0 <4.0.0"
+  firebase_core: ^0.4.0+9
+  firebase_analytics: ^5.0.16
+  firebase_messaging: ^6.0.16
 
 dev_dependencies:
   flutter_test:
