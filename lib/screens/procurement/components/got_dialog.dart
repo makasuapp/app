@@ -81,12 +81,12 @@ class _GotDialogState extends State<GotDialog> {
   }
 
   Widget _renderInputField(String hintText, Function(String) onChanged,
-      {TextInputType keyboardType = TextInputType.number}) {
+      {TextInputType keyboardType}) {
     return Container(
         width: 70,
         child: TextField(
           decoration: InputDecoration(hintText: hintText),
-          keyboardType: keyboardType,
+          keyboardType: keyboardType ?? TextInputType.numberWithOptions(decimal: true),
           onChanged: (input) => onChanged(input),
         ));
   }
