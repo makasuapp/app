@@ -24,7 +24,7 @@ class OrderCard extends StatelessWidget {
         padding: OrderStyles.orderCardPadding,
         decoration: BoxDecoration(
             border: Border.all(
-          color: _cardColor(),
+          color: _cardColor(scopedOrder.newUnseenOrders[order.id] != null),
           width: 5,
         )),
         width: MediaQuery.of(context).size.width,
@@ -82,16 +82,20 @@ class OrderCard extends StatelessWidget {
     if (this.order.orderState() != OrderState.delivered()) {
       buttons.add(IconButton(
           icon: Icon(Icons.assignment_turned_in),
-          onPressed: () => scopedOrder.moveToNextState(this.order)));
+          onPressed: () {
+            scopedOrder.moveToNextState(this.order);
+          }));
     }
     return buttons;
   }
 
-  Color _cardColor() {
+  Color _cardColor(bool newUnseenOrder) {
     final orderState = this.order.orderState();
     final now = DateTime.now();
     //5 minutes before and still haven't started
-    if (orderState == OrderState.newOrder() &&
+    if (newUnseenOrder) {
+      return OrderStyles.newUnseenOrderColor;
+    } else if (orderState == OrderState.newOrder() &&
         this.order.forTimeSec() <=
             now.subtract(Duration(minutes: 5)).millisecondsSinceEpoch) {
       return OrderStyles.orderOverdueColor;

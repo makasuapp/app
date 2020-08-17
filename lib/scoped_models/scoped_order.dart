@@ -9,9 +9,9 @@ import '../models/order.dart';
 import '../models/order_item.dart';
 import './scoped_api_model.dart';
 import 'scoped_lookup.dart';
-
 class ScopedOrder extends ScopedApiModel {
   List<Order> orders;
+  Map<int, Order> newUnseenOrders = Map();
   static ScopedLookup _scopedLookup = locator<ScopedLookup>();
 
   ScopedOrder({List<Order> orders, WebApi api, ScopedLookup scopedLookup})
@@ -55,6 +55,7 @@ class ScopedOrder extends ScopedApiModel {
     final updatedOrders =
         this.orders.map((o) => o.id == order.id ? updatedOrder : o).toList();
     this.orders = updatedOrders;
+    clearUnseenOrders();
     //TODO: sort again
     notifyListeners();
 
@@ -99,5 +100,18 @@ class ScopedOrder extends ScopedApiModel {
       this.orders = originalOrders;
       notifyListeners();
     }
+  }
+
+
+  void addOrder(Order order){
+    this.orders.add(order);
+    this.orders.sort((a,b) => compareForOrderList(a, b));
+    this.newUnseenOrders[order.id] = order;
+    notifyListeners();
+  }
+
+  void clearUnseenOrders(){
+    this.newUnseenOrders.clear();
+    notifyListeners();
   }
 }
