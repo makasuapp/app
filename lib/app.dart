@@ -7,7 +7,6 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     FirebaseAnalytics analytics = FirebaseAnalytics();
-
     return MaterialApp(
       home: ActionsPage(),
       navigatorObservers: [
@@ -15,4 +14,7 @@ class App extends StatelessWidget {
       ],
     );
   }
+
 }
+
+

@@ -1,76 +1,97 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:kitchen/firebase_messaging/new_order_message.dart';
 import 'package:kitchen/firebase_messaging/topic_message.dart';
-import 'package:kitchen/models/order.dart';
-import 'package:kitchen/scoped_models/scoped_order.dart';
 
-enum MessageAction {
-  onMessage,
-  onLaunch,
-  onResume,
-  onBackgroundDataMessage,
-  onBackgroundNotification
+class FirebaseMessagingHandler extends StatefulWidget {
+  final BuildContext context;
+
+  FirebaseMessagingHandler(this.context);
+
+  @override
+  State<StatefulWidget> createState() {
+    return _FirebaseMessagingHandler();
+  }
 }
 
-class FirebaseMessagingHandler {
-  static Future<dynamic> _handleBackgroundMessage(
-      Map<String, dynamic> message) {
-    final topicMessageMap = _getTopicMessageMap();
+class _FirebaseMessagingHandler extends State<FirebaseMessagingHandler> {
+  static Map<String, TopicMessage> topicMessageMap;
+  static FirebaseMessaging firebaseMessaging;
 
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    firebaseMessaging = _getFirebaseMessaging();
+    topicMessageMap = _getTopicMessageMap(this.context, firebaseMessaging);
+    topicMessageMap.forEach((key, value) {
+      value.notificationHandler.initNotificationHandler();
+    });
+    handleMessages();
+  }
+
+  static Future<dynamic> _onBackgroundFunction(Map<String, dynamic> message) {
     if (message.containsKey('data')) {
       final dynamic data = message['data'];
       print(data);
-      _handleMessageAction(
-          message, topicMessageMap, MessageAction.onBackgroundDataMessage,
-          jsonDecodedMap: message);
+      _getTopicMessage(message, topicMessageMap)
+          .handleBackgroundDataMessage(_getJsonDecodedMap(message));
     }
 
     if (message.containsKey('notification')) {
       final dynamic notification = message['notification'];
       print(notification);
-      _handleMessageAction(
-          message, topicMessageMap, MessageAction.onBackgroundNotification,
-          jsonDecodedMap: message);
+      _getTopicMessage(message, topicMessageMap)
+          .handleBackgroundNotification(_getJsonDecodedMap(message));
     }
 
     return Future.value();
   }
 
-  static void handleMessages() {
-    final topicMessageMap = _getTopicMessageMap();
-
-    final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-    _firebaseMessaging.requestNotificationPermissions();
-
-    _firebaseMessaging.configure(
+  void handleMessages() {
+    firebaseMessaging.configure(
         onMessage: (message) {
           print("onMessage: $message");
-          _handleMessageAction(
-              message, topicMessageMap, MessageAction.onMessage);
+          _getTopicMessage(message, topicMessageMap)
+              .handleOnMessage(_getJsonDecodedMap(message));
+
           return Future.value();
         },
-        onBackgroundMessage: _handleBackgroundMessage,
+        onBackgroundMessage: _onBackgroundFunction,
         onResume: (message) {
           print("onResume: $message");
-          _handleMessageAction(
-              message, topicMessageMap, MessageAction.onResume);
+          _getTopicMessage(message, topicMessageMap)
+              .handleOnResume(_getJsonDecodedMap(message));
           return Future.value();
         },
         onLaunch: (message) {
           print("onLaunch: $message");
-          _handleMessageAction(
-              message, topicMessageMap, MessageAction.onLaunch);
+          _getTopicMessage(message, topicMessageMap)
+              .handleOnLaunch(_getJsonDecodedMap(message));
           return Future.value();
         });
-    //TODO(multi-kitchen): actually pass in id
-    _firebaseMessaging.subscribeToTopic("orders_1");
+
+    //TODO(multi-kitchen): put in actual kitchen id
+    firebaseMessaging.subscribeToTopic("orders_1");
   }
 
-  static Map<String, TopicMessage> _getTopicMessageMap() {
-    final List<TopicMessage> topics = [NewOrderMessage()];
+  static FirebaseMessaging _getFirebaseMessaging() {
+    final FirebaseMessaging firebaseMessaging = FirebaseMessaging();
+    firebaseMessaging.requestNotificationPermissions();
+
+    return firebaseMessaging;
+  }
+
+  static Map<String, TopicMessage> _getTopicMessageMap(
+      BuildContext context, FirebaseMessaging firebaseMessaging) {
+    final List<TopicMessage> topics = [
+      NewOrderMessage(context, firebaseMessaging)
+    ];
     var topicMessageMap = Map<String, TopicMessage>();
 
     topics.forEach((element) {
@@ -80,43 +101,28 @@ class FirebaseMessagingHandler {
     return topicMessageMap;
   }
 
+  static dynamic _getMessageData(message) {
+    //iOS for whatever reason has a different format. it's not nested under 'data'
+    return message['data'] ?? message;
+  }
+
   static Map<String, dynamic> _getJsonDecodedMap(message) {
-    if (message['data'] != null && message['data']['data'] != null) {
-      return Map<String, dynamic>.from(jsonDecode(message['data']['data']));
+    final messageData = _getMessageData(message);
+    if (messageData['content'] != null) {
+      return Map<String, dynamic>.from(jsonDecode(messageData['content']));
     } else {
       throw Exception("Map cannot be extracted from message $message");
     }
   }
 
-  static void _handleMessageAction(
-      message, Map<String, TopicMessage> topicMessageMap, MessageAction action,
-      {Map<String, dynamic> jsonDecodedMap}) {
-    final jsonMap = jsonDecodedMap ?? _getJsonDecodedMap(message);
-    final topicName = message['data']['type'];
+  static TopicMessage _getTopicMessage(
+      message, Map<String, TopicMessage> topicMessageMap) {
+    final messageData = _getMessageData(message);
+    final topicName = messageData['type'];
     if (topicName != null && topicMessageMap[topicName] != null) {
-      TopicMessage topicMessage = topicMessageMap[topicName];
-      switch (action) {
-        case MessageAction.onMessage:
-          topicMessage.handleOnMessage(jsonMap);
-          break;
-        case MessageAction.onLaunch:
-          topicMessage.handleOnLaunch(jsonMap);
-          break;
-        case MessageAction.onResume:
-          topicMessage.handleOnResume(jsonMap);
-          break;
-        case MessageAction.onBackgroundDataMessage:
-          topicMessage.handleBackgroundDataMessage(jsonMap);
-          break;
-        case MessageAction.onBackgroundNotification:
-          topicMessage.handleBackgroundNotification(jsonMap);
-          break;
-        default:
-          throw Exception("Unregistered MessageAction action");
-      }
+      return topicMessageMap[topicName];
     } else {
-      throw Exception(
-          "Message type is $topicName. Message type must be non-null and valid");
+      throw Exception("Topic is $topicName. Topic must be non-null and valid");
     }
   }
 }

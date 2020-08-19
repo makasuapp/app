@@ -1,23 +1,41 @@
-import 'dart:convert';
-
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:kitchen/firebase_messaging/topic_message.dart';
 import 'package:kitchen/models/order.dart';
 import 'package:kitchen/scoped_models/scoped_order.dart';
-
+import 'package:kitchen/screens/orders/upcoming_orders.dart';
 import '../service_locator.dart';
+
 
 class NewOrderMessage extends TopicMessage {
   static final String topic = "new_order";
+  static final String topicTitle = "New Order";
+  final BuildContext context;
+  final FirebaseMessaging firebaseMessaging;
 
-  NewOrderMessage() : super(topic);
+  NewOrderMessage(this.context, this.firebaseMessaging)
+      : super(topic, topicTitle, context, firebaseMessaging,
+            notificationSoundPathAndroid: "@raw/cash_register_purchase",
+            notificationSoundPathIos:
+                "cash_register_purchase.wav");
 
   @override
-  void handleOnMessage(Map<String, dynamic> jsonMap) async {
+  void handleOnMessage(Map<String, dynamic> jsonMap) {
     final scopedOrder = locator<ScopedOrder>();
-    await scopedOrder.loadOrders();
-
     final newOrder = Order.fromJson(jsonMap);
     scopedOrder.addOrder(newOrder);
+
+    this.showNotification("Order ID: ${newOrder.id}");
   }
 
+  @override
+  Future onNotificationSelect(String payload) {
+    Navigator.push(
+        this.context,
+        MaterialPageRoute(
+            builder: (context) => UpcomingOrdersPage(2, "Upcoming Orders")));
+
+    return Future.value();
+  }
 }

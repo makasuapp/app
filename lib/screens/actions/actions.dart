@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kitchen/firebase_messaging/firebase_messaging_handler.dart';
 import '../morning/morning.dart';
 import '../prep/prep.dart';
 import '../orders/upcoming_orders.dart';
@@ -29,9 +30,13 @@ class ActionsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: Text("Actions")),
-        body: ListView.builder(
-            itemCount: ActionsPage.actions.length,
-            itemBuilder: _actionListBuilder));
+        body: Column(children: [
+          Expanded(
+              child: ListView.builder(
+                  itemCount: ActionsPage.actions.length,
+                  itemBuilder: _actionListBuilder)),
+          FirebaseMessagingHandler(context)
+        ]));
   }
 
   Widget _actionListBuilder(BuildContext context, int index) {
