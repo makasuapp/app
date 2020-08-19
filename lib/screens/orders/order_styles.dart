@@ -6,6 +6,7 @@ class OrderStyles {
   static final Color orderStartedColor = Colors.amber[200];
   static final Color orderDefaultColor = Colors.white;
   static final Color orderDoneColor = Colors.grey;
+  static final Color newUnseenOrderColor = Colors.blue;
 
   static final Color currentOrdersBorder = Colors.black.withOpacity(0.8);
   static final currentOrdersPadding = EdgeInsets.symmetric(
