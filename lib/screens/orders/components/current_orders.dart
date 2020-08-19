@@ -110,7 +110,9 @@ class _CurrentOrdersState extends State<CurrentOrders> {
         onSwipeRight: (_) => _onItemDismissed(item, scopedOrder),
         child: InkWell(
             onTap: () => StoryView.render(
-                context, CookStoryItem(scopedLookup.recipesMap[item.recipeId])),
+                context,
+                CookStoryItem(scopedLookup.recipesMap[item.recipeId],
+                    servingSize: item.totalQty.toDouble())),
             child: Container(
                 width: double.infinity,
                 padding: OrderStyles.orderDetailItemPadding,

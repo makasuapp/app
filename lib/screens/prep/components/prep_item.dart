@@ -71,6 +71,7 @@ class PrepItem extends StatelessWidget {
         widgets.add(InputWithQuantity(
             input.name, originalQty, input.inputableType, input.unit,
             adjustedInputQty: remainingQty,
+            adjustedInputUnit: input.unit,
             regularTextStyle: PrepStyles.ingredientText,
             adjustedQtyStyle: PrepStyles.remainingIngredientText,
             originalQtyStyle: PrepStyles.totalIngredientText));

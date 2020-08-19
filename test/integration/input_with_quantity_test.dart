@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
-import 'package:kitchen/app.dart';
 import 'package:kitchen/models/step_input.dart';
 import 'package:kitchen/screens/common/components/input_with_quantity.dart';
 
@@ -106,14 +105,15 @@ void main() {
       'InputWithQuantity with qty = adjusted qty just shows uncrossed qty',
       (WidgetTester tester) async {
     final sharedQty = 2.0;
-    final units = null;
+    final units = "g";
 
     final widget = _makeTestableWidget(InputWithQuantity(
       inputName,
       sharedQty,
-      InputType.RecipeStep,
+      InputType.Ingredient,
       units,
       adjustedInputQty: sharedQty,
+      adjustedInputUnit: units,
     ));
 
     await tester.pumpWidget(widget);

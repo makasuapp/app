@@ -78,6 +78,7 @@ class MorningItem extends StatelessWidget {
             InputType.Ingredient,
             ingredient.unit,
             adjustedInputQty: ingredient.hadQty,
+            adjustedInputUnit: ingredient.unit,
             regularTextStyle: MorningStyles.listItemText,
             originalQtyStyle: MorningStyles.expectedItemText,
             adjustedQtyStyle: MorningStyles.unexpectedItemText));

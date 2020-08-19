@@ -188,6 +188,7 @@ class RecipeStepStoryItem extends StoryItem {
           (this.servingSize.toStringAsFixed(2) != 1.toStringAsFixed(2))
               ? _getAdjustedQty(input)
               : null,
+      adjustedInputUnit: input.unit,
       regularTextStyle: StoryStyles.storyText,
       adjustedQtyStyle: StoryStyles.adjustedQtyText,
       originalQtyStyle: StoryStyles.initialQtyText,

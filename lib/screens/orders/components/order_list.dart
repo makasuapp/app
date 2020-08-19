@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:kitchen/models/order.dart';
-import 'package:kitchen/styles.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:kitchen/scoped_models/scoped_order.dart';
 import './order_card.dart';
+import '../order_styles.dart';
 
 class OrderList extends StatelessWidget {
   @override
@@ -19,6 +19,6 @@ class OrderList extends StatelessWidget {
             .where((o) => o.orderState() != OrderState.delivered())
             .map<Widget>((o) => OrderCard(o))
             .toList() +
-        <Widget>[Container(padding: Styles.spacerPadding)];
+        <Widget>[Container(padding: OrderStyles.orderListBottomPadding)];
   }
 }

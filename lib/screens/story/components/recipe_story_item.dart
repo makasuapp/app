@@ -144,6 +144,7 @@ class RecipeStoryItem extends StoryItem {
               this.recipe.outputQty.toStringAsFixed(2))
           ? _getAdjustedQty(input.quantity)
           : null,
+      adjustedInputUnit: input.unit,
       regularTextStyle: StoryStyles.storyText,
       adjustedQtyStyle: StoryStyles.adjustedQtyText,
       originalQtyStyle: StoryStyles.initialQtyText,
