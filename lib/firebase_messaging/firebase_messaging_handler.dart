@@ -23,21 +23,23 @@ class FirebaseMessagingHandler {
     if (message.containsKey('data')) {
       final dynamic data = message['data'];
       print(data);
-      _handleMessageAction(message, topicMessageMap, MessageAction.onBackgroundDataMessage, jsonDecodedMap: message);
+      _handleMessageAction(
+          message, topicMessageMap, MessageAction.onBackgroundDataMessage,
+          jsonDecodedMap: message);
     }
 
     if (message.containsKey('notification')) {
       final dynamic notification = message['notification'];
       print(notification);
-      _handleMessageAction(message, topicMessageMap, MessageAction.onBackgroundNotification, jsonDecodedMap: message);
-
+      _handleMessageAction(
+          message, topicMessageMap, MessageAction.onBackgroundNotification,
+          jsonDecodedMap: message);
     }
 
     return Future.value();
   }
 
   static void handleMessages() {
-
     final topicMessageMap = _getTopicMessageMap();
 
     final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
@@ -63,18 +65,18 @@ class FirebaseMessagingHandler {
               message, topicMessageMap, MessageAction.onLaunch);
           return Future.value();
         });
-    //when we move to multi-kitchen, this will subscribe to just the kitchen's topic
-    _firebaseMessaging.subscribeToTopic("orders");
+    //TODO(multi-kitchen): actually pass in id
+    _firebaseMessaging.subscribeToTopic("orders_1");
   }
-  
-  static Map<String, TopicMessage> _getTopicMessageMap(){
+
+  static Map<String, TopicMessage> _getTopicMessageMap() {
     final List<TopicMessage> topics = [NewOrderMessage()];
     var topicMessageMap = Map<String, TopicMessage>();
 
     topics.forEach((element) {
       topicMessageMap[element.topicName] = element;
     });
-    
+
     return topicMessageMap;
   }
 
@@ -86,28 +88,27 @@ class FirebaseMessagingHandler {
     }
   }
 
-  static void _handleMessageAction(message,
-      Map<String, TopicMessage> topicMessageMap,
-      MessageAction action,
+  static void _handleMessageAction(
+      message, Map<String, TopicMessage> topicMessageMap, MessageAction action,
       {Map<String, dynamic> jsonDecodedMap}) {
     final jsonMap = jsonDecodedMap ?? _getJsonDecodedMap(message);
     final topicName = message['data']['type'];
     if (topicName != null && topicMessageMap[topicName] != null) {
       TopicMessage topicMessage = topicMessageMap[topicName];
       switch (action) {
-        case MessageAction.onMessage :
+        case MessageAction.onMessage:
           topicMessage.handleOnMessage(jsonMap);
           break;
-        case MessageAction.onLaunch :
+        case MessageAction.onLaunch:
           topicMessage.handleOnLaunch(jsonMap);
           break;
-        case MessageAction.onResume :
+        case MessageAction.onResume:
           topicMessage.handleOnResume(jsonMap);
           break;
-        case MessageAction.onBackgroundDataMessage :
+        case MessageAction.onBackgroundDataMessage:
           topicMessage.handleBackgroundDataMessage(jsonMap);
           break;
-        case MessageAction.onBackgroundNotification :
+        case MessageAction.onBackgroundNotification:
           topicMessage.handleBackgroundNotification(jsonMap);
           break;
         default:

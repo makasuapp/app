@@ -16,16 +16,20 @@ Order _$OrderFromJson(Map<String, dynamic> json) {
         .map((e) => OrderItem.fromJson(e as Map<String, dynamic>))
         .toList(),
     Customer.fromJson(json['customer'] as Map<String, dynamic>),
+    json['order_id'] as String,
+    integrationType: json['integration_type'] as String,
     forSec: json['for_time'] as int,
   );
 }
 
 Map<String, dynamic> _$OrderToJson(Order instance) => <String, dynamic>{
       'id': instance.id,
+      'order_id': instance.orderId,
       'state': instance.state,
       'order_type': instance.orderType,
       'created_at': instance.createdAtSec,
       'for_time': instance.forSec,
+      'integration_type': instance.integrationType,
       'items': instance.items,
       'customer': instance.customer,
     };

@@ -46,6 +46,8 @@ class OrderState {
 @JsonSerializable()
 class Order {
   final int id;
+  @JsonKey(name: "order_id")
+  final String orderId;
   final String state;
   @JsonKey(name: "order_type")
   final String orderType;
@@ -53,13 +55,15 @@ class Order {
   final int createdAtSec;
   @JsonKey(name: "for_time", nullable: true)
   final int forSec;
+  @JsonKey(name: "integration_type", nullable: true)
+  final String integrationType;
 
   final List<OrderItem> items;
   final Customer customer;
 
   Order(this.id, this.state, this.orderType, this.createdAtSec, this.items,
-      this.customer,
-      {this.forSec});
+      this.customer, this.orderId,
+      {this.integrationType, this.forSec});
 
   factory Order.fromJson(Map<String, dynamic> json) => _$OrderFromJson(json);
   Map<String, dynamic> toJson() => _$OrderToJson(this);
@@ -79,6 +83,8 @@ class Order {
         createdAtSec ?? orig.createdAtSec,
         items ?? orig.items,
         customer ?? orig.customer,
+        orig.orderId,
+        integrationType: orig.integrationType,
         forSec: forSec ?? orig.forSec);
   }
 
