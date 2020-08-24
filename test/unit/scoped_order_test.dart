@@ -39,7 +39,7 @@ void main() {
 
     Order mkOrder(List<OrderItem> items) {
       id += 1;
-      return Order(id, "new", "delivery", sec, items, Customer(1));
+      return Order(id, "new", "delivery", sec, items, Customer(1), id.toString());
     }
 
     group('clearing doneAt', () {
