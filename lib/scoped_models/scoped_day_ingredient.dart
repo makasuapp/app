@@ -1,3 +1,4 @@
+import 'package:kitchen/services/hive_db_helper.dart';
 import 'package:scoped_model/scoped_model.dart';
 import '../models/day_ingredient.dart';
 import '../models/ingredient.dart';
@@ -30,14 +31,31 @@ class ScopedDayIngredient extends Model {
       WebApi api,
       List<IngredientUpdate> unsavedUpdates,
       ScopedLookup scopedLookup}) {
-    this.unsavedUpdates = unsavedUpdates ?? [];
+
     this.ingredients = ingredients ?? [];
     this.api = api ?? locator<WebApi>();
+
+    _setUnsavedUpdates(unsavedUpdates);
 
     if (scopedLookup != null) {
       _scopedLookup = scopedLookup;
     }
   }
+
+  _setUnsavedUpdates(List<IngredientUpdate> unsavedUpdates) async {
+    print(unsavedUpdates);
+
+    if (unsavedUpdates != null) {
+      this.unsavedUpdates.addAll(unsavedUpdates);
+    }
+
+    this.unsavedUpdates.addAll((await HiveDbs.hiveIngredientUpdates.get() != null)
+        ? (await HiveDbs.hiveIngredientUpdates.get()).map((e) {
+      return IngredientUpdate.fromJson(e);
+    }).toList()
+        : []);
+  }
+
 
   Future<void> addFetched(List<DayIngredient> fetchedIngredients) async {
     this.ingredients = _mergeIngredients(fetchedIngredients);
@@ -79,6 +97,8 @@ class ScopedDayIngredient extends Model {
         this.unsavedUpdates = this.unsavedUpdates.where((u) {
           return u.timeSec > savingAtSec;
         }).toList();
+
+        _saveUnsavedUpdatesLocally();
       } catch (err) {
         Logger.error(err);
         this.savingAtSec = null;
@@ -135,6 +155,8 @@ class ScopedDayIngredient extends Model {
         ingredient.id, ingredient.hadQty, ingredient.qtyUpdatedAtSec));
     this._lastUpdateAtSec = ingredient.qtyUpdatedAtSec;
 
+    _saveUnsavedUpdatesLocally();
+
     final buffer = bufferMs ?? SAVE_BUFFER_SECONDS * 1000;
     await Future.delayed(Duration(milliseconds: buffer));
 
@@ -144,5 +166,13 @@ class ScopedDayIngredient extends Model {
     }
 
     await this.saveUnsavedQty();
+  }
+
+  void _saveUnsavedUpdatesLocally() async {
+    try {
+      HiveDbs.hivePrepUpdates.addAll(this.unsavedUpdates.map((e) => e.toJson()).toList());
+    } catch (Exception) {
+      print("unsaved $Exception");
+    }
   }
 }
