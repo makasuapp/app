@@ -24,34 +24,35 @@ class ScopedDayPrep extends Model {
 
   static ScopedLookup _scopedLookup = locator<ScopedLookup>();
 
-  ScopedDayPrep({List<DayPrep> prep,
-    WebApi api,
-    List<PrepUpdate> unsavedUpdates,
-    ScopedLookup scopedLookup}) {
-
+  ScopedDayPrep(
+      {List<DayPrep> prep,
+      WebApi api,
+      List<PrepUpdate> unsavedUpdates,
+      ScopedLookup scopedLookup}) {
     this.prep = prep ?? [];
     this.api = api ?? locator<WebApi>();
 
-    _setUnsavedUpdates();
+    print("constructor");
+    _setUnsavedUpdates(unsavedUpdates);
 
     if (scopedLookup != null) {
       _scopedLookup = scopedLookup;
     }
   }
 
-  _setUnsavedUpdates() async{
-    try {
-      this.unsavedUpdates =
-      (await HiveDbs.hivePrepUpdates.get() != null) ? (await HiveDbs.hivePrepUpdates
-          .get()).map((e) {
-        return PrepUpdate.fromJson(e);
-      }).toList() : [];
-    }catch(Exception){
-      print("first");
+  _setUnsavedUpdates(List<PrepUpdate> unsavedUpdates) async {
+    print("in");
+    print(unsavedUpdates);
+
+    if (unsavedUpdates != null) {
+      this.unsavedUpdates.addAll(unsavedUpdates);
     }
-        if(unsavedUpdates != null){
-      this.unsavedUpdates += unsavedUpdates;
-    }
+
+    this.unsavedUpdates.addAll((await HiveDbs.hivePrepUpdates.get() != null)
+        ? (await HiveDbs.hivePrepUpdates.get()).map((e) {
+            return PrepUpdate.fromJson(e);
+          }).toList()
+        : []);
   }
 
   static RecipeStep recipeStepFor(DayPrep prep) {
@@ -142,7 +143,7 @@ class ScopedDayPrep extends Model {
   Future<void> updatePrepQty(DayPrep prep, double qty) async {
     final updatedPrep = DayPrep.clone(prep, qty, DateTime.now());
     final updatedPreps =
-    this.prep.map((p) => p.id == prep.id ? updatedPrep : p).toList();
+        this.prep.map((p) => p.id == prep.id ? updatedPrep : p).toList();
 
     this.prep = updatedPreps;
     notifyListeners();
@@ -157,16 +158,19 @@ class ScopedDayPrep extends Model {
   Future<void> updatePrepQtys(Map<int, double> prepIdsWithQtysToUpdate) async {
     final timeOfUpdate = DateTime.now();
 
-    final updatedPreps = this.prep.map((p) =>
-    (prepIdsWithQtysToUpdate.containsKey(p.id)) ? DayPrep.clone(
-        p, prepIdsWithQtysToUpdate[p.id], timeOfUpdate) : p).toList();
+    final updatedPreps = this
+        .prep
+        .map((p) => (prepIdsWithQtysToUpdate.containsKey(p.id))
+            ? DayPrep.clone(p, prepIdsWithQtysToUpdate[p.id], timeOfUpdate)
+            : p)
+        .toList();
 
     this.prep = updatedPreps;
     notifyListeners();
     this.unsavedUpdates.addAll(prepIdsWithQtysToUpdate.entries.map((e) {
-      return PrepUpdate(
-          e.key, e.value, timeOfUpdate.millisecondsSinceEpoch ~/ 1000);
-    }).toList());
+          return PrepUpdate(
+              e.key, e.value, timeOfUpdate.millisecondsSinceEpoch ~/ 1000);
+        }).toList());
 
     _saveUnsavedUpdatesLocally();
 
@@ -209,12 +213,11 @@ class ScopedDayPrep extends Model {
     }
   }
 
-  void _saveUnsavedUpdatesLocally() async{
+  void _saveUnsavedUpdatesLocally() async {
     try {
-      (await HiveDbs.hivePrepUpdates.get()).addAll(
-          this.unsavedUpdates.map((e) => e.toJson()).toList());
-    }catch(Exception){
-      print("unsaved");
+      HiveDbs.hivePrepUpdates.addAll(this.unsavedUpdates.map((e) => e.toJson()).toList());
+    } catch (Exception) {
+      print("unsaved $Exception");
     }
   }
 }
