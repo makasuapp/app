@@ -1,3 +1,4 @@
+import 'package:kitchen/services/hive_db_helper.dart';
 import 'package:scoped_model/scoped_model.dart';
 import '../models/day_prep.dart';
 import '../models/recipe_step.dart';
@@ -16,7 +17,7 @@ class ScopedDayPrep extends Model {
   WebApi api;
 
   @visibleForTesting
-  List<PrepUpdate> unsavedUpdates;
+  List<PrepUpdate> unsavedUpdates = List();
   @visibleForTesting
   int retryCount = 0;
   Map<int, Set<int>> _recipeDependencies = Map();
@@ -27,12 +28,29 @@ class ScopedDayPrep extends Model {
     WebApi api,
     List<PrepUpdate> unsavedUpdates,
     ScopedLookup scopedLookup}) {
-    this.unsavedUpdates = unsavedUpdates ?? [];
+
     this.prep = prep ?? [];
     this.api = api ?? locator<WebApi>();
 
+    _setUnsavedUpdates();
+
     if (scopedLookup != null) {
       _scopedLookup = scopedLookup;
+    }
+  }
+
+  _setUnsavedUpdates() async{
+    try {
+      this.unsavedUpdates =
+      (await HiveDbs.hivePrepUpdates.get() != null) ? (await HiveDbs.hivePrepUpdates
+          .get()).map((e) {
+        return PrepUpdate.fromJson(e);
+      }).toList() : [];
+    }catch(Exception){
+      print("first");
+    }
+        if(unsavedUpdates != null){
+      this.unsavedUpdates += unsavedUpdates;
     }
   }
 
@@ -113,6 +131,8 @@ class ScopedDayPrep extends Model {
         prep.qtyUpdatedAtSec = update.timeSec;
       }
 
+      _saveUnsavedUpdatesLocally();
+
       prepMap[prep.id] = prep;
     });
 
@@ -130,6 +150,8 @@ class ScopedDayPrep extends Model {
     this.unsavedUpdates.add(
         PrepUpdate(prep.id, updatedPrep.madeQty, updatedPrep.qtyUpdatedAtSec));
     await _saveUnsavedQty();
+
+    _saveUnsavedUpdatesLocally();
   }
 
   Future<void> updatePrepQtys(Map<int, double> prepIdsWithQtysToUpdate) async {
@@ -145,6 +167,8 @@ class ScopedDayPrep extends Model {
       return PrepUpdate(
           e.key, e.value, timeOfUpdate.millisecondsSinceEpoch ~/ 1000);
     }).toList());
+
+    _saveUnsavedUpdatesLocally();
 
     await _saveUnsavedQty();
   }
@@ -166,6 +190,7 @@ class ScopedDayPrep extends Model {
           .toList();
     } catch (err) {
       Logger.error(err);
+      _saveUnsavedUpdatesLocally();
       _retryLater();
     }
   }
@@ -181,6 +206,15 @@ class ScopedDayPrep extends Model {
       _saveUnsavedQty();
     } else {
       Logger.error("hit max retries in scoped_day_prep");
+    }
+  }
+
+  void _saveUnsavedUpdatesLocally() async{
+    try {
+      (await HiveDbs.hivePrepUpdates.get()).addAll(
+          this.unsavedUpdates.map((e) => e.toJson()).toList());
+    }catch(Exception){
+      print("unsaved");
     }
   }
 }

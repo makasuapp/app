@@ -15,6 +15,9 @@ class PrepUpdate {
 
   Map<String, dynamic> toJson() => _$PrepUpdateToJson(this);
 
+  factory PrepUpdate.fromJson(Map<String, dynamic> json) =>
+      _$PrepUpdateFromJson(json);
+
   factory PrepUpdate.withDate(int id, double hadQty, DateTime time) {
     return PrepUpdate(id, hadQty, time.millisecondsSinceEpoch ~/ 1000);
   }

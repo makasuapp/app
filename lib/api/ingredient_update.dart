@@ -1,3 +1,4 @@
+import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'ingredient_update.g.dart';
@@ -12,6 +13,9 @@ class IngredientUpdate {
   final int timeSec;
 
   IngredientUpdate(this.dayIngredientId, this.hadQty, this.timeSec);
+
+  factory IngredientUpdate.fromJson(Map<String, dynamic> json) =>
+      _$IngredientUpdateFromJson(json);
 
   factory IngredientUpdate.withDate(int id, double hadQty, DateTime time) {
     return IngredientUpdate(id, hadQty, time.millisecondsSinceEpoch ~/ 1000);

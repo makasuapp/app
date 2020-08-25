@@ -1,3 +1,4 @@
+import 'package:hive/hive.dart';
 import 'package:kitchen/models/day_prep.dart';
 import 'package:kitchen/models/recipe_step.dart';
 import 'package:kitchen/models/step_input.dart';
@@ -487,6 +488,8 @@ void main() {
     ScopedLookup scopedLookup;
     List<DayPrep> dayPrepList;
     final api = MockApi();
+    Hive.init(".dart_tool/test/tmp/test_hive_dir");
+
 
     setUp(() {
       var recipeStepsMap = new Map<int, RecipeStep>();
