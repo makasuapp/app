@@ -44,22 +44,27 @@ class MorningItem extends StatelessWidget {
         },
         child: InkWell(
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (_) {
-                final baseIngredient =
-                    ScopedDayIngredient.ingredientFor(ingredient);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      settings: RouteSettings(name: "Adjust Morning Quantity"),
+                      builder: (_) {
+                        final baseIngredient =
+                            ScopedDayIngredient.ingredientFor(ingredient);
 
-                //TODO: convert up for the init qty/unit
-                return AdjustQuantityPage(
-                    title: baseIngredient.name,
-                    canConvertAllUnits:
-                        baseIngredient.volumeWeightRatio != null,
-                    initQty: ingredient.hadQty ?? ingredient.expectedQty,
-                    initUnit: ingredient.unit,
-                    onSubmit: (double setQty, String newUnit,
-                            BuildContext qtyViewContext) =>
-                        _onAdjustQty(ingredient, scopedIngredient, context,
-                            setQty, newUnit, qtyViewContext));
-              }));
+                        //TODO: convert up for the init qty/unit
+                        return AdjustQuantityPage(
+                            title: baseIngredient.name,
+                            canConvertAllUnits:
+                                baseIngredient.volumeWeightRatio != null,
+                            initQty:
+                                ingredient.hadQty ?? ingredient.expectedQty,
+                            initUnit: ingredient.unit,
+                            onSubmit: (double setQty, String newUnit,
+                                    BuildContext qtyViewContext) =>
+                                _onAdjustQty(ingredient, scopedIngredient,
+                                    context, setQty, newUnit, qtyViewContext));
+                      }));
             },
             child: _renderItemText(context)));
   }

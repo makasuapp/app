@@ -19,7 +19,8 @@ class CookStoryItem extends StoryItem {
   final Recipe recipe;
 
   CookStoryItem(this.recipe, {String outputUnits, double servingSize})
-      : super(outputUnits ?? recipe.unit, servingSize ?? recipe.outputQty);
+      : super(outputUnits ?? recipe.unit, servingSize ?? recipe.outputQty,
+            "Cook");
 
   @override
   Widget renderContent() {

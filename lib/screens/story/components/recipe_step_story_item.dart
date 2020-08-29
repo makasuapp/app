@@ -20,7 +20,7 @@ class RecipeStepStoryItem extends StoryItem {
   final RecipeStep recipeStep;
 
   RecipeStepStoryItem(this.recipeStep, {double servingSize})
-      : super(null, servingSize ?? 1);
+      : super(null, servingSize ?? 1, "Recipe Step");
 
   @override
   Widget renderContent() {

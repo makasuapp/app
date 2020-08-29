@@ -23,6 +23,7 @@ class NavigationMenu extends StatelessWidget {
               Navigator.push(
                   context,
                   MaterialPageRoute(
+                      settings: RouteSettings(name: actions[index].title),
                       builder: (context) => actions[index].createPage()));
             });
       },

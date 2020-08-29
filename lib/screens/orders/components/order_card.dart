@@ -42,15 +42,20 @@ class OrderCard extends StatelessWidget {
   Widget _renderTop(BuildContext context, ScopedOrder scopedOrder) {
     return InkWell(
         onTap: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (_) => OrderDetailsPage(this.order)));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  settings: RouteSettings(name: "Order Details"),
+                  builder: (_) => OrderDetailsPage(this.order)));
         },
         child:
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: _renderInfo()),
-          Row(children: _renderButtons(scopedOrder))
+          Expanded(
+              flex: 8,
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: _renderInfo())),
+          Expanded(flex: 2, child: Row(children: _renderButtons(scopedOrder)))
         ]));
   }
 

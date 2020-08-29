@@ -123,17 +123,21 @@ class PrepList extends StatelessWidget {
                       servingSize: prep.expectedQty - (prep.madeQty ?? 0)));
             },
             child: PrepItem(prep, onEdit: () {
-              Navigator.push(context, MaterialPageRoute(builder: (_) {
-                return AdjustPrepDonePage(prep,
-                    onSubmit: (double setQty, BuildContext qtyViewContext) {
-                  final originalQty = prep.madeQty;
-                  scopedPrep.updatePrepQty(prep, setQty);
-                  Navigator.pop(qtyViewContext);
-                  _notifyQtyUpdate("Prep updated", context, () {
-                    scopedPrep.updatePrepQty(prep, originalQty);
-                  });
-                });
-              }));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      settings: RouteSettings(name: "Adjust Prep Done"),
+                      builder: (_) {
+                        return AdjustPrepDonePage(prep, onSubmit:
+                            (double setQty, BuildContext qtyViewContext) {
+                          final originalQty = prep.madeQty;
+                          scopedPrep.updatePrepQty(prep, setQty);
+                          Navigator.pop(qtyViewContext);
+                          _notifyQtyUpdate("Prep updated", context, () {
+                            scopedPrep.updatePrepQty(prep, originalQty);
+                          });
+                        });
+                      }));
             })));
   }
 
@@ -172,7 +176,7 @@ class PrepList extends StatelessWidget {
               ? PrepStyles.listItemBorderDoneItems
               : PrepStyles.listItemBorder,
           child: ListTileTheme(
-            contentPadding: PrepStyles.subrecipeTilePadding,
+              contentPadding: PrepStyles.subrecipeTilePadding,
               child: ExpansionTile(
                   title: Text(
                     "Prepare ${subrecipeData.recipe.name}",

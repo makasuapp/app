@@ -18,6 +18,9 @@ class Action {
   }
 }
 
+//TODO: make stateful app - on init check dynamic link for storing credentials
+//TODO: check hive for if credentials
+//TODO: if no credentials, show one thing, otherwise show another
 class ActionsPage extends StatelessWidget {
   static final List<Action> actions = [
     Action(0, "Morning Checklist", (id, t) => MorningChecklistPage(id, t)),
@@ -52,6 +55,9 @@ class ActionsPage extends StatelessWidget {
 
   void _navToActionPage(BuildContext context, Action action) {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => action.createPage()));
+        context,
+        MaterialPageRoute(
+            settings: RouteSettings(name: action.title),
+            builder: (context) => action.createPage()));
   }
 }

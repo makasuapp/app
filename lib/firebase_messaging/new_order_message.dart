@@ -7,7 +7,6 @@ import 'package:kitchen/scoped_models/scoped_order.dart';
 import 'package:kitchen/screens/orders/upcoming_orders.dart';
 import '../service_locator.dart';
 
-
 class NewOrderMessage extends TopicMessage {
   static final String topic = "new_order";
   static final String topicTitle = "New Order";
@@ -17,8 +16,7 @@ class NewOrderMessage extends TopicMessage {
   NewOrderMessage(this.context, this.firebaseMessaging)
       : super(topic, topicTitle, context, firebaseMessaging,
             notificationSoundPathAndroid: "@raw/cash_register_purchase",
-            notificationSoundPathIos:
-                "cash_register_purchase.wav");
+            notificationSoundPathIos: "cash_register_purchase.wav");
 
   @override
   void handleOnMessage(Map<String, dynamic> jsonMap) {
@@ -34,6 +32,7 @@ class NewOrderMessage extends TopicMessage {
     Navigator.push(
         this.context,
         MaterialPageRoute(
+            settings: RouteSettings(name: "Upcoming Orders"),
             builder: (context) => UpcomingOrdersPage(2, "Upcoming Orders")));
 
     return Future.value();

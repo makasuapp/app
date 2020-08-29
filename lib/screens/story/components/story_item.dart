@@ -10,8 +10,9 @@ import '../story_styles.dart';
 abstract class StoryItem extends StatelessWidget {
   final String displayedUnits;
   final double servingSize;
+  final String storyName;
 
-  StoryItem(this.displayedUnits, this.servingSize);
+  StoryItem(this.displayedUnits, this.servingSize, this.storyName);
 
   Widget renderContent();
 
@@ -47,19 +48,24 @@ abstract class StoryItem extends StatelessWidget {
           children: [
             InkWell(
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (_) {
-                  return AdjustQuantityPage(
-                      title: "Adjust Servings",
-                      canConvertAllUnits: this.hasVolumeWeightRatio(),
-                      initQty: this.servingSize,
-                      initUnit: this.displayedUnits,
-                      onSubmit: (double newQty, String newUnits,
-                          BuildContext qtyViewContext) {
-                        scopedStory.updateStory(
-                            this.getUpdatedStoryItem(newUnits, newQty));
-                        Navigator.pop(qtyViewContext);
-                      });
-                }));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        settings: RouteSettings(
+                            name: 'Adjust ${this.storyName} Story Servings'),
+                        builder: (_) {
+                          return AdjustQuantityPage(
+                              title: "Adjust Servings",
+                              canConvertAllUnits: this.hasVolumeWeightRatio(),
+                              initQty: this.servingSize,
+                              initUnit: this.displayedUnits,
+                              onSubmit: (double newQty, String newUnits,
+                                  BuildContext qtyViewContext) {
+                                scopedStory.updateStory(
+                                    this.getUpdatedStoryItem(newUnits, newQty));
+                                Navigator.pop(qtyViewContext);
+                              });
+                        }));
               },
               child: Text(
                 "Serving Size: ${UnitConverter.qtyWithUnit(this.servingSize, this.displayedUnits, convertUp: false)}",

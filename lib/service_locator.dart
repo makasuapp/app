@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:get_it/get_it.dart';
 import 'services/web_api.dart';
 import 'scoped_models/scoped_day_ingredient.dart';
@@ -11,6 +12,7 @@ GetIt locator = GetIt.instance;
 
 void setupLocator() {
   locator.registerLazySingleton<WebApi>(() => WebApi());
+  locator.registerLazySingleton<FirebaseAnalytics>(() => FirebaseAnalytics());
 
   locator
       .registerLazySingleton<ScopedDayIngredient>(() => ScopedDayIngredient());

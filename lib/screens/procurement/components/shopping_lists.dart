@@ -33,7 +33,10 @@ class ShoppingLists extends StatelessWidget {
 
   _openShoppingList(BuildContext context, ProcurementOrder order) {
     Navigator.push(
-        context, MaterialPageRoute(builder: (_) => ShoppingListPage(order)));
+        context,
+        MaterialPageRoute(
+            settings: RouteSettings(name: "Shopping List"),
+            builder: (_) => ShoppingListPage(order)));
   }
 
   Widget _renderListCard(

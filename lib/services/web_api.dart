@@ -42,14 +42,14 @@ class WebApi {
 
   Future<String> fetchRecipesJson() => this._fetchJson('/recipes');
   //TODO(multi-kitchen): actually pass in kitchen id
-  Future<String> fetchOpDayJson() => this._fetchJson('/op_days',
-      queryParameters: {"env": EnvironmentConfig.ENV, "kitchen_id": "1"});
+  Future<String> fetchOpDayJson() =>
+      this._fetchJson('/op_days', queryParameters: {"kitchen_id": "1"});
   //TODO(multi-kitchen): actually pass in kitchen id
-  Future<String> fetchOrdersJson() => this._fetchJson('/orders',
-      queryParameters: {"env": EnvironmentConfig.ENV, "kitchen_id": "1"});
+  Future<String> fetchOrdersJson() =>
+      this._fetchJson('/orders', queryParameters: {"kitchen_id": "1"});
   //TODO(multi-kitchen): actually pass in kitchen id
-  Future<String> fetchProcurementJson() => this._fetchJson('/procurement',
-      queryParameters: {"env": EnvironmentConfig.ENV, "kitchen_id": "1"});
+  Future<String> fetchProcurementJson() =>
+      this._fetchJson('/procurement', queryParameters: {"kitchen_id": "1"});
 
   Future<dynamic> _postJson(String endpoint, dynamic body) async {
     final uri = this.uri(endpoint);
