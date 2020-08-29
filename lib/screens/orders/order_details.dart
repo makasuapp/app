@@ -4,21 +4,28 @@ import 'package:kitchen/scoped_models/scoped_order.dart';
 import 'package:kitchen/scoped_models/scoped_lookup.dart';
 import 'package:intl/intl.dart';
 import 'components/order_items.dart';
-import '../../models/order.dart';
 import './order_styles.dart';
 import '../../service_locator.dart';
 
+class OrderDetailsArguments {
+  final int orderId;
+
+  OrderDetailsArguments(this.orderId);
+}
+
 class OrderDetailsPage extends StatelessWidget {
-  final Order order;
+  static const routeName = '/order_details';
+
+  final int orderId;
   final scopedOrder = locator<ScopedOrder>();
   final scopedLookup = locator<ScopedLookup>();
 
-  OrderDetailsPage(this.order);
+  OrderDetailsPage(this.orderId);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text("Order ${this.order.id}")),
+        appBar: AppBar(title: Text("Order ${this.orderId}")),
         body: ScopedModel<ScopedOrder>(
             model: this.scopedOrder,
             child: ScopedModel<ScopedLookup>(
@@ -35,20 +42,25 @@ class OrderDetailsPage extends StatelessWidget {
             children: _renderInfo() +
                 <Widget>[
                   Container(padding: OrderStyles.orderItemsTopPadding),
-                  OrderItems(this.order.id)
+                  OrderItems(this.orderId)
                 ]));
   }
 
   List<Widget> _renderInfo() {
-    final orderState = this.order.orderState();
-    final forTime = DateFormat('M/dd K:mm a').format(this.order.forTime());
+    final order = this
+        .scopedOrder
+        .orders
+        .where((order) => order.id == this.orderId)
+        .first;
+    final orderState = order.orderState();
+    final forTime = DateFormat('M/dd K:mm a').format(order.forTime());
 
     return <Widget>[
-      _renderText("Order ID: ${this.order.orderId}"),
+      _renderText("Order ID: ${order.orderId}"),
       _renderText("For: $forTime"),
       _renderText("Status: ${orderState.text}"),
-      _renderText("Type: ${this.order.orderType}"),
-      _renderText("Customer Info: ${this.order.customer.info()}"),
+      _renderText("Type: ${order.orderType}"),
+      _renderText("Customer Info: ${order.customer.info()}"),
     ];
   }
 

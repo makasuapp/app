@@ -8,10 +8,7 @@ import '../../service_locator.dart';
 import './components/shopping_lists.dart';
 
 class ShoppingListsPage extends StatefulWidget {
-  final int pageId;
-  final String title;
-
-  ShoppingListsPage(this.pageId, this.title);
+  static const routeName = '/shopping_lists';
 
   @override
   createState() => _ShoppingListsPageState();
@@ -33,8 +30,8 @@ class _ShoppingListsPageState extends State<ShoppingListsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text(this.widget.title)),
-        drawer: NavigationMenu(this.widget.pageId),
+        appBar: AppBar(title: Text("Shopping Lists")),
+        drawer: NavigationMenu(ShoppingListsPage.routeName),
         body: ScopedModel<ScopedProcurement>(
             model: this.procurement,
             child: ScopedModel<ScopedLookup>(

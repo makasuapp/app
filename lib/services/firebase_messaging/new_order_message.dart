@@ -1,11 +1,11 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:kitchen/firebase_messaging/topic_message.dart';
+import './topic_message.dart';
 import 'package:kitchen/models/order.dart';
 import 'package:kitchen/scoped_models/scoped_order.dart';
 import 'package:kitchen/screens/orders/upcoming_orders.dart';
-import '../service_locator.dart';
+import '../../service_locator.dart';
 
 class NewOrderMessage extends TopicMessage {
   static final String topic = "new_order";
@@ -29,11 +29,7 @@ class NewOrderMessage extends TopicMessage {
 
   @override
   Future onNotificationSelect(String payload) {
-    Navigator.push(
-        this.context,
-        MaterialPageRoute(
-            settings: RouteSettings(name: "Upcoming Orders"),
-            builder: (context) => UpcomingOrdersPage(2, "Upcoming Orders")));
+    Navigator.pushNamed(this.context, UpcomingOrdersPage.routeName);
 
     return Future.value();
   }

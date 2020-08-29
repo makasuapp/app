@@ -1,6 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:kitchen/firebase_messaging/local_notification_handler.dart';
+import './local_notification_handler.dart';
 
 abstract class TopicMessage {
   final topicName;
@@ -19,7 +19,7 @@ abstract class TopicMessage {
         notificationSoundPathIos: this.notificationSoundPathIos);
   }
 
-  void showNotification(String message){
+  void showNotification(String message) {
     this.notificationHandler.showNotification(message);
   }
 

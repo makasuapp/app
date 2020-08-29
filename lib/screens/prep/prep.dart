@@ -9,10 +9,7 @@ import 'package:kitchen/scoped_models/scoped_lookup.dart';
 import '../../service_locator.dart';
 
 class PrepChecklistPage extends StatefulWidget {
-  final int pageId;
-  final String title;
-
-  PrepChecklistPage(this.pageId, this.title);
+  static const routeName = '/prep';
 
   @override
   createState() => _PrepChecklistPageState();
@@ -34,8 +31,8 @@ class _PrepChecklistPageState extends State<PrepChecklistPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text(this.widget.title)),
-        drawer: NavigationMenu(this.widget.pageId),
+        appBar: AppBar(title: Text("Prep Checklist")),
+        drawer: NavigationMenu(PrepChecklistPage.routeName),
         body: ScopedModel<ScopedOpDay>(
             model: this.opDay,
             child: ScopedModel<ScopedDayPrep>(

@@ -1,101 +1,80 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:kitchen/firebase_messaging/new_order_message.dart';
-import 'package:kitchen/firebase_messaging/topic_message.dart';
+import 'package:kitchen/service_locator.dart';
+import './new_order_message.dart';
+import './topic_message.dart';
 
-class FirebaseMessagingHandler extends StatefulWidget {
-  final BuildContext context;
-
-  FirebaseMessagingHandler(this.context);
-
-  @override
-  State<StatefulWidget> createState() {
-    return _FirebaseMessagingHandler();
-  }
-}
-
-class _FirebaseMessagingHandler extends State<FirebaseMessagingHandler> {
+class FirebaseMessagingHandler {
   static Map<String, TopicMessage> topicMessageMap;
-  static FirebaseMessaging firebaseMessaging;
 
-  @override
-  Widget build(BuildContext context) {
-    return Container();
+  static void init(BuildContext context) {
+    final firebaseMessaging = locator<FirebaseMessaging>();
+    firebaseMessaging.requestNotificationPermissions();
+
+    _initTopicMessageMap(context, firebaseMessaging);
+    _initMessageHandlers(firebaseMessaging);
   }
 
-  @override
-  void initState() {
-    super.initState();
-    firebaseMessaging = _getFirebaseMessaging();
-    topicMessageMap = _getTopicMessageMap(this.context, firebaseMessaging);
-    topicMessageMap.forEach((key, value) {
-      value.notificationHandler.initNotificationHandler();
-    });
-    handleMessages();
+  static void subscribeToTopics(int kitchenId) {
+    //TODO: clear past subscriptions - delete needs to reauth after..?
+    // firebaseMessaging.deleteInstanceID();
+
+    final firebaseMessaging = locator<FirebaseMessaging>();
+    firebaseMessaging.subscribeToTopic("orders_$kitchenId");
   }
 
   static Future<dynamic> _onBackgroundFunction(Map<String, dynamic> message) {
+    //what if has both data and notification?
     if (message.containsKey('data')) {
       final dynamic data = message['data'];
       print(data);
       _getTopicMessage(message, topicMessageMap)
           .handleBackgroundDataMessage(_getJsonDecodedMap(message));
-    }
-
-    if (message.containsKey('notification')) {
+    } else if (message.containsKey('notification')) {
       final dynamic notification = message['notification'];
       print(notification);
       _getTopicMessage(message, topicMessageMap)
           .handleBackgroundNotification(_getJsonDecodedMap(message));
     }
 
-    return Future.value();
+    return Future.value(message);
   }
 
-  void handleMessages() {
+  static void _initMessageHandlers(FirebaseMessaging firebaseMessaging) {
     firebaseMessaging.configure(
         onMessage: (message) {
           print("onMessage: $message");
           _getTopicMessage(message, topicMessageMap)
               .handleOnMessage(_getJsonDecodedMap(message));
 
-          return Future.value();
+          return Future.value(message);
         },
         onBackgroundMessage: _onBackgroundFunction,
         onResume: (message) {
           print("onResume: $message");
           _getTopicMessage(message, topicMessageMap)
               .handleOnResume(_getJsonDecodedMap(message));
-          return Future.value();
+          return Future.value(message);
         },
         onLaunch: (message) {
           print("onLaunch: $message");
           _getTopicMessage(message, topicMessageMap)
               .handleOnLaunch(_getJsonDecodedMap(message));
-          return Future.value();
+          return Future.value(message);
         });
-
-    //TODO(multi-kitchen): put in actual kitchen id
-    firebaseMessaging.subscribeToTopic("orders_1");
   }
 
-  static FirebaseMessaging _getFirebaseMessaging() {
-    final FirebaseMessaging firebaseMessaging = FirebaseMessaging();
-    firebaseMessaging.requestNotificationPermissions();
-
-    return firebaseMessaging;
-  }
-
-  static Map<String, TopicMessage> _getTopicMessageMap(
+  static Map<String, TopicMessage> _initTopicMessageMap(
       BuildContext context, FirebaseMessaging firebaseMessaging) {
     final List<TopicMessage> topics = [
       NewOrderMessage(context, firebaseMessaging)
     ];
-    var topicMessageMap = Map<String, TopicMessage>();
+    topicMessageMap = Map<String, TopicMessage>();
 
-    topics.forEach((element) {
-      topicMessageMap[element.topicName] = element;
+    topics.forEach((topic) {
+      topicMessageMap[topic.topicName] = topic;
+      topic.notificationHandler.initNotificationHandler();
     });
 
     return topicMessageMap;

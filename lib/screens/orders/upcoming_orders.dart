@@ -8,12 +8,10 @@ import './components/order_list.dart';
 import './components/current_orders.dart';
 
 class UpcomingOrdersPage extends StatelessWidget {
-  final int pageId;
-  final String title;
+  static const routeName = '/upcoming_orders';
+
   final scopedOrder = locator<ScopedOrder>();
   final scopedLookup = locator<ScopedLookup>();
-
-  UpcomingOrdersPage(this.pageId, this.title);
 
   @override
   Widget build(BuildContext context) {
@@ -22,8 +20,8 @@ class UpcomingOrdersPage extends StatelessWidget {
         child: ScopedModel<ScopedLookup>(
             model: this.scopedLookup,
             child: Scaffold(
-                appBar: AppBar(title: Text(this.title)),
-                drawer: NavigationMenu(this.pageId),
+                appBar: AppBar(title: Text("Upcoming Orders")),
+                drawer: NavigationMenu(routeName),
                 bottomSheet: CurrentOrders(),
                 body: RefreshIndicator(
                     onRefresh: () =>

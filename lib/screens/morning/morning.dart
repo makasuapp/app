@@ -8,10 +8,7 @@ import 'package:kitchen/scoped_models/scoped_op_day.dart';
 import '../../service_locator.dart';
 
 class MorningChecklistPage extends StatefulWidget {
-  final int pageId;
-  final String title;
-
-  MorningChecklistPage(this.pageId, this.title);
+  static const routeName = '/morning';
 
   @override
   createState() => _MorningChecklistPageState();
@@ -32,8 +29,8 @@ class _MorningChecklistPageState extends State<MorningChecklistPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text(this.widget.title)),
-        drawer: NavigationMenu(this.widget.pageId),
+        appBar: AppBar(title: Text("Morning Checklist")),
+        drawer: NavigationMenu(MorningChecklistPage.routeName),
         body: ScopedModel<ScopedOpDay>(
             model: this.opDay,
             child: ScopedModel<ScopedDayIngredient>(

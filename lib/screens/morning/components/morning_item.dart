@@ -47,7 +47,7 @@ class MorningItem extends StatelessWidget {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      settings: RouteSettings(name: "Adjust Morning Quantity"),
+                      settings: RouteSettings(name: 'adjust_morning_qty'),
                       builder: (_) {
                         final baseIngredient =
                             ScopedDayIngredient.ingredientFor(ingredient);

@@ -55,7 +55,8 @@ class WebApi {
     final uri = this.uri(endpoint);
     final resp = await http.post(uri.toString(),
         headers: {
-          'Content-Type': 'application/json; charset=UTF-8',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
         },
         body: body);
 
@@ -94,5 +95,10 @@ class WebApi {
     } else {
       return Future.value(null);
     }
+  }
+
+  Future<dynamic> postVerifyUser(int kitchenId, String token) {
+    final body = jsonEncode({'kitchen_id': kitchenId, 'token': token});
+    return this._postJson('/users/verify_kitchen', body);
   }
 }

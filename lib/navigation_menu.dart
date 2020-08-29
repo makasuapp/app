@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:kitchen/screens/actions/actions.dart';
+import 'package:kitchen/screens/dashboard/actions.dart';
 import 'package:kitchen/styles.dart';
 
 class NavigationMenu extends StatelessWidget {
-  static final actions = ActionsPage.actions;
-  final int pageSelected;
+  final String pageSelected;
 
   NavigationMenu(this.pageSelected);
 
@@ -12,20 +11,15 @@ class NavigationMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
         child: ListView.builder(
-      itemCount: actions.length,
+      itemCount: actionsList.length,
       itemBuilder: (BuildContext context, int index) {
         return ListTile(
-            title: Text(actions[index].title,
-                style: (this.pageSelected == actions[index].id)
+            title: Text(actionsList[index].title,
+                style: (this.pageSelected == actionsList[index].route)
                     ? Styles.textDefaultHighlighted
                     : Styles.textDefault),
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      settings: RouteSettings(name: actions[index].title),
-                      builder: (context) => actions[index].createPage()));
-            });
+            onTap: () =>
+                Navigator.pushNamed(context, actionsList[index].route));
       },
     ));
   }

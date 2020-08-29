@@ -13,6 +13,9 @@ class IngredientUpdate {
 
   IngredientUpdate(this.dayIngredientId, this.hadQty, this.timeSec);
 
+  factory IngredientUpdate.fromJson(Map<String, dynamic> json) =>
+      _$IngredientUpdateFromJson(json);
+
   factory IngredientUpdate.withDate(int id, double hadQty, DateTime time) {
     return IngredientUpdate(id, hadQty, time.millisecondsSinceEpoch ~/ 1000);
   }

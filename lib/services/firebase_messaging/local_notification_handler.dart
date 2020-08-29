@@ -11,7 +11,9 @@ class LocalNotificationHandler {
   final String notificationSoundPathIos;
 
   LocalNotificationHandler(this.firebaseMessaging, this.title,
-      {this.onSelectNotification, this.notificationSoundPathAndroid, this.notificationSoundPathIos});
+      {this.onSelectNotification,
+      this.notificationSoundPathAndroid,
+      this.notificationSoundPathIos});
 
   Future<void> initNotificationHandler() async {
     firebaseMessaging.requestNotificationPermissions();
@@ -23,7 +25,8 @@ class LocalNotificationHandler {
         requestSoundPermission: true,
         requestBadgePermission: true);
     await localNotificationsPlugin.initialize(
-        InitializationSettings(androidInitSettings, iosInitSettings),
+        InitializationSettings(
+            android: androidInitSettings, iOS: iosInitSettings),
         onSelectNotification: this.onSelectNotification);
     var result = await localNotificationsPlugin
         .resolvePlatformSpecificImplementation<
@@ -37,19 +40,15 @@ class LocalNotificationHandler {
 
   void showNotification(String message) async {
     final androidNotificationDetails = AndroidNotificationDetails(
-      title,
-      "Makasu",
-      message,
-      importance: Importance.High,
-      priority: Priority.High,
-      sound: RawResourceAndroidNotificationSound(this.notificationSoundPathAndroid)
-    );
+        title, "Makasu", message,
+        sound: RawResourceAndroidNotificationSound(
+            this.notificationSoundPathAndroid));
 
-    final iosNotificationDetails = IOSNotificationDetails(
-        sound: this.notificationSoundPathIos);
+    final iosNotificationDetails =
+        IOSNotificationDetails(sound: this.notificationSoundPathIos);
 
-    final notificationDetails =
-        NotificationDetails(androidNotificationDetails, iosNotificationDetails);
+    final notificationDetails = NotificationDetails(
+        android: androidNotificationDetails, iOS: iosNotificationDetails);
 
     await this
         .localNotificationsPlugin
