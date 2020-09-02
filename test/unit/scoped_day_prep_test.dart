@@ -37,10 +37,8 @@ void main() {
   }
 
   group('test buildDependencyMap', () {
-    Map<int, RecipeStep> recipeStepsMap;
     List<StepInput> inputs;
     setUp(() {
-      recipeStepsMap = new Map<int, RecipeStep>();
       inputs = new List<StepInput>();
     });
 
@@ -63,9 +61,6 @@ void main() {
       inputs.add(_createStepInput("Prep"));
       inputs.add(_createStepInput("Recipe", inputableId: inputTypeRecipe2Id));
 
-      recipeStepsMap[recipeStepId] =
-          _createRecipeStep(recipeStepId, recipeStepRecipeId, inputs);
-
       List<DayPrep> dayPrepList = [
         _createDayPrep(
           recipeStepId,
@@ -73,8 +68,9 @@ void main() {
         )
       ];
 
-      final scopedLookup = new ScopedLookup();
-      scopedLookup.recipeStepsMap = recipeStepsMap;
+      final scopedLookup = new ScopedLookup(recipeSteps: [
+        _createRecipeStep(recipeStepId, recipeStepRecipeId, inputs)
+      ]);
       final scopedDayPrep =
           ScopedDayPrep(prep: dayPrepList, scopedLookup: scopedLookup);
 
@@ -89,9 +85,6 @@ void main() {
 
     test('a recipe step with no dependencies should result in map[id] length 0',
         () {
-      recipeStepsMap[recipeStepId] =
-          _createRecipeStep(recipeStepId, recipeStepRecipeId, inputs);
-
       List<DayPrep> dayPrepList = [
         _createDayPrep(
           recipeStepId,
@@ -99,8 +92,9 @@ void main() {
         )
       ];
 
-      final scopedLookup = new ScopedLookup();
-      scopedLookup.recipeStepsMap = recipeStepsMap;
+      final scopedLookup = new ScopedLookup(recipeSteps: [
+        _createRecipeStep(recipeStepId, recipeStepRecipeId, inputs)
+      ]);
       final scopedDayPrep =
           ScopedDayPrep(prep: dayPrepList, scopedLookup: scopedLookup);
 
@@ -122,12 +116,6 @@ void main() {
       inputs1.add(_createStepInput("Recipe", inputableId: inputTypeRecipe1Id));
       inputs2.add(_createStepInput("Recipe", inputableId: inputTypeRecipe2Id));
 
-      recipeStepsMap[recipe1StepId] =
-          _createRecipeStep(recipe1StepId, sharedStepRecipeId, inputs1);
-
-      recipeStepsMap[recipe2StepId] =
-          _createRecipeStep(recipe2StepId, sharedStepRecipeId, inputs2);
-
       List<DayPrep> dayPrepList = [];
       dayPrepList.add(_createDayPrep(
         recipe1StepId,
@@ -135,8 +123,10 @@ void main() {
       ));
       dayPrepList.add(_createDayPrep(recipe2StepId, prepId: dayPrep2Id));
 
-      final scopedLookup = new ScopedLookup();
-      scopedLookup.recipeStepsMap = recipeStepsMap;
+      final scopedLookup = new ScopedLookup(recipeSteps: [
+        _createRecipeStep(recipe1StepId, sharedStepRecipeId, inputs1),
+        _createRecipeStep(recipe2StepId, sharedStepRecipeId, inputs2)
+      ]);
       final scopedDayPrep =
           ScopedDayPrep(prep: dayPrepList, scopedLookup: scopedLookup);
 
@@ -157,12 +147,6 @@ void main() {
 
       inputs.add(_createStepInput("Recipe", inputableId: inputTypeRecipeId));
 
-      recipeStepsMap[recipe1StepId] =
-          _createRecipeStep(recipe1StepId, sharedStepRecipeId, inputs);
-
-      recipeStepsMap[recipe2StepId] =
-          _createRecipeStep(recipe2StepId, sharedStepRecipeId, inputs);
-
       List<DayPrep> dayPrepList = [];
       dayPrepList.add(_createDayPrep(
         recipe1StepId,
@@ -170,8 +154,10 @@ void main() {
       ));
       dayPrepList.add(_createDayPrep(recipe2StepId, prepId: dayPrep2Id));
 
-      final scopedLookup = new ScopedLookup();
-      scopedLookup.recipeStepsMap = recipeStepsMap;
+      final scopedLookup = new ScopedLookup(recipeSteps: [
+        _createRecipeStep(recipe1StepId, sharedStepRecipeId, inputs),
+        _createRecipeStep(recipe2StepId, sharedStepRecipeId, inputs)
+      ]);
       final scopedDayPrep =
           ScopedDayPrep(prep: dayPrepList, scopedLookup: scopedLookup);
 
@@ -193,12 +179,6 @@ void main() {
 
       inputs.add(_createStepInput("Recipe", inputableId: sharedInputRecipeId));
 
-      recipeStepsMap[recipe1StepId] =
-          _createRecipeStep(recipe1StepId, recipe1RecipeId, inputs);
-
-      recipeStepsMap[recipe2StepId] =
-          _createRecipeStep(recipe2StepId, recipe2RecipeId, inputs);
-
       List<DayPrep> dayPrepList = [];
       dayPrepList.add(_createDayPrep(
         recipe1StepId,
@@ -206,8 +186,10 @@ void main() {
       ));
       dayPrepList.add(_createDayPrep(recipe2StepId, prepId: dayPrep2Id));
 
-      final scopedLookup = new ScopedLookup();
-      scopedLookup.recipeStepsMap = recipeStepsMap;
+      final scopedLookup = new ScopedLookup(recipeSteps: [
+        _createRecipeStep(recipe1StepId, recipe1RecipeId, inputs),
+        _createRecipeStep(recipe2StepId, recipe2RecipeId, inputs)
+      ]);
       final scopedDayPrep =
           ScopedDayPrep(prep: dayPrepList, scopedLookup: scopedLookup);
 
@@ -240,17 +222,14 @@ void main() {
       List<StepInput> inputs2 = [];
       inputs2.add(_createStepInput("Recipe", inputableId: input2Id));
 
-      recipeStepsMap[recipeStep1Id] =
-          _createRecipeStep(recipeStep1Id, recipeStep1RecipeId, inputs1);
-      recipeStepsMap[recipeStep2Id] =
-          _createRecipeStep(recipeStep2Id, recipeStep2RecipeId, inputs2);
-
       List<DayPrep> preps = [];
       preps.add(_createDayPrep(recipeStep1Id));
       preps.add(_createDayPrep(recipeStep2Id));
 
-      final ScopedLookup scopedLookup = new ScopedLookup();
-      scopedLookup.recipeStepsMap = recipeStepsMap;
+      final ScopedLookup scopedLookup = new ScopedLookup(recipeSteps: [
+        _createRecipeStep(recipeStep1Id, recipeStep1RecipeId, inputs1),
+        _createRecipeStep(recipeStep2Id, recipeStep2RecipeId, inputs2)
+      ]);
       final ScopedDayPrep scopedDayPrep =
           new ScopedDayPrep(prep: preps, scopedLookup: scopedLookup);
 
@@ -270,9 +249,6 @@ void main() {
       inputs.add(
           _createStepInput("Recipe Step", inputableId: inputTypeRecipe2Id));
 
-      recipeStepsMap[recipeStepId] =
-          _createRecipeStep(recipeStepId, recipeStepRecipeId, inputs);
-
       final dayPrep = _createDayPrep(
         recipeStepId,
         prepId: dayPrepId,
@@ -280,8 +256,9 @@ void main() {
       List<DayPrep> dayPrepList = [];
       dayPrepList.add(dayPrep);
 
-      final scopedLookup = new ScopedLookup();
-      scopedLookup.recipeStepsMap = recipeStepsMap;
+      final scopedLookup = new ScopedLookup(recipeSteps: [
+        _createRecipeStep(recipeStepId, recipeStepRecipeId, inputs)
+      ]);
 
       final scopedDayPrep =
           ScopedDayPrep(prep: dayPrepList, scopedLookup: scopedLookup);
@@ -323,8 +300,8 @@ void main() {
       final prepA = _createDayPrep(recipeStepIdForA);
       final prepB = _createDayPrep(recipeStepIdForB);
 
-      ScopedLookup scopedLookup = new ScopedLookup();
-      scopedLookup.recipeStepsMap = recipeStepsMap;
+      ScopedLookup scopedLookup =
+          new ScopedLookup(recipeSteps: [rsForA, rsForB]);
 
       ScopedDayPrep scopedDayPrep =
           new ScopedDayPrep(scopedLookup: scopedLookup);
@@ -351,8 +328,8 @@ void main() {
       final prepA = _createDayPrep(recipeStepIdForA);
       final prepB = _createDayPrep(recipeStepIdForB);
 
-      ScopedLookup scopedLookup = new ScopedLookup();
-      scopedLookup.recipeStepsMap = recipeStepsMap;
+      ScopedLookup scopedLookup =
+          new ScopedLookup(recipeSteps: [rsForA, rsForB]);
       ScopedDayPrep scopedDayPrep =
           new ScopedDayPrep(scopedLookup: scopedLookup);
 
@@ -389,8 +366,8 @@ void main() {
       preps.add(prepA);
       preps.add(prepB);
 
-      ScopedLookup scopedLookup = new ScopedLookup();
-      scopedLookup.recipeStepsMap = recipeStepsMap;
+      ScopedLookup scopedLookup =
+          new ScopedLookup(recipeSteps: [rsForA, rsForB]);
       final scopedDayPrep = ScopedDayPrep(scopedLookup: scopedLookup);
 
       await scopedDayPrep.addFetched(preps);
@@ -428,8 +405,8 @@ void main() {
       preps.add(prepA);
       preps.add(prepB);
 
-      ScopedLookup scopedLookup = new ScopedLookup();
-      scopedLookup.recipeStepsMap = recipeStepsMap;
+      ScopedLookup scopedLookup =
+          new ScopedLookup(recipeSteps: [rsForA, rsForB]);
       final scopedDayPrep = ScopedDayPrep(scopedLookup: scopedLookup);
 
       await scopedDayPrep.addFetched(preps);
@@ -469,8 +446,8 @@ void main() {
       preps.add(prepA);
       preps.add(prepB);
 
-      ScopedLookup scopedLookup = new ScopedLookup();
-      scopedLookup.recipeStepsMap = recipeStepsMap;
+      ScopedLookup scopedLookup =
+          new ScopedLookup(recipeSteps: [rsForA, rsForB]);
       final scopedDayPrep = ScopedDayPrep(scopedLookup: scopedLookup);
 
       await scopedDayPrep.addFetched(preps);
@@ -489,11 +466,9 @@ void main() {
     final api = MockApi();
 
     setUp(() {
-      var recipeStepsMap = new Map<int, RecipeStep>();
-      recipeStepsMap[recipeStepId] =
-          _createRecipeStep(recipeStepId, recipeStepRecipeId, []);
-      scopedLookup = new ScopedLookup();
-      scopedLookup.recipeStepsMap = recipeStepsMap;
+      scopedLookup = new ScopedLookup(recipeSteps: [
+        _createRecipeStep(recipeStepId, recipeStepRecipeId, [])
+      ]);
 
       dayPrepList = [];
     });

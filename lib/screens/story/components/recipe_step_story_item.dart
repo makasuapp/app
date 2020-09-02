@@ -56,7 +56,7 @@ class RecipeStepStoryItem extends StoryItem {
   }
 
   Widget _fullRecipeButton(ScopedStory scopedStory, ScopedLookup scopedLookup) {
-    final recipe = scopedLookup.recipesMap[this.recipeStep.recipeId];
+    final recipe = scopedLookup.getRecipe(this.recipeStep.recipeId);
     final servingSize = this.servingSize * recipe.outputQty;
 
     return SubmitButton(
@@ -150,7 +150,7 @@ class RecipeStepStoryItem extends StoryItem {
           inputsList.add(Container(
               child: _renderInput(input), padding: StoryStyles.itemPadding));
         } else if (input.inputableType == InputType.Recipe) {
-          final recipe = scopedLookup.recipesMap[input.inputableId];
+          final recipe = scopedLookup.getRecipe(input.inputableId);
           inputsList.add(Container(
             child: InkWell(
                 onTap: () {
@@ -164,7 +164,7 @@ class RecipeStepStoryItem extends StoryItem {
             padding: StoryStyles.itemPadding,
           ));
         } else if (input.inputableType == InputType.RecipeStep) {
-          final recipeStep = scopedLookup.recipeStepsMap[input.inputableId];
+          final recipeStep = scopedLookup.getRecipeStep(input.inputableId);
           inputsList.add(Container(
             child: InkWell(
               onTap: () {

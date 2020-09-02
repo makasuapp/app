@@ -23,10 +23,11 @@ class ScopedDayPrep extends Model {
 
   static ScopedLookup _scopedLookup = locator<ScopedLookup>();
 
-  ScopedDayPrep({List<DayPrep> prep,
-    WebApi api,
-    List<PrepUpdate> unsavedUpdates,
-    ScopedLookup scopedLookup}) {
+  ScopedDayPrep(
+      {List<DayPrep> prep,
+      WebApi api,
+      List<PrepUpdate> unsavedUpdates,
+      ScopedLookup scopedLookup}) {
     this.unsavedUpdates = unsavedUpdates ?? [];
     this.prep = prep ?? [];
     this.api = api ?? locator<WebApi>();
@@ -37,7 +38,7 @@ class ScopedDayPrep extends Model {
   }
 
   static RecipeStep recipeStepFor(DayPrep prep) {
-    return _scopedLookup.recipeStepsMap[prep.recipeStepId];
+    return _scopedLookup.getRecipeStep(prep.recipeStepId);
   }
 
   Future<void> addFetched(List<DayPrep> fetchedPrep) async {
@@ -122,7 +123,7 @@ class ScopedDayPrep extends Model {
   Future<void> updatePrepQty(DayPrep prep, double qty) async {
     final updatedPrep = DayPrep.clone(prep, qty, DateTime.now());
     final updatedPreps =
-    this.prep.map((p) => p.id == prep.id ? updatedPrep : p).toList();
+        this.prep.map((p) => p.id == prep.id ? updatedPrep : p).toList();
 
     this.prep = updatedPreps;
     notifyListeners();
@@ -135,16 +136,19 @@ class ScopedDayPrep extends Model {
   Future<void> updatePrepQtys(Map<int, double> prepIdsWithQtysToUpdate) async {
     final timeOfUpdate = DateTime.now();
 
-    final updatedPreps = this.prep.map((p) =>
-    (prepIdsWithQtysToUpdate.containsKey(p.id)) ? DayPrep.clone(
-        p, prepIdsWithQtysToUpdate[p.id], timeOfUpdate) : p).toList();
+    final updatedPreps = this
+        .prep
+        .map((p) => (prepIdsWithQtysToUpdate.containsKey(p.id))
+            ? DayPrep.clone(p, prepIdsWithQtysToUpdate[p.id], timeOfUpdate)
+            : p)
+        .toList();
 
     this.prep = updatedPreps;
     notifyListeners();
     this.unsavedUpdates.addAll(prepIdsWithQtysToUpdate.entries.map((e) {
-      return PrepUpdate(
-          e.key, e.value, timeOfUpdate.millisecondsSinceEpoch ~/ 1000);
-    }).toList());
+          return PrepUpdate(
+              e.key, e.value, timeOfUpdate.millisecondsSinceEpoch ~/ 1000);
+        }).toList());
 
     await _saveUnsavedQty();
   }

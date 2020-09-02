@@ -45,7 +45,7 @@ class ScopedDayIngredient extends Model {
   }
 
   static Ingredient ingredientFor(DayIngredient ingredient) {
-    return _scopedLookup.ingredientsMap[ingredient.ingredientId];
+    return _scopedLookup.getIngredient(ingredient.ingredientId);
   }
 
   void updateIngredientQty(DayIngredient ingredient, double qty,

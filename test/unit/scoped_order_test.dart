@@ -16,13 +16,9 @@ void main() {
 
   test('load orders API', () async {
     final scopedOrder = locator<ScopedOrder>();
-    final scopedLookup = locator<ScopedLookup>();
-    await scopedOrder.loadOrders();
+    await scopedOrder.loadOrders(1);
 
     expect(scopedOrder.orders.length, greaterThan(0));
-    expect(scopedLookup.recipesMap.values.length, greaterThan(0));
-    expect(scopedLookup.recipeStepsMap.values.length, greaterThan(0));
-    expect(scopedLookup.ingredientsMap.values.length, greaterThan(0));
   }, skip: 'run manually for sanity checks');
 
   //TODO: write tests for moveToNextState
@@ -39,7 +35,8 @@ void main() {
 
     Order mkOrder(List<OrderItem> items) {
       id += 1;
-      return Order(id, "new", "delivery", sec, items, Customer(1), id.toString());
+      return Order(
+          id, "new", "delivery", sec, items, Customer(1), id.toString());
     }
 
     group('clearing doneAt', () {

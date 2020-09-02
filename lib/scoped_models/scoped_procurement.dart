@@ -29,9 +29,9 @@ class ScopedProcurement extends ScopedApiModel {
     this.orders = orders ?? List();
   }
 
-  Future<void> loadOrders({forceLoad = false}) async {
+  Future<void> loadOrders(int kitchenId, {forceLoad = false}) async {
     loadData(() async {
-      final orders = await _fetchOrders();
+      final orders = await _fetchOrders(kitchenId);
       this.orders = orders;
     }, forceLoad: forceLoad);
   }
@@ -61,8 +61,8 @@ class ScopedProcurement extends ScopedApiModel {
     }).toList();
   }
 
-  Future<List<ProcurementOrder>> _fetchOrders() async {
-    final procurementJson = await this.api.fetchProcurementJson();
+  Future<List<ProcurementOrder>> _fetchOrders(int kitchenId) async {
+    final procurementJson = await this.api.fetchProcurementJson(kitchenId);
     final decodedJson = json.decode(procurementJson) as List;
 
     final orders =

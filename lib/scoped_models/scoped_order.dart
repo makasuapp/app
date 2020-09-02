@@ -9,6 +9,7 @@ import '../models/order.dart';
 import '../models/order_item.dart';
 import './scoped_api_model.dart';
 import 'scoped_lookup.dart';
+
 class ScopedOrder extends ScopedApiModel {
   List<Order> orders;
   Map<int, Order> newUnseenOrders = Map();
@@ -23,9 +24,9 @@ class ScopedOrder extends ScopedApiModel {
     }
   }
 
-  Future<void> loadOrders({forceLoad = false}) async {
+  Future<void> loadOrders(int kitchenId, {forceLoad = false}) async {
     loadData(() async {
-      await _fetchOrders();
+      await _fetchOrders(kitchenId);
     }, forceLoad: forceLoad);
   }
 
@@ -35,8 +36,8 @@ class ScopedOrder extends ScopedApiModel {
     return a.forTimeSec() - b.forTimeSec();
   }
 
-  Future<void> _fetchOrders() async {
-    final resp = await this.api.fetchOrdersJson();
+  Future<void> _fetchOrders(int kitchenId) async {
+    final resp = await this.api.fetchOrdersJson(kitchenId);
     final decodedResp = json.decode(resp);
     final loadOrdersResp = LoadOrdersResponse.fromJson(decodedResp);
 
@@ -102,15 +103,14 @@ class ScopedOrder extends ScopedApiModel {
     }
   }
 
-
-  void addOrder(Order order){
+  void addOrder(Order order) {
     this.orders.add(order);
-    this.orders.sort((a,b) => compareForOrderList(a, b));
+    this.orders.sort((a, b) => compareForOrderList(a, b));
     this.newUnseenOrders[order.id] = order;
     notifyListeners();
   }
 
-  void clearUnseenOrders(){
+  void clearUnseenOrders() {
     this.newUnseenOrders.clear();
     notifyListeners();
   }

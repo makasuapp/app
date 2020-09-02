@@ -104,15 +104,13 @@ class _CurrentOrdersState extends State<CurrentOrders> {
 
   Widget _renderOrderItem(CurrentOrderItem item, ScopedOrder scopedOrder,
       ScopedLookup scopedLookup) {
-    final recipe = scopedLookup.recipesMap[item.recipeId];
+    final recipe = scopedLookup.getRecipe(item.recipeId);
 
     return Swipable(
         onSwipeRight: (_) => _onItemDismissed(item, scopedOrder),
         child: InkWell(
-            onTap: () => StoryView.render(
-                context,
-                CookStoryItem(scopedLookup.recipesMap[item.recipeId],
-                    servingSize: item.totalQty.toDouble())),
+            onTap: () => StoryView.render(context,
+                CookStoryItem(recipe, servingSize: item.totalQty.toDouble())),
             child: Container(
                 width: double.infinity,
                 padding: OrderStyles.orderDetailItemPadding,

@@ -19,7 +19,7 @@ class WebApi {
   }
 
   Uri uri(String path, {Map<String, dynamic> queryParameters}) {
-    final uri = new Uri(
+    final uri = Uri(
         scheme: this.apiScheme,
         host: this.apiHost,
         path: '${this.prefix}$path',
@@ -40,16 +40,13 @@ class WebApi {
     return resp.body;
   }
 
-  Future<String> fetchRecipesJson() => this._fetchJson('/recipes');
-  //TODO(multi-kitchen): actually pass in kitchen id
-  Future<String> fetchOpDayJson() =>
-      this._fetchJson('/op_days', queryParameters: {"kitchen_id": "1"});
-  //TODO(multi-kitchen): actually pass in kitchen id
-  Future<String> fetchOrdersJson() =>
-      this._fetchJson('/orders', queryParameters: {"kitchen_id": "1"});
-  //TODO(multi-kitchen): actually pass in kitchen id
-  Future<String> fetchProcurementJson() =>
-      this._fetchJson('/procurement', queryParameters: {"kitchen_id": "1"});
+  Future<String> fetchOpDayJson(int kitchenId) => this._fetchJson('/op_days',
+      queryParameters: {"kitchen_id": kitchenId.toString()});
+  Future<String> fetchOrdersJson(int kitchenId) => this._fetchJson('/orders',
+      queryParameters: {"kitchen_id": kitchenId.toString()});
+  Future<String> fetchProcurementJson(int kitchenId) =>
+      this._fetchJson('/procurement',
+          queryParameters: {"kitchen_id": kitchenId.toString()});
 
   Future<dynamic> _postJson(String endpoint, dynamic body) async {
     final uri = this.uri(endpoint);

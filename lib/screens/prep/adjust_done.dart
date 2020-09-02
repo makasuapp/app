@@ -36,7 +36,7 @@ class _AdjustPrepDonePageState extends State<AdjustPrepDonePage> {
   @override
   Widget build(BuildContext context) {
     final recipeStep =
-        this.scopedLookup.recipeStepsMap[this.widget.prep.recipeStepId];
+        this.scopedLookup.getRecipeStep(this.widget.prep.recipeStepId);
 
     return Scaffold(
         appBar: AppBar(title: Text("Adjust Quantity")),

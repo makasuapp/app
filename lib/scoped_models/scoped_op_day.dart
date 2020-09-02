@@ -24,17 +24,17 @@ class ScopedOpDay extends ScopedApiModel {
     this.scopedDayPrep = scopedDayPrep ?? locator<ScopedDayPrep>();
   }
 
-  Future<void> loadOpDay({forceLoad = false}) async {
+  Future<void> loadOpDay(int kitchenId, {forceLoad = false}) async {
     loadData(() async {
-      final opDay = await _fetchOpDay();
+      final opDay = await _fetchOpDay(kitchenId);
 
       this.scopedDayIngredient.addFetched(opDay.ingredients);
       this.scopedDayPrep.addFetched(opDay.prep);
     }, forceLoad: forceLoad);
   }
 
-  Future<OpDay> _fetchOpDay() async {
-    final opDayJson = await this.api.fetchOpDayJson();
+  Future<OpDay> _fetchOpDay(int kitchenId) async {
+    final opDayJson = await this.api.fetchOpDayJson(kitchenId);
 
     return OpDay.fromJson(json.decode(opDayJson));
   }

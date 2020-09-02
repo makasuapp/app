@@ -5,53 +5,71 @@ import 'package:kitchen/services/hive_db.dart';
 import 'package:kitchen/models/user.dart';
 
 class ScopedUser extends Model {
-  User currentUser;
-  String apiToken;
-  String kitchenToken;
-  int kitchenId;
-  HiveDb db;
+  User _currentUser;
+  String _apiToken;
+  String _kitchenToken;
+  int _kitchenId;
+  HiveDb _db;
 
   ScopedUser({db}) {
-    this.db = db ?? HiveDb("user");
+    if (db != null) {
+      this._db = db;
+    }
   }
 
-  Future<int> getKitchenId() {
-    return this.kitchenId != null
-        ? Future.value(this.kitchenId)
-        : this.db.get("kitchenId");
+  Future<void> initDb() {
+    if (this._db != null) {
+      return Future.value();
+    } else {
+      return HiveDb.init("user").then((openedDb) => this._db = openedDb);
+    }
   }
 
-  Future<String> getKitchenToken() {
-    return this.kitchenToken != null
-        ? Future.value(this.kitchenToken)
-        : this.db.get("token");
+  int getKitchenId() {
+    return this._kitchenId != null
+        ? this._kitchenId
+        : this._db.get("kitchenId");
   }
 
-  Future<void> setKitchenId(int kitchenId) {
-    this.kitchenId = kitchenId;
-    return this.db.add("kitchenId", kitchenId);
+  String getKitchenToken() {
+    return this._kitchenToken != null
+        ? this._kitchenToken
+        : this._db.get("token");
   }
 
-  Future<void> setKitchenToken(String token) {
-    this.kitchenToken = token;
-    return this.db.add("token", token);
+  User getUser() {
+    return this._currentUser;
+  }
+
+  String getApiToken() {
+    return this._apiToken;
+  }
+
+  void setKitchenId(int kitchenId) {
+    this._kitchenId = kitchenId;
+    return this._db.add("kitchenId", kitchenId);
+  }
+
+  void setKitchenToken(String token) {
+    this._kitchenToken = token;
+    return this._db.add("token", token);
   }
 
   void setFromResponse(dynamic responseStr) {
     final decodedResp = json.decode(responseStr);
     final response = VerifyUserResponse.fromJson(decodedResp);
 
-    this.currentUser = response.user;
-    this.apiToken = response.apiToken;
+    this._currentUser = response.user;
+    this._apiToken = response.apiToken;
   }
 
-  Future<void> clear() async {
-    this.currentUser = null;
-    this.apiToken = null;
-    this.kitchenId = null;
-    this.kitchenToken = null;
+  void clear() {
+    this._currentUser = null;
+    this._apiToken = null;
+    this._kitchenId = null;
+    this._kitchenToken = null;
 
-    await this.db.delete("kitchenId");
-    await this.db.delete("token");
+    this._db.delete("kitchenId");
+    this._db.delete("token");
   }
 }

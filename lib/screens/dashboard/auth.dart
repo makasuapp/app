@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kitchen/scoped_models/scoped_user.dart';
+import 'package:kitchen/scoped_models/scoped_order.dart';
 import 'package:kitchen/screens/dashboard/unauthorized.dart';
 import 'package:kitchen/service_locator.dart';
 import 'package:kitchen/services/web_api.dart';
@@ -28,6 +29,7 @@ class _AuthPageState extends State<AuthPage> {
   void checkCredentials() async {
     final Map<String, String> args = ModalRoute.of(context).settings.arguments;
     final scopedUser = locator<ScopedUser>();
+    await scopedUser.initDb();
 
     String token;
     int kitchenId;
@@ -39,8 +41,8 @@ class _AuthPageState extends State<AuthPage> {
     }
 
     if (kitchenId == null) {
-      kitchenId = await scopedUser.getKitchenId();
-      token = await scopedUser.getKitchenToken();
+      kitchenId = scopedUser.getKitchenId();
+      token = scopedUser.getKitchenToken();
     }
 
     if (kitchenId == null) {
@@ -51,8 +53,12 @@ class _AuthPageState extends State<AuthPage> {
         final resp = await api.postVerifyUser(kitchenId, token);
 
         scopedUser.setFromResponse(resp);
-        await scopedUser.setKitchenId(kitchenId);
-        await scopedUser.setKitchenToken(token);
+        scopedUser.setKitchenId(kitchenId);
+        scopedUser.setKitchenToken(token);
+
+        //can now load orders for the authed kitchen
+        final scopedOrder = locator<ScopedOrder>();
+        await scopedOrder.loadOrders(kitchenId);
 
         WidgetsBinding.instance.addPostFrameCallback((_) {
           FirebaseMessagingHandler.subscribeToTopics(kitchenId);
@@ -64,9 +70,9 @@ class _AuthPageState extends State<AuthPage> {
     }
   }
 
-  void setUnauthorized() async {
+  void setUnauthorized() {
     final scopedUser = locator<ScopedUser>();
-    await scopedUser.clear();
+    scopedUser.clear();
 
     Navigator.pushNamed(this.context, UnauthorizedPage.routeName);
   }

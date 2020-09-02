@@ -3,6 +3,7 @@ import 'package:kitchen/navigation_menu.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:kitchen/scoped_models/scoped_order.dart';
 import 'package:kitchen/scoped_models/scoped_lookup.dart';
+import 'package:kitchen/scoped_models/scoped_user.dart';
 import '../../service_locator.dart';
 import './components/order_list.dart';
 import './components/current_orders.dart';
@@ -12,6 +13,7 @@ class UpcomingOrdersPage extends StatelessWidget {
 
   final scopedOrder = locator<ScopedOrder>();
   final scopedLookup = locator<ScopedLookup>();
+  final scopedUser = locator<ScopedUser>();
 
   @override
   Widget build(BuildContext context) {
@@ -24,8 +26,9 @@ class UpcomingOrdersPage extends StatelessWidget {
                 drawer: NavigationMenu(routeName),
                 bottomSheet: CurrentOrders(),
                 body: RefreshIndicator(
-                    onRefresh: () =>
-                        this.scopedOrder.loadOrders(forceLoad: true),
+                    onRefresh: () => this
+                        .scopedOrder
+                        .loadOrders(scopedUser.getKitchenId(), forceLoad: true),
                     child: OrderList()))));
   }
 }

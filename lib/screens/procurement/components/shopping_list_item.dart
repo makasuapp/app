@@ -17,7 +17,7 @@ class ShoppingListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScopedModelDescendant<ScopedLookup>(
         builder: (context, child, scopedLookup) {
-      final ingredient = scopedLookup.ingredientsMap[item.ingredientId];
+      final ingredient = scopedLookup.getIngredient(item.ingredientId);
       return Container(
           padding: ShoppingStyles.listItemPadding,
           width: MediaQuery.of(context).size.width,

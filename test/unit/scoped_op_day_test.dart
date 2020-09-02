@@ -13,7 +13,7 @@ void main() {
     final opDay = ScopedOpDay();
     expect(opDay.scopedDayIngredient.ingredients.length, equals(0));
     expect(opDay.scopedDayPrep.prep.length, equals(0));
-    await opDay.loadOpDay();
+    await opDay.loadOpDay(1);
     expect(opDay.scopedDayIngredient.ingredients.length, greaterThan(0));
     expect(opDay.scopedDayPrep.prep.length, greaterThan(0));
 

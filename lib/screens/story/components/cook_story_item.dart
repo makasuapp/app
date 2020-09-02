@@ -78,12 +78,12 @@ class CookStoryItem extends StoryItem {
     final cookInputs = this
         .recipe
         .cookStepIds
-        .map((id) => scopedLookup.recipeStepsMap[id])
+        .map((id) => scopedLookup.getRecipeStep(id))
         .expand((step) => step.inputs)
         .where((input) {
       //drop cook steps
       if (input.inputableType == InputType.RecipeStep) {
-        final recipeStep = scopedLookup.recipeStepsMap[input.inputableId];
+        final recipeStep = scopedLookup.getRecipeStep(input.inputableId);
         return recipeStep.stepType == "prep";
       } else
         return true;
@@ -93,7 +93,7 @@ class CookStoryItem extends StoryItem {
       if (input.inputableType == InputType.Ingredient) {
         return _renderInput(input);
       } else if (input.inputableType == InputType.Recipe) {
-        final recipe = scopedLookup.recipesMap[input.inputableId];
+        final recipe = scopedLookup.getRecipe(input.inputableId);
         return InkWell(
             onTap: () {
               scopedStory.push(RecipeStoryItem(recipe,
@@ -102,7 +102,7 @@ class CookStoryItem extends StoryItem {
             },
             child: _renderInput(input));
       } else if (input.inputableType == InputType.RecipeStep) {
-        final recipeStep = scopedLookup.recipeStepsMap[input.inputableId];
+        final recipeStep = scopedLookup.getRecipeStep(input.inputableId);
         return InkWell(
           onTap: () {
             scopedStory.push(RecipeStepStoryItem(recipeStep,
@@ -119,7 +119,7 @@ class CookStoryItem extends StoryItem {
   List<Widget> _renderCookSteps(
       ScopedLookup scopedLookup, ScopedStory scopedStory) {
     return this.recipe.cookStepIds.map((id) {
-      final recipeStep = scopedLookup.recipeStepsMap[id];
+      final recipeStep = scopedLookup.getRecipeStep(id);
       return InkWell(
           onTap: () {
             scopedStory.push(RecipeStepStoryItem(recipeStep,

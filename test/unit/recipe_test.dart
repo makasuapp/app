@@ -17,10 +17,4 @@ void main() {
     final prepStep = recipe.prepStepIds[0];
     expect(prepStep, equals(87));
   });
-
-  test('recipe API', () async {
-    final recipes = await Recipe.fetchAll();
-    final recipe = recipes[0];
-    expect(recipe.name, isNotNull);
-  }, skip: 'run manually for sanity checks');
 }

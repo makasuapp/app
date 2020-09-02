@@ -6,29 +6,33 @@ class HiveDb {
 
   HiveDb(this.boxName, {this.box});
 
-  Future<void> _initBox() async {
+  //better way to construct + init together
+  static Future<HiveDb> init(String boxName) async {
+    final db = HiveDb(boxName);
+    await db.initBox();
+    return db;
+  }
+
+  //can construct and init separately if want
+  Future<void> initBox() async {
     if (this.box == null) {
       this.box = await Hive.openBox(this.boxName);
     }
   }
 
-  Future<void> add<T>(String keyName, T value) async {
-    await _initBox();
+  void add<T>(String keyName, T value) async {
     return this.box.put(keyName, value);
   }
 
-  Future<void> addAll(Map<String, dynamic> valuesMap) async {
-    await _initBox();
+  void addAll(Map<String, dynamic> valuesMap) async {
     return this.box.putAll(valuesMap);
   }
 
-  Future<T> get<T>(String keyName) async {
-    await _initBox();
+  T get<T>(String keyName) {
     return this.box.get(keyName);
   }
 
-  Future<void> delete(String keyName) async {
-    await _initBox();
+  void delete(String keyName) async {
     return this.box.delete(keyName);
   }
 }

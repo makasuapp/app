@@ -21,8 +21,8 @@ class PrepItem extends StatelessWidget {
   }
 
   Widget _renderContent(BuildContext context, ScopedLookup scopedLookup) {
-    final recipeStep = scopedLookup.recipeStepsMap[prep.recipeStepId];
-    final recipe = scopedLookup.recipesMap[recipeStep.recipeId];
+    final recipeStep = scopedLookup.getRecipeStep(prep.recipeStepId);
+    final recipe = scopedLookup.getRecipe(recipeStep.recipeId);
 
     final isDone =
         this.prep.madeQty != null && this.prep.madeQty >= this.prep.expectedQty;

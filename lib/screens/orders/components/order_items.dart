@@ -50,7 +50,7 @@ class OrderItems extends StatelessWidget {
         child: InkWell(
             onTap: () => StoryView.render(
                 context,
-                CookStoryItem(scopedLookup.recipesMap[item.recipeId],
+                CookStoryItem(scopedLookup.getRecipe(item.recipeId),
                     servingSize: item.quantity.toDouble())),
             child: Container(
                 width: MediaQuery.of(context).size.width,
@@ -59,7 +59,7 @@ class OrderItems extends StatelessWidget {
   }
 
   Widget _renderItemText(ScopedLookup scopedLookup, OrderItem item) {
-    final recipe = scopedLookup.recipesMap[item.recipeId];
+    final recipe = scopedLookup.getRecipe(item.recipeId);
     final text = "${item.quantity} ${recipe.name}";
 
     return Text(text,

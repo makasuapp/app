@@ -7,19 +7,20 @@ void main() {
   const key = "key";
 
   test("get() when key has null value returns null", () async {
-    HiveDb db = HiveDb("box1");
+    HiveDb db = await HiveDb.init("box1");
 
-    expect(await db.get(key), null);
+    expect(db.get(key), null);
   });
 
   test("add() overwrites value at key", () async {
-    HiveDb db = HiveDb("box2");
-    await db.add(key, 1);
+    HiveDb db = await HiveDb.init("box2");
 
-    expect(await db.get(key), 1);
+    db.add(key, 1);
 
-    await db.add(key, 2);
+    expect(db.get(key), 1);
 
-    expect(await db.get(key), 2);
+    db.add(key, 2);
+
+    expect(db.get(key), 2);
   });
 }

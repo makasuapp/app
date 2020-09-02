@@ -6,6 +6,7 @@ import '../common/components/scoped_progress_bar.dart';
 import 'package:kitchen/scoped_models/scoped_op_day.dart';
 import 'package:kitchen/scoped_models/scoped_day_prep.dart';
 import 'package:kitchen/scoped_models/scoped_lookup.dart';
+import 'package:kitchen/scoped_models/scoped_user.dart';
 import '../../service_locator.dart';
 
 class PrepChecklistPage extends StatefulWidget {
@@ -18,6 +19,7 @@ class PrepChecklistPage extends StatefulWidget {
 class _PrepChecklistPageState extends State<PrepChecklistPage> {
   final opDay = locator<ScopedOpDay>();
   final data = locator<ScopedLookup>();
+  final user = locator<ScopedUser>();
 
   _PrepChecklistPageState();
 
@@ -25,7 +27,7 @@ class _PrepChecklistPageState extends State<PrepChecklistPage> {
   @override
   void initState() {
     super.initState();
-    opDay.loadOpDay();
+    opDay.loadOpDay(user.getKitchenId());
   }
 
   @override
@@ -40,7 +42,8 @@ class _PrepChecklistPageState extends State<PrepChecklistPage> {
                 child: ScopedModel<ScopedLookup>(
                     model: this.data,
                     child: RefreshIndicator(
-                        onRefresh: () => opDay.loadOpDay(forceLoad: true),
+                        onRefresh: () => opDay.loadOpDay(user.getKitchenId(),
+                            forceLoad: true),
                         child: Column(children: [
                           ScopedProgressBar<ScopedOpDay>(),
                           Expanded(child: PrepList())

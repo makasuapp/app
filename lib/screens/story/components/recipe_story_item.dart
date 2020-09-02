@@ -63,7 +63,7 @@ class RecipeStoryItem extends StoryItem {
 
     widgets.add(_renderHeader("Ingredients"));
     final steps = (this.recipe.prepStepIds + this.recipe.cookStepIds)
-        .map((id) => scopedLookup.recipeStepsMap[id])
+        .map((id) => scopedLookup.getRecipeStep(id))
         .toList();
 
     var inputs = List<StepInput>();
@@ -80,7 +80,7 @@ class RecipeStoryItem extends StoryItem {
       if (input.inputableType == InputType.Ingredient) {
         widgets.add(_renderInput(scopedLookup, input));
       } else if (input.inputableType == InputType.Recipe) {
-        final recipe = scopedLookup.recipesMap[input.inputableId];
+        final recipe = scopedLookup.getRecipe(input.inputableId);
         widgets.add(InkWell(
             onTap: () {
               scopedStory.push(RecipeStoryItem(
@@ -123,7 +123,7 @@ class RecipeStoryItem extends StoryItem {
   List<Widget> _renderSteps(
       ScopedLookup scopedLookup, ScopedStory scopedStory, List<int> ids) {
     return ids.map((id) {
-      final recipeStep = scopedLookup.recipeStepsMap[id];
+      final recipeStep = scopedLookup.getRecipeStep(id);
       return InkWell(
           onTap: () {
             scopedStory.push(RecipeStepStoryItem(recipeStep,

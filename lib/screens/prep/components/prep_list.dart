@@ -47,8 +47,8 @@ class PrepList extends StatelessWidget {
     var orderedItems = List();
 
     scopedPrep.prep.forEach((prep) {
-      final recipeStep = scopedLookup.recipeStepsMap[prep.recipeStepId];
-      final recipe = scopedLookup.recipesMap[recipeStep.recipeId];
+      final recipeStep = scopedLookup.getRecipeStep(prep.recipeStepId);
+      final recipe = scopedLookup.getRecipe(recipeStep.recipeId);
 
       final done = prep.madeQty != null && prep.expectedQty <= prep.madeQty;
       if (recipe.publish) {
