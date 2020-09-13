@@ -32,7 +32,7 @@ void main() {
   DayPrep _createDayPrep(int recipeStepId,
       {int prepId, double madeQty, int qtyUpdatedAtSec}) {
     prepId = prepId ?? 11;
-    return new DayPrep(prepId, 2.5, recipeStepId,
+    return new DayPrep(prepId, 2.5, recipeStepId, 1000,
         madeQty: madeQty, qtyUpdatedAtSec: qtyUpdatedAtSec);
   }
 

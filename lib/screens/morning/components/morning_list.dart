@@ -6,6 +6,7 @@ import '../../../models/day_ingredient.dart';
 import '../morning_styles.dart';
 import './morning_item.dart';
 
+//TODO(po_time): if ingredient was from yesterday, today should have that prep instead
 class MorningList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

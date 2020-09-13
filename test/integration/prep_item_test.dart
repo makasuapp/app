@@ -29,7 +29,7 @@ void main() {
 
   DayPrep _createDayPrep(double expectedQty, int recipeStepId,
       {double madeQty}) {
-    return DayPrep(1, expectedQty, recipeStepId, madeQty: madeQty);
+    return DayPrep(1, expectedQty, recipeStepId, 1000, madeQty: madeQty);
   }
 
   StepInput _createInput(int inputId, {String unit, double qty}) {

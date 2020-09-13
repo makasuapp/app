@@ -69,7 +69,6 @@ class ScopedDayPrep extends Model {
 
   @visibleForTesting
   int compareForPrepList(DayPrep a, DayPrep b) {
-    //TODO: also include timing constraints - min/max
     final rsA = recipeStepFor(a);
     final rsB = recipeStepFor(b);
     if (rsA.recipeId == rsB.recipeId) {
@@ -81,7 +80,12 @@ class ScopedDayPrep extends Model {
         return rsA.stepType.compareTo(rsB.stepType) * -1;
       }
     } else {
-      if (this._recipeDependencies[rsA.recipeId].contains(rsB.recipeId)) {
+      //earlier needed step first
+      if (a.minNeededAtSec != b.minNeededAtSec) {
+        return a.minNeededAtSec - b.minNeededAtSec;
+      } else if (this
+          ._recipeDependencies[rsA.recipeId]
+          .contains(rsB.recipeId)) {
         //A dependent on B so B comes first
         return 1;
       } else if (this
