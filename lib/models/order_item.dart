@@ -14,9 +14,11 @@ class OrderItem {
   final int startedAtSec;
   @JsonKey(name: "done_at", nullable: true)
   final int doneAtSec;
+  @JsonKey(nullable: true)
+  final String comment;
 
   OrderItem(this.id, this.recipeId, this.priceCents, this.quantity,
-      {this.startedAtSec, this.doneAtSec});
+      {this.startedAtSec, this.doneAtSec, this.comment});
 
   factory OrderItem.fromJson(Map<String, dynamic> json) =>
       _$OrderItemFromJson(json);
@@ -26,7 +28,9 @@ class OrderItem {
       {int recipeId, int priceCents, int quantity}) {
     return OrderItem(orig.id, recipeId ?? orig.recipeId,
         priceCents ?? orig.priceCents, quantity ?? orig.quantity,
-        startedAtSec: startedAtSec, doneAtSec: doneAtSec);
+        startedAtSec: startedAtSec,
+        doneAtSec: doneAtSec,
+        comment: orig.comment);
   }
 
   DateTime startedAt() {

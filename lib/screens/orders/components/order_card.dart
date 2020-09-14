@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:kitchen/screens/orders/components/comment.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:kitchen/scoped_models/scoped_order.dart';
 import '../../../models/order.dart';
@@ -35,6 +36,7 @@ class OrderCard extends StatelessWidget {
               Container(
                   decoration: OrderStyles.orderItemsTopBorder,
                   padding: OrderStyles.orderItemsTopPadding),
+              Comment(this.order.comment),
               OrderItems(this.order.id)
             ]));
   }

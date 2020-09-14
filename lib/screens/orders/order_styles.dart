@@ -30,6 +30,8 @@ class OrderStyles {
       fontSize: Styles.textSizeLarge,
       color: Styles.textColorDefault,
       decoration: TextDecoration.lineThrough);
+  static final commentText =
+      TextStyle(fontSize: Styles.textSizeLarge, color: Colors.red);
 
   static final orderDetailItemPadding =
       EdgeInsets.symmetric(vertical: 12.0, horizontal: 0);

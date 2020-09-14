@@ -57,13 +57,15 @@ class Order {
   final int forSec;
   @JsonKey(name: "integration_type", nullable: true)
   final String integrationType;
+  @JsonKey(nullable: true)
+  final String comment;
 
   final List<OrderItem> items;
   final Customer customer;
 
   Order(this.id, this.state, this.orderType, this.createdAtSec, this.items,
       this.customer, this.orderId,
-      {this.integrationType, this.forSec});
+      {this.integrationType, this.forSec, this.comment});
 
   factory Order.fromJson(Map<String, dynamic> json) => _$OrderFromJson(json);
   Map<String, dynamic> toJson() => _$OrderToJson(this);
@@ -85,7 +87,8 @@ class Order {
         customer ?? orig.customer,
         orig.orderId,
         integrationType: orig.integrationType,
-        forSec: forSec ?? orig.forSec);
+        forSec: forSec ?? orig.forSec,
+        comment: orig.comment);
   }
 
   bool isPreorder() {

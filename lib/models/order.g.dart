@@ -19,6 +19,7 @@ Order _$OrderFromJson(Map<String, dynamic> json) {
     json['order_id'] as String,
     integrationType: json['integration_type'] as String,
     forSec: json['for_time'] as int,
+    comment: json['comment'] as String,
   );
 }
 
@@ -30,6 +31,7 @@ Map<String, dynamic> _$OrderToJson(Order instance) => <String, dynamic>{
       'created_at': instance.createdAtSec,
       'for_time': instance.forSec,
       'integration_type': instance.integrationType,
+      'comment': instance.comment,
       'items': instance.items,
       'customer': instance.customer,
     };

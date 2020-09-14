@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kitchen/screens/orders/components/comment.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:kitchen/scoped_models/scoped_order.dart';
 import 'package:kitchen/scoped_models/scoped_lookup.dart';
@@ -62,9 +63,15 @@ class OrderItems extends StatelessWidget {
     final recipe = scopedLookup.getRecipe(item.recipeId);
     final text = "${item.quantity} ${recipe.name}";
 
-    return Text(text,
-        style: item.doneAtSec != null
-            ? OrderStyles.doneItemText
-            : OrderStyles.orderItemText);
+    return Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(text,
+              style: item.doneAtSec != null
+                  ? OrderStyles.doneItemText
+                  : OrderStyles.orderItemText),
+          Comment(item.comment)
+        ]);
   }
 }
