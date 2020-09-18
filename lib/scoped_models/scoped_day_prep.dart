@@ -72,13 +72,8 @@ class ScopedDayPrep extends Model {
     final rsA = recipeStepFor(a);
     final rsB = recipeStepFor(b);
     if (rsA.recipeId == rsB.recipeId) {
-      if (rsA.stepType == rsB.stepType) {
-        //earlier step first
-        return rsA.number - rsB.number;
-      } else {
-        //prep before cook
-        return rsA.stepType.compareTo(rsB.stepType) * -1;
-      }
+      //earlier step first
+      return rsA.number - rsB.number;
     } else {
       //earlier needed step first
       if (a.minNeededAtSec != b.minNeededAtSec) {

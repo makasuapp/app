@@ -16,12 +16,11 @@ void main() {
 
   RecipeStep _createRecipeStep(
       int recipeStepId, int recipeId, List<StepInput> inputs,
-      {String stepType, int number}) {
-    stepType = stepType ?? "cook";
+      {int number}) {
     number = number ?? 1;
 
-    return new RecipeStep(recipeStepId, recipeId, stepType, number,
-        "mock instruction", null, null, inputs);
+    return new RecipeStep(
+        recipeStepId, recipeId, number, "mock instruction", null, null, inputs);
   }
 
   StepInput _createStepInput(String inputableType, {int inputableId}) {
@@ -280,19 +279,18 @@ void main() {
     const recipeStepIdForA = 1;
     const recipeStepIdForB = 2;
     const sharedRecipeId = 1;
-    const sharedStepType = "cook";
     const recipeIdA = 3;
     const recipeIdB = 4;
 
-    test('if recipe and recipe step are equal, the earlier step is lower', () {
+    test('if recipe is equal, the earlier step is lower', () {
       const numberForA = 1;
       const numberForB = 2;
 
       final rsForA = _createRecipeStep(recipeStepIdForA, sharedRecipeId, null,
-          number: numberForA, stepType: sharedStepType);
+          number: numberForA);
 
       final rsForB = _createRecipeStep(recipeStepIdForB, sharedRecipeId, null,
-          number: numberForB, stepType: sharedStepType);
+          number: numberForB);
 
       recipeStepsMap[recipeStepIdForA] = rsForA;
       recipeStepsMap[recipeStepIdForB] = rsForB;
@@ -303,33 +301,6 @@ void main() {
       ScopedLookup scopedLookup =
           new ScopedLookup(recipeSteps: [rsForA, rsForB]);
 
-      ScopedDayPrep scopedDayPrep =
-          new ScopedDayPrep(scopedLookup: scopedLookup);
-
-      final result = scopedDayPrep.compareForPrepList(prepA, prepB);
-
-      expect(result, equals(-1));
-    });
-
-    test('prep should come before cook if recipe ids are equal', () {
-      const stepTypeA = "prep";
-      const stepTypeB = "cook";
-      const numberA = 2;
-      const numberB = 1;
-
-      final rsForA = _createRecipeStep(recipeStepIdForA, sharedRecipeId, null,
-          stepType: stepTypeA, number: numberA);
-      final rsForB = _createRecipeStep(recipeStepIdForB, sharedRecipeId, null,
-          stepType: stepTypeB, number: numberB);
-
-      recipeStepsMap[recipeStepIdForA] = rsForA;
-      recipeStepsMap[recipeStepIdForB] = rsForB;
-
-      final prepA = _createDayPrep(recipeStepIdForA);
-      final prepB = _createDayPrep(recipeStepIdForB);
-
-      ScopedLookup scopedLookup =
-          new ScopedLookup(recipeSteps: [rsForA, rsForB]);
       ScopedDayPrep scopedDayPrep =
           new ScopedDayPrep(scopedLookup: scopedLookup);
 
@@ -351,10 +322,10 @@ void main() {
       inputsForB.add(_createStepInput("Recipe"));
 
       final rsForA = _createRecipeStep(recipeStepIdForA, recipeIdA, inputsForA,
-          stepType: sharedStepType, number: numberForA);
+          number: numberForA);
 
       final rsForB = _createRecipeStep(recipeStepIdForB, recipeIdB, inputsForB,
-          stepType: sharedStepType, number: numberForB);
+          number: numberForB);
 
       recipeStepsMap[recipeStepIdForA] = rsForA;
       recipeStepsMap[recipeStepIdForB] = rsForB;
@@ -390,10 +361,10 @@ void main() {
       inputsForB.add(_createStepInput("Recipe"));
 
       final rsForA = _createRecipeStep(recipeStepIdForA, recipeIdA, inputsForA,
-          stepType: sharedStepType, number: numberForA);
+          number: numberForA);
 
       final rsForB = _createRecipeStep(recipeStepIdForB, recipeIdB, inputsForB,
-          stepType: sharedStepType, number: numberForB);
+          number: numberForB);
 
       recipeStepsMap[recipeStepIdForA] = rsForA;
       recipeStepsMap[recipeStepIdForB] = rsForB;
@@ -430,11 +401,11 @@ void main() {
 
       final RecipeStep rsForA = _createRecipeStep(
           recipeStepIdForA, recipeIdA, inputsForA,
-          stepType: sharedStepType, number: numberForA);
+          number: numberForA);
 
       final RecipeStep rsForB = _createRecipeStep(
           recipeStepIdForB, recipeIdB, inputsForB,
-          stepType: sharedStepType, number: numberForB);
+          number: numberForB);
 
       recipeStepsMap[recipeStepIdForA] = rsForA;
       recipeStepsMap[recipeStepIdForB] = rsForB;

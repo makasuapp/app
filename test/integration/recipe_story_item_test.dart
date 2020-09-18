@@ -43,12 +43,12 @@ void main() {
 
   Recipe _createRecipe({double outputQty, String units}) {
     return Recipe(recipeId, "recipe",
-        prepStepIds: [recipeStepId], outputQty: outputQty, unit: units);
+        stepIds: [recipeStepId], outputQty: outputQty, unit: units);
   }
 
   RecipeStep _createRecipeStep(List<StepInput> inputs) {
     return RecipeStep(
-        recipeStepId, recipeId, "prep", 1, "instruction", null, null, inputs);
+        recipeStepId, recipeId, 1, "instruction", null, null, inputs);
   }
 
   StepInput _createInput({String unit, double qty}) {

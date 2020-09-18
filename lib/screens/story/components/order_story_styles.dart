@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kitchen/styles.dart';
 
-class CookStoryStyles {
+class OrderStoryStyles {
   static final instructionsPadding =
       EdgeInsets.symmetric(vertical: 10.0, horizontal: 0);
   static final instructionsText = TextStyle(

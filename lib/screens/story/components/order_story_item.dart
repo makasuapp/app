@@ -12,13 +12,13 @@ import '../../../models/step_input.dart';
 import '../story_styles.dart';
 import 'recipe_story_item.dart';
 import 'recipe_step_story_item.dart';
-import 'cook_story_styles.dart';
+import 'order_story_styles.dart';
 import 'story_item.dart';
 
-class CookStoryItem extends StoryItem {
+class OrderStoryItem extends StoryItem {
   final Recipe recipe;
 
-  CookStoryItem(this.recipe, {String outputUnits, double servingSize})
+  OrderStoryItem(this.recipe, {String outputUnits, double servingSize})
       : super(outputUnits ?? recipe.unit, servingSize ?? recipe.outputQty,
             "Cook");
 
@@ -37,7 +37,7 @@ class CookStoryItem extends StoryItem {
 
   @override
   StoryItem getUpdatedStoryItem(String outputUnits, double servingSize) {
-    return CookStoryItem(this.recipe,
+    return OrderStoryItem(this.recipe,
         outputUnits: outputUnits, servingSize: servingSize);
   }
 
@@ -50,10 +50,10 @@ class CookStoryItem extends StoryItem {
     return <Widget>[
           _renderTitle(),
           _fullRecipeButton(scopedStory),
-          _renderHeader("Ingredients On Order")
+          _renderHeader("Ingredients")
         ] +
         _renderCookInputs(scopedLookup, scopedStory) +
-        <Widget>[_renderHeader("Cook Steps")] +
+        <Widget>[_renderHeader("Steps On Order")] +
         _renderCookSteps(scopedLookup, scopedStory);
   }
 
@@ -77,17 +77,12 @@ class CookStoryItem extends StoryItem {
       ScopedLookup scopedLookup, ScopedStory scopedStory) {
     final cookInputs = this
         .recipe
-        .cookStepIds
+        .stepIds
         .map((id) => scopedLookup.getRecipeStep(id))
         .expand((step) => step.inputs)
-        .where((input) {
-      //drop cook steps
-      if (input.inputableType == InputType.RecipeStep) {
-        final recipeStep = scopedLookup.getRecipeStep(input.inputableId);
-        return recipeStep.stepType == "prep";
-      } else
-        return true;
-    });
+        .where((input) =>
+            //drop recipe steps
+            input.inputableType != InputType.RecipeStep);
 
     return cookInputs.map((input) {
       if (input.inputableType == InputType.Ingredient) {
@@ -118,7 +113,7 @@ class CookStoryItem extends StoryItem {
 
   List<Widget> _renderCookSteps(
       ScopedLookup scopedLookup, ScopedStory scopedStory) {
-    return this.recipe.cookStepIds.map((id) {
+    return this.recipe.stepIds.map((id) {
       final recipeStep = scopedLookup.getRecipeStep(id);
       return InkWell(
           onTap: () {
@@ -133,20 +128,20 @@ class CookStoryItem extends StoryItem {
     var widgets = List<Widget>();
 
     widgets.add(Text("${recipeStep.number}. ${recipeStep.instruction}",
-        style: CookStoryStyles.instructionsText));
+        style: OrderStoryStyles.instructionsText));
 
     if (recipeStep.inputs.length > 0) {
       widgets.add(Container(
-          padding: CookStoryStyles.ingredientsHeaderPadding,
+          padding: OrderStoryStyles.ingredientsHeaderPadding,
           child:
-              Text("Ingredients", style: CookStoryStyles.ingredientsHeader)));
+              Text("Ingredients", style: OrderStoryStyles.ingredientsHeader)));
 
       recipeStep.inputs.forEach((input) => widgets
-          .add(_renderInput(input, style: CookStoryStyles.ingredientText)));
+          .add(_renderInput(input, style: OrderStoryStyles.ingredientText)));
     }
 
     return Container(
-        padding: CookStoryStyles.instructionsPadding,
+        padding: OrderStoryStyles.instructionsPadding,
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.start, children: widgets));
   }

@@ -24,7 +24,7 @@ void main() {
   }
 
   RecipeStep _createRecipeStep(int id, List<StepInput> inputs) {
-    return RecipeStep(id, 1, "cook", 1, "instruction", null, null, inputs);
+    return RecipeStep(id, 1, 1, "instruction", null, null, inputs);
   }
 
   DayPrep _createDayPrep(double expectedQty, int recipeStepId,

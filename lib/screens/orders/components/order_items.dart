@@ -6,7 +6,7 @@ import 'package:kitchen/scoped_models/scoped_lookup.dart';
 import '../../../models/order.dart';
 import '../../../models/order_item.dart';
 import '../order_styles.dart';
-import '../../story/components/cook_story_item.dart';
+import '../../story/components/order_story_item.dart';
 import '../../story/story.dart';
 import '../../common/components/swipable.dart';
 
@@ -51,7 +51,7 @@ class OrderItems extends StatelessWidget {
         child: InkWell(
             onTap: () => StoryView.render(
                 context,
-                CookStoryItem(scopedLookup.getRecipe(item.recipeId),
+                OrderStoryItem(scopedLookup.getRecipe(item.recipeId),
                     servingSize: item.quantity.toDouble())),
             child: Container(
                 width: MediaQuery.of(context).size.width,

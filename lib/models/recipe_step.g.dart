@@ -10,7 +10,6 @@ RecipeStep _$RecipeStepFromJson(Map<String, dynamic> json) {
   return RecipeStep(
     json['id'] as int,
     json['recipe_id'] as int,
-    json['step_type'] as String,
     json['number'] as int,
     json['instruction'] as String,
     (json['tools'] as List)
@@ -32,7 +31,6 @@ Map<String, dynamic> _$RecipeStepToJson(RecipeStep instance) =>
     <String, dynamic>{
       'id': instance.id,
       'recipe_id': instance.recipeId,
-      'step_type': instance.stepType,
       'number': instance.number,
       'instruction': instance.instruction,
       'duration_sec': instance.durationSec,

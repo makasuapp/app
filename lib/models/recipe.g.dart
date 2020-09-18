@@ -10,10 +10,7 @@ Recipe _$RecipeFromJson(Map<String, dynamic> json) {
   return Recipe(
     json['id'] as int,
     json['name'] as String,
-    prepStepIds:
-        (json['prep_step_ids'] as List)?.map((e) => e as int)?.toList(),
-    cookStepIds:
-        (json['cook_step_ids'] as List)?.map((e) => e as int)?.toList(),
+    stepIds: (json['step_ids'] as List)?.map((e) => e as int)?.toList(),
     outputQty: (json['output_qty'] as num)?.toDouble(),
     unit: json['unit'] as String,
     volumeWeightRatio: (json['volume_weight_ratio'] as num)?.toDouble(),
@@ -28,6 +25,5 @@ Map<String, dynamic> _$RecipeToJson(Recipe instance) => <String, dynamic>{
       'output_qty': instance.outputQty,
       'unit': instance.unit,
       'volume_weight_ratio': instance.volumeWeightRatio,
-      'prep_step_ids': instance.prepStepIds,
-      'cook_step_ids': instance.cookStepIds,
+      'step_ids': instance.stepIds
     };

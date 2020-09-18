@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:kitchen/screens/common/components/input_with_quantity.dart';
+import 'package:kitchen/screens/common/components/submit_button.dart';
 import 'package:kitchen/services/unit_converter.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:kitchen/scoped_models/scoped_story.dart';
 import 'package:kitchen/scoped_models/scoped_lookup.dart';
 import '../../../styles.dart';
 import './story_item.dart';
+import './order_story_item.dart';
 import './recipe_step_story_item.dart';
 import '../../../models/recipe.dart';
 import '../../../models/step_input.dart';
@@ -43,7 +45,7 @@ class RecipeStoryItem extends StoryItem {
   }
 
   List<Widget> _renderInfo(ScopedLookup scopedLookup, ScopedStory scopedStory) {
-    return <Widget>[_renderTitle()] +
+    return <Widget>[_renderTitle(), _orderRecipeButton(scopedStory)] +
         _renderAllInputs(scopedLookup, scopedStory) +
         _renderAllSteps(scopedLookup, scopedStory);
   }
@@ -57,18 +59,26 @@ class RecipeStoryItem extends StoryItem {
         ));
   }
 
+  Widget _orderRecipeButton(ScopedStory scopedStory) {
+    return SubmitButton(
+        () => scopedStory.push(OrderStoryItem(this.recipe,
+            outputUnits: this.displayedUnits, servingSize: this.servingSize)),
+        btnText: "View Order Recipe");
+  }
+
+  //TODO: aggregate all ingredients across subrecipes
   List<Widget> _renderAllInputs(
       ScopedLookup scopedLookup, ScopedStory scopedStory) {
     var widgets = List<Widget>();
 
     widgets.add(_renderHeader("Ingredients"));
-    final steps = (this.recipe.prepStepIds + this.recipe.cookStepIds)
+    final steps = this
+        .recipe
+        .stepIds
         .map((id) => scopedLookup.getRecipeStep(id))
         .toList();
 
     var inputs = List<StepInput>();
-    //TODO: combine ingredients that are the same as a result of subrecipes
-    //or list subrecipes as subheaders with their ingredients under
     steps.forEach((step) => step.inputs.forEach((input) {
           if (input.inputableType == InputType.Ingredient ||
               input.inputableType == InputType.Recipe) {
@@ -96,19 +106,15 @@ class RecipeStoryItem extends StoryItem {
     return widgets;
   }
 
+  //TODO: show steps of each subrecipe in sequence
   List<Widget> _renderAllSteps(
       ScopedLookup scopedLookup, ScopedStory scopedStory) {
     var widgets = List<Widget>();
 
-    if (this.recipe.prepStepIds.length > 0) {
-      widgets.add(_renderHeader("Prep"));
-      widgets.addAll(
-          _renderSteps(scopedLookup, scopedStory, this.recipe.prepStepIds));
-    }
-    if (this.recipe.cookStepIds.length > 0) {
-      widgets.add(_renderHeader("Cook"));
-      widgets.addAll(
-          _renderSteps(scopedLookup, scopedStory, this.recipe.cookStepIds));
+    if (this.recipe.stepIds.length > 0) {
+      widgets.add(_renderHeader("Steps"));
+      widgets
+          .addAll(_renderSteps(scopedLookup, scopedStory, this.recipe.stepIds));
     }
 
     return widgets;

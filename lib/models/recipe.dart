@@ -14,20 +14,16 @@ class Recipe {
   @JsonKey(name: "volume_weight_ratio", nullable: true)
   final double volumeWeightRatio;
 
-  @JsonKey(name: "prep_step_ids", nullable: true)
-  List<int> prepStepIds = List();
-  @JsonKey(name: "cook_step_ids", nullable: true)
-  List<int> cookStepIds = List();
+  @JsonKey(name: "step_ids", nullable: true)
+  List<int> stepIds = List();
 
   Recipe(this.id, this.name,
-      {List<int> prepStepIds,
-      List<int> cookStepIds,
+      {List<int> stepIds,
       this.outputQty,
       this.unit,
       this.volumeWeightRatio,
       this.publish = false}) {
-    this.prepStepIds = prepStepIds ?? [];
-    this.cookStepIds = cookStepIds ?? [];
+    this.stepIds = stepIds ?? [];
   }
 
   factory Recipe.fromJson(Map<String, dynamic> json) => _$RecipeFromJson(json);
