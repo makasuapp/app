@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'package:test/test.dart';
-import 'package:kitchen/api/ingredient_update.dart';
+import 'package:kitchen/api/input_update.dart';
 
 void main() {
-  test('ingredient_update to JSON', () {
-    var updates = List<IngredientUpdate>();
-    updates.add(IngredientUpdate(1, 1.2, 12345));
-    updates.add(IngredientUpdate(2, 1.5, 12346));
+  test('input_update to JSON', () {
+    var updates = List<InputUpdate>();
+    updates.add(InputUpdate(1, 1.2, 12345));
+    updates.add(InputUpdate(2, 1.5, 12346));
 
     final updatesJson = jsonEncode({'updates': updates});
     expect(

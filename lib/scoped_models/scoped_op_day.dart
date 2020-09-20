@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'scoped_api_model.dart';
-import './scoped_day_ingredient.dart';
+import 'scoped_day_input.dart';
 import './scoped_day_prep.dart';
 import '../models/op_day.dart';
 import '../services/web_api.dart';
@@ -11,16 +11,13 @@ const RETRY_WAIT_SECONDS = 2;
 const NUM_RETRIES = 3;
 
 class ScopedOpDay extends ScopedApiModel {
-  ScopedDayIngredient scopedDayIngredient;
+  ScopedDayInput scopedDayInput;
   ScopedDayPrep scopedDayPrep;
 
   ScopedOpDay(
-      {ScopedDayIngredient scopedDayIngredient,
-      ScopedDayPrep scopedDayPrep,
-      WebApi api})
+      {ScopedDayInput scopedDayInput, ScopedDayPrep scopedDayPrep, WebApi api})
       : super(api: api) {
-    this.scopedDayIngredient =
-        scopedDayIngredient ?? locator<ScopedDayIngredient>();
+    this.scopedDayInput = scopedDayInput ?? locator<ScopedDayInput>();
     this.scopedDayPrep = scopedDayPrep ?? locator<ScopedDayPrep>();
   }
 
@@ -28,7 +25,7 @@ class ScopedOpDay extends ScopedApiModel {
     loadData(() async {
       final opDay = await _fetchOpDay(kitchenId);
 
-      this.scopedDayIngredient.addFetched(opDay.ingredients);
+      this.scopedDayInput.addFetched(opDay.inputs);
       this.scopedDayPrep.addFetched(opDay.prep);
     }, forceLoad: forceLoad);
   }

@@ -1,9 +1,10 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:kitchen/models/day_input.dart';
 
 part 'recipe.g.dart';
 
 @JsonSerializable()
-class Recipe {
+class Recipe extends DayInputable {
   final int id;
   final String name;
   final bool publish;
@@ -22,7 +23,8 @@ class Recipe {
       this.outputQty,
       this.unit,
       this.volumeWeightRatio,
-      this.publish = false}) {
+      this.publish = false})
+      : super(name, volumeWeightRatio) {
     this.stepIds = stepIds ?? [];
   }
 

@@ -1,8 +1,7 @@
 import 'package:scoped_model/scoped_model.dart';
-import '../models/day_ingredient.dart';
-import '../models/ingredient.dart';
+import '../models/day_input.dart';
 import '../services/web_api.dart';
-import '../api/ingredient_update.dart';
+import '../api/input_update.dart';
 import 'package:meta/meta.dart';
 import '../service_locator.dart';
 import '../services/logger.dart';
@@ -12,26 +11,26 @@ const SAVE_BUFFER_SECONDS = 15;
 const RETRY_WAIT_SECONDS = 2;
 const NUM_RETRIES = 3;
 
-class ScopedDayIngredient extends Model {
-  List<DayIngredient> ingredients;
+class ScopedDayInput extends Model {
+  List<DayInput> inputs;
   WebApi api;
   static ScopedLookup _scopedLookup = locator<ScopedLookup>();
 
   @visibleForTesting
-  List<IngredientUpdate> unsavedUpdates;
+  List<InputUpdate> unsavedUpdates;
   @visibleForTesting
   int savingAtSec;
   @visibleForTesting
   int retryCount = 0;
   int _lastUpdateAtSec;
 
-  ScopedDayIngredient(
-      {List<DayIngredient> ingredients,
+  ScopedDayInput(
+      {List<DayInput> inputs,
       WebApi api,
-      List<IngredientUpdate> unsavedUpdates,
+      List<InputUpdate> unsavedUpdates,
       ScopedLookup scopedLookup}) {
     this.unsavedUpdates = unsavedUpdates ?? [];
-    this.ingredients = ingredients ?? [];
+    this.inputs = inputs ?? [];
     this.api = api ?? locator<WebApi>();
 
     if (scopedLookup != null) {
@@ -39,28 +38,30 @@ class ScopedDayIngredient extends Model {
     }
   }
 
-  Future<void> addFetched(List<DayIngredient> fetchedIngredients) async {
-    this.ingredients = _mergeIngredients(fetchedIngredients);
+  Future<void> addFetched(List<DayInput> fetchedInputs) async {
+    this.inputs = _mergeInputs(fetchedInputs);
     notifyListeners();
   }
 
-  static Ingredient ingredientFor(DayIngredient ingredient) {
-    return _scopedLookup.getIngredient(ingredient.ingredientId);
+  static DayInputable inputableFor(DayInput input) {
+    if (input.inputableType == DayInputType.Recipe) {
+      return _scopedLookup.getRecipe(input.inputableId);
+    } else if (input.inputableType == DayInputType.Ingredient) {
+      return _scopedLookup.getIngredient(input.inputableId);
+    } else {
+      throw Exception("Unexpected inputable type ${input.inputableType}");
+    }
   }
 
-  void updateIngredientQty(DayIngredient ingredient, double qty,
-      {int bufferMs}) {
-    final updatedIngredient =
-        DayIngredient.clone(ingredient, qty, DateTime.now());
-    final updatedIngredients = this
-        .ingredients
-        .map((i) => i.id == ingredient.id ? updatedIngredient : i)
-        .toList();
+  void updateInputQty(DayInput input, double qty, {int bufferMs}) {
+    final updatedInput = DayInput.clone(input, qty, DateTime.now());
+    final updatedInputs =
+        this.inputs.map((i) => i.id == input.id ? updatedInput : i).toList();
 
-    this.ingredients = updatedIngredients;
+    this.inputs = updatedInputs;
     notifyListeners();
 
-    _persistIngredient(updatedIngredient, bufferMs: bufferMs);
+    _persistInput(updatedInput, bufferMs: bufferMs);
   }
 
   @visibleForTesting
@@ -71,7 +72,7 @@ class ScopedDayIngredient extends Model {
 
       try {
         if (this.unsavedUpdates.length > 0) {
-          await this.api.postOpDaySaveIngredientsQty(this.unsavedUpdates);
+          await this.api.postOpDaySaveInputsQty(this.unsavedUpdates);
         }
 
         this.savingAtSec = null;
@@ -101,39 +102,40 @@ class ScopedDayIngredient extends Model {
     if (retryCount <= NUM_RETRIES) {
       this.saveUnsavedQty();
     } else {
-      Logger.error("hit max retries in scoped_day_ingredient");
+      Logger.error("hit max retries in scoped_day_input");
     }
   }
 
   //if we want to persist to db, then we'll also want to merge db entries here
-  List<DayIngredient> _mergeIngredients(List<DayIngredient> ingredients) {
+  List<DayInput> _mergeInputs(List<DayInput> inputs) {
     if (this.unsavedUpdates.length == 0) {
-      return ingredients;
+      return inputs;
     }
 
-    var ingredientsMap = Map<int, DayIngredient>();
-    ingredients.forEach((i) {
-      ingredientsMap[i.id] = i;
+    var inputsMap = Map<int, DayInput>();
+    inputs.forEach((i) {
+      inputsMap[i.id] = i;
     });
 
     this.unsavedUpdates.forEach((update) {
-      final ingredient = ingredientsMap[update.dayIngredientId];
-      if (ingredient.qtyUpdatedAtSec == null ||
-          update.timeSec > ingredient.qtyUpdatedAtSec) {
-        ingredient.hadQty = update.hadQty;
-        ingredient.qtyUpdatedAtSec = update.timeSec;
+      final input = inputsMap[update.dayInputId];
+      if (input.qtyUpdatedAtSec == null ||
+          update.timeSec > input.qtyUpdatedAtSec) {
+        input.hadQty = update.hadQty;
+        input.qtyUpdatedAtSec = update.timeSec;
       }
 
-      ingredientsMap[ingredient.id] = ingredient;
+      inputsMap[input.id] = input;
     });
 
-    return ingredientsMap.values.toList();
+    return inputsMap.values.toList();
   }
 
-  void _persistIngredient(DayIngredient ingredient, {int bufferMs}) async {
-    this.unsavedUpdates.add(IngredientUpdate(
-        ingredient.id, ingredient.hadQty, ingredient.qtyUpdatedAtSec));
-    this._lastUpdateAtSec = ingredient.qtyUpdatedAtSec;
+  void _persistInput(DayInput input, {int bufferMs}) async {
+    this
+        .unsavedUpdates
+        .add(InputUpdate(input.id, input.hadQty, input.qtyUpdatedAtSec));
+    this._lastUpdateAtSec = input.qtyUpdatedAtSec;
 
     final buffer = bufferMs ?? SAVE_BUFFER_SECONDS * 1000;
     await Future.delayed(Duration(milliseconds: buffer));

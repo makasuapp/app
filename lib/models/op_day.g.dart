@@ -8,8 +8,8 @@ part of 'op_day.dart';
 
 OpDay _$OpDayFromJson(Map<String, dynamic> json) {
   return OpDay(
-    (json['ingredients'] as List)
-        .map((e) => DayIngredient.fromJson(e as Map<String, dynamic>))
+    (json['inputs'] as List)
+        .map((e) => DayInput.fromJson(e as Map<String, dynamic>))
         .toList(),
     (json['prep'] as List)
         .map((e) => DayPrep.fromJson(e as Map<String, dynamic>))
@@ -18,6 +18,6 @@ OpDay _$OpDayFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$OpDayToJson(OpDay instance) => <String, dynamic>{
-      'ingredients': instance.ingredients,
+      'inputs': instance.inputs,
       'prep': instance.prep,
     };

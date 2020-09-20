@@ -7,40 +7,38 @@ import 'package:kitchen/screens/common/components/input_with_quantity.dart';
 import 'package:kitchen/services/unit_converter.dart';
 import '../../common/components/swipable.dart';
 import '../../common/adjust_quantity.dart';
-import '../../../models/day_ingredient.dart';
+import '../../../models/day_input.dart';
 import '../morning_styles.dart';
-import '../../../scoped_models/scoped_day_ingredient.dart';
+import '../../../scoped_models/scoped_day_input.dart';
 
 class MorningItem extends StatelessWidget {
-  final DayIngredient ingredient;
+  final DayInput input;
 
-  MorningItem(this.ingredient);
+  MorningItem(this.input);
 
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant<ScopedDayIngredient>(
-        builder: (context, child, scopedIngredient) =>
-            _renderItem(context, scopedIngredient));
+    return ScopedModelDescendant<ScopedDayInput>(
+        builder: (context, child, scopedInput) =>
+            _renderItem(context, scopedInput));
   }
 
-  Widget _renderItem(
-      BuildContext context, ScopedDayIngredient scopedIngredient) {
-    final originalQty = ingredient.hadQty;
+  Widget _renderItem(BuildContext context, ScopedDayInput scopedInput) {
+    final originalQty = this.input.hadQty;
 
     return Swipable(
-        canSwipeLeft: () => Future.value(ingredient.hadQty != null),
-        canSwipeRight: () => Future.value(ingredient.hadQty == null ||
-            ingredient.hadQty < ingredient.expectedQty),
+        canSwipeLeft: () => Future.value(this.input.hadQty != null),
+        canSwipeRight: () => Future.value(this.input.hadQty == null ||
+            this.input.hadQty < this.input.expectedQty),
         onSwipeLeft: (context) {
-          scopedIngredient.updateIngredientQty(ingredient, null);
-          _notifyQtyUpdate("Ingredient unchecked", context, ingredient,
-              scopedIngredient, originalQty);
+          scopedInput.updateInputQty(this.input, null);
+          _notifyQtyUpdate("Ingredient unchecked", context, this.input,
+              scopedInput, originalQty);
         },
         onSwipeRight: (context) {
-          scopedIngredient.updateIngredientQty(
-              ingredient, ingredient.expectedQty);
-          _notifyQtyUpdate("Ingredient checked", context, ingredient,
-              scopedIngredient, originalQty);
+          scopedInput.updateInputQty(this.input, this.input.expectedQty);
+          _notifyQtyUpdate("Ingredient checked", context, this.input,
+              scopedInput, originalQty);
         },
         child: InkWell(
             onTap: () {
@@ -49,21 +47,20 @@ class MorningItem extends StatelessWidget {
                   MaterialPageRoute(
                       settings: RouteSettings(name: 'adjust_morning_qty'),
                       builder: (_) {
-                        final baseIngredient =
-                            ScopedDayIngredient.ingredientFor(ingredient);
+                        final inputable =
+                            ScopedDayInput.inputableFor(this.input);
 
                         //TODO: convert up for the init qty/unit
                         return AdjustQuantityPage(
-                            title: baseIngredient.name,
+                            title: inputable.name,
                             canConvertAllUnits:
-                                baseIngredient.volumeWeightRatio != null,
-                            initQty:
-                                ingredient.hadQty ?? ingredient.expectedQty,
-                            initUnit: ingredient.unit,
+                                inputable.volumeWeightRatio != null,
+                            initQty: input.hadQty ?? input.expectedQty,
+                            initUnit: input.unit,
                             onSubmit: (double setQty, String newUnit,
                                     BuildContext qtyViewContext) =>
-                                _onAdjustQty(ingredient, scopedIngredient,
-                                    context, setQty, newUnit, qtyViewContext));
+                                _onAdjustQty(input, scopedInput, context,
+                                    setQty, newUnit, qtyViewContext));
                       }));
             },
             child: _renderItemText(context)));
@@ -71,48 +68,40 @@ class MorningItem extends StatelessWidget {
 
   _renderItemText(BuildContext context) {
     return Container(
-        color: ingredient.hadQty != null &&
-                ingredient.hadQty >= ingredient.expectedQty
+        color: input.hadQty != null && input.hadQty >= input.expectedQty
             ? MorningStyles.checkedItemColor
             : null,
         width: MediaQuery.of(context).size.width,
         padding: MorningStyles.listItemPadding,
-        child: InputWithQuantity(
-            ScopedDayIngredient.ingredientFor(ingredient).name,
-            ingredient.expectedQty,
-            InputType.Ingredient,
-            ingredient.unit,
-            adjustedInputQty: ingredient.hadQty,
-            adjustedInputUnit: ingredient.unit,
+        child: InputWithQuantity(ScopedDayInput.inputableFor(input).name,
+            input.expectedQty, input.inputableType, input.unit,
+            adjustedInputQty: input.hadQty,
+            adjustedInputUnit: input.unit,
             regularTextStyle: MorningStyles.listItemText,
             originalQtyStyle: MorningStyles.expectedItemText,
             adjustedQtyStyle: MorningStyles.unexpectedItemText));
   }
 
   void _onAdjustQty(
-      DayIngredient ingredient,
-      ScopedDayIngredient scopedIngredient,
+      DayInput input,
+      ScopedDayInput scopedInput,
       BuildContext originalContext,
       double setQty,
       String newUnit,
       BuildContext qtyViewContext) {
-    final originalQty = ingredient.hadQty;
+    final originalQty = input.hadQty;
     final newQty = UnitConverter.convert(setQty,
-        inputUnit: newUnit, outputUnit: ingredient.unit);
+        inputUnit: newUnit, outputUnit: input.unit);
 
-    scopedIngredient.updateIngredientQty(ingredient, newQty);
+    scopedInput.updateInputQty(input, newQty);
 
     Navigator.pop(qtyViewContext);
-    _notifyQtyUpdate("Ingredient updated", originalContext, ingredient,
-        scopedIngredient, originalQty);
+    _notifyQtyUpdate(
+        "Ingredient updated", originalContext, input, scopedInput, originalQty);
   }
 
-  void _notifyQtyUpdate(
-      String notificationText,
-      BuildContext context,
-      DayIngredient ingredient,
-      ScopedDayIngredient scopedIngredient,
-      double originalQty) {
+  void _notifyQtyUpdate(String notificationText, BuildContext context,
+      DayInput input, ScopedDayInput scopedInput, double originalQty) {
     Flushbar flush;
     flush = Flushbar(
         message: notificationText,
@@ -120,7 +109,7 @@ class MorningItem extends StatelessWidget {
         isDismissible: true,
         mainButton: InkWell(
             onTap: () {
-              scopedIngredient.updateIngredientQty(ingredient, originalQty);
+              scopedInput.updateInputQty(input, originalQty);
               flush.dismiss();
             },
             child: Text("Undo", style: Styles.textHyperlink)))

@@ -3,7 +3,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get_it/get_it.dart';
 import 'package:kitchen/scoped_models/scoped_user.dart';
 import 'services/web_api.dart';
-import 'scoped_models/scoped_day_ingredient.dart';
+import 'scoped_models/scoped_day_input.dart';
 import 'scoped_models/scoped_day_prep.dart';
 import 'scoped_models/scoped_op_day.dart';
 import 'scoped_models/scoped_order.dart';
@@ -17,8 +17,7 @@ void setupLocator() {
   locator.registerLazySingleton<FirebaseAnalytics>(() => FirebaseAnalytics());
   locator.registerLazySingleton<FirebaseMessaging>(() => FirebaseMessaging());
 
-  locator
-      .registerLazySingleton<ScopedDayIngredient>(() => ScopedDayIngredient());
+  locator.registerLazySingleton<ScopedDayInput>(() => ScopedDayInput());
   locator.registerLazySingleton<ScopedDayPrep>(() => ScopedDayPrep());
   locator.registerLazySingleton<ScopedOpDay>(() => ScopedOpDay());
   locator.registerLazySingleton<ScopedOrder>(() => ScopedOrder());

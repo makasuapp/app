@@ -11,14 +11,14 @@ void main() {
 
   test('fetch op day API', () async {
     final opDay = ScopedOpDay();
-    expect(opDay.scopedDayIngredient.ingredients.length, equals(0));
+    expect(opDay.scopedDayInput.inputs.length, equals(0));
     expect(opDay.scopedDayPrep.prep.length, equals(0));
     await opDay.loadOpDay(1);
-    expect(opDay.scopedDayIngredient.ingredients.length, greaterThan(0));
+    expect(opDay.scopedDayInput.inputs.length, greaterThan(0));
     expect(opDay.scopedDayPrep.prep.length, greaterThan(0));
 
-    final ingredient = opDay.scopedDayIngredient.ingredients[0];
-    expect(ingredient.ingredientId, isNotNull);
+    final input = opDay.scopedDayInput.inputs[0];
+    expect(input.inputableId, isNotNull);
 
     final prep = opDay.scopedDayPrep.prep[0];
     expect(prep.recipeStepId, isNotNull);

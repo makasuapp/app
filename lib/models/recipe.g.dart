@@ -25,5 +25,5 @@ Map<String, dynamic> _$RecipeToJson(Recipe instance) => <String, dynamic>{
       'output_qty': instance.outputQty,
       'unit': instance.unit,
       'volume_weight_ratio': instance.volumeWeightRatio,
-      'step_ids': instance.stepIds
+      'step_ids': instance.stepIds,
     };

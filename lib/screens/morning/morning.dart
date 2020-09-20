@@ -3,7 +3,7 @@ import 'package:kitchen/navigation_menu.dart';
 import 'package:scoped_model/scoped_model.dart';
 import './components/morning_list.dart';
 import '../common/components/scoped_progress_bar.dart';
-import 'package:kitchen/scoped_models/scoped_day_ingredient.dart';
+import 'package:kitchen/scoped_models/scoped_day_input.dart';
 import 'package:kitchen/scoped_models/scoped_op_day.dart';
 import 'package:kitchen/scoped_models/scoped_user.dart';
 import '../../service_locator.dart';
@@ -35,8 +35,8 @@ class _MorningChecklistPageState extends State<MorningChecklistPage> {
         drawer: NavigationMenu(MorningChecklistPage.routeName),
         body: ScopedModel<ScopedOpDay>(
             model: this.opDay,
-            child: ScopedModel<ScopedDayIngredient>(
-                model: this.opDay.scopedDayIngredient,
+            child: ScopedModel<ScopedDayInput>(
+                model: this.opDay.scopedDayInput,
                 child: RefreshIndicator(
                     onRefresh: () =>
                         opDay.loadOpDay(user.getKitchenId(), forceLoad: true),

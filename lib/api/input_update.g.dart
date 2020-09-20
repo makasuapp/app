@@ -1,22 +1,22 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'ingredient_update.dart';
+part of 'input_update.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-IngredientUpdate _$IngredientUpdateFromJson(Map<String, dynamic> json) {
-  return IngredientUpdate(
+InputUpdate _$InputUpdateFromJson(Map<String, dynamic> json) {
+  return InputUpdate(
     json['id'] as int,
     (json['had_qty'] as num).toDouble(),
     json['time_sec'] as int,
   );
 }
 
-Map<String, dynamic> _$IngredientUpdateToJson(IngredientUpdate instance) =>
+Map<String, dynamic> _$InputUpdateToJson(InputUpdate instance) =>
     <String, dynamic>{
-      'id': instance.dayIngredientId,
+      'id': instance.dayInputId,
       'had_qty': instance.hadQty,
       'time_sec': instance.timeSec,
     };
