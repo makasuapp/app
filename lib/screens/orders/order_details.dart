@@ -49,11 +49,11 @@ class OrderDetailsPage extends StatelessWidget {
   List<Widget> _renderInfo() {
     final order = this
         .scopedOrder
-        .orders
+        .getOrders()
         .where((order) => order.id == this.orderId)
         .first;
     final orderState = order.orderState();
-    final forTime = DateFormat('M/dd K:mm a').format(order.forTime());
+    final forTime = DateFormat('M/dd h:mm a').format(order.forTime());
 
     return <Widget>[
       _renderText("Order ID: ${order.orderId}"),

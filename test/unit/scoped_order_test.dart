@@ -18,7 +18,7 @@ void main() {
     final scopedOrder = locator<ScopedOrder>();
     await scopedOrder.loadOrders(1);
 
-    expect(scopedOrder.orders.length, greaterThan(0));
+    expect(scopedOrder.getOrders().length, greaterThan(0));
   }, skip: 'run manually for sanity checks');
 
   //TODO: write tests for moveToNextState
@@ -53,7 +53,7 @@ void main() {
         expect(captured.first.clearDoneAt, isTrue);
         expect(captured.last.clearDoneAt, isTrue);
 
-        final items = scopedOrder.orders.first.items;
+        final items = scopedOrder.getOrders().first.items;
         expect(items.first.doneAtSec, equals(null));
         expect(items.last.doneAtSec, equals(null));
       });
@@ -70,7 +70,7 @@ void main() {
         expect(captured.first.clearDoneAt, isTrue);
         expect(captured.last.clearDoneAt, isTrue);
 
-        final orders = scopedOrder.orders;
+        final orders = scopedOrder.getOrders();
         expect(orders.first.items.first.doneAtSec, equals(null));
         expect(orders.last.items.first.doneAtSec, equals(null));
       });
@@ -91,7 +91,7 @@ void main() {
         expect(captured.first.doneAtSec, sec);
         expect(captured.last.doneAtSec, sec);
 
-        final items = scopedOrder.orders.first.items;
+        final items = scopedOrder.getOrders().first.items;
         expect(items.first.doneAtSec, equals(sec));
         expect(items.last.doneAtSec, equals(sec));
       });
@@ -109,7 +109,7 @@ void main() {
         expect(captured.first.doneAtSec, sec);
         expect(captured.last.doneAtSec, sec);
 
-        final orders = scopedOrder.orders;
+        final orders = scopedOrder.getOrders();
         expect(orders.first.items.first.doneAtSec, equals(sec));
         expect(orders.last.items.first.doneAtSec, equals(sec));
       });

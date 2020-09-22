@@ -36,7 +36,8 @@ class _CurrentOrdersState extends State<CurrentOrders> {
       ScopedLookup scopedLookup) {
     final currentState = OrderState.started();
     //started orders with not yet done items
-    final currentOrders = scopedOrder.orders
+    final currentOrders = scopedOrder
+        .getOrders()
         .where((o) =>
             o.orderState() == currentState &&
             o.items.where((oi) => oi.doneAtSec == null).length > 0)

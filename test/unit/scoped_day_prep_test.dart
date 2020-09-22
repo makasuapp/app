@@ -452,8 +452,9 @@ void main() {
       final scopedPrep = ScopedDayPrep(
           prep: dayPrepList, scopedLookup: scopedLookup, api: api);
 
-      expect(scopedPrep.prep[0].madeQty, isNull);
-      expect(scopedPrep.prep[0].qtyUpdatedAtSec, isNull);
+      final preps = scopedPrep.getPrep();
+      expect(preps[0].madeQty, isNull);
+      expect(preps[0].qtyUpdatedAtSec, isNull);
 
       var updated = false;
       when(api.postOpDaySavePrepQty(any)).thenAnswer((_) async {
@@ -461,9 +462,10 @@ void main() {
       });
 
       await scopedPrep.updatePrepQty(prep, 1.5);
+      final newPreps = scopedPrep.getPrep();
       expect(updated, isTrue);
-      expect(scopedPrep.prep[0].madeQty, equals(1.5));
-      expect(scopedPrep.prep[0].qtyUpdatedAtSec, isNotNull);
+      expect(newPreps[0].madeQty, equals(1.5));
+      expect(newPreps[0].qtyUpdatedAtSec, isNotNull);
       expect(scopedPrep.unsavedUpdates.length, equals(0));
     });
 

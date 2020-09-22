@@ -12,7 +12,7 @@ const RETRY_WAIT_SECONDS = 2;
 const NUM_RETRIES = 3;
 
 class ScopedDayPrep extends Model {
-  List<DayPrep> prep;
+  List<DayPrep> _prep;
   WebApi api;
 
   @visibleForTesting
@@ -29,7 +29,7 @@ class ScopedDayPrep extends Model {
       List<PrepUpdate> unsavedUpdates,
       ScopedLookup scopedLookup}) {
     this.unsavedUpdates = unsavedUpdates ?? [];
-    this.prep = prep ?? [];
+    this._prep = prep ?? [];
     this.api = api ?? locator<WebApi>();
 
     if (scopedLookup != null) {
@@ -41,17 +41,21 @@ class ScopedDayPrep extends Model {
     return _scopedLookup.getRecipeStep(prep.recipeStepId);
   }
 
+  List<DayPrep> getPrep() {
+    return this._prep;
+  }
+
   Future<void> addFetched(List<DayPrep> fetchedPrep) async {
-    this.prep = _mergePrep(fetchedPrep);
+    this._prep = _mergePrep(fetchedPrep);
+    this._prep.sort((a, b) => compareForPrepList(a, b));
     this._recipeDependencies = mkRecipeDependencyMap();
-    this.prep.sort((a, b) => compareForPrepList(a, b));
     notifyListeners();
   }
 
   @visibleForTesting
   Map<int, Set<int>> mkRecipeDependencyMap() {
     var map = Map<int, Set<int>>();
-    this.prep.forEach((p) {
+    this._prep.forEach((p) {
       final recipeStep = recipeStepFor(p);
       final rId = recipeStep.recipeId;
       if (map[rId] == null) {
@@ -122,9 +126,9 @@ class ScopedDayPrep extends Model {
   Future<void> updatePrepQty(DayPrep prep, double qty) async {
     final updatedPrep = DayPrep.clone(prep, qty, DateTime.now());
     final updatedPreps =
-        this.prep.map((p) => p.id == prep.id ? updatedPrep : p).toList();
+        this._prep.map((p) => p.id == prep.id ? updatedPrep : p).toList();
 
-    this.prep = updatedPreps;
+    this._prep = updatedPreps;
     notifyListeners();
 
     this.unsavedUpdates.add(
@@ -136,13 +140,13 @@ class ScopedDayPrep extends Model {
     final timeOfUpdate = DateTime.now();
 
     final updatedPreps = this
-        .prep
+        ._prep
         .map((p) => (prepIdsWithQtysToUpdate.containsKey(p.id))
             ? DayPrep.clone(p, prepIdsWithQtysToUpdate[p.id], timeOfUpdate)
             : p)
         .toList();
 
-    this.prep = updatedPreps;
+    this._prep = updatedPreps;
     notifyListeners();
     this.unsavedUpdates.addAll(prepIdsWithQtysToUpdate.entries.map((e) {
           return PrepUpdate(

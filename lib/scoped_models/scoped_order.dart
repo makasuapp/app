@@ -11,13 +11,13 @@ import './scoped_api_model.dart';
 import 'scoped_lookup.dart';
 
 class ScopedOrder extends ScopedApiModel {
-  List<Order> orders;
+  List<Order> _orders;
   Map<int, Order> newUnseenOrders = Map();
   static ScopedLookup _scopedLookup = locator<ScopedLookup>();
 
   ScopedOrder({List<Order> orders, WebApi api, ScopedLookup scopedLookup})
       : super(api: api) {
-    this.orders = orders ?? List();
+    this._orders = orders ?? List();
 
     if (scopedLookup != null) {
       _scopedLookup = scopedLookup;
@@ -36,6 +36,11 @@ class ScopedOrder extends ScopedApiModel {
     return a.forTimeSec() - b.forTimeSec();
   }
 
+  List<Order> getOrders() {
+    this._orders.sort((a, b) => compareForOrderList(a, b));
+    return this._orders;
+  }
+
   Future<void> _fetchOrders(int kitchenId) async {
     final resp = await this.api.fetchOrdersJson(kitchenId);
     final decodedResp = json.decode(resp);
@@ -46,18 +51,16 @@ class ScopedOrder extends ScopedApiModel {
         recipeSteps: loadOrdersResp.recipeSteps,
         ingredients: loadOrdersResp.ingredients);
     var orders = loadOrdersResp.orders;
-    orders.sort((a, b) => compareForOrderList(a, b));
-    this.orders = orders;
+    this._orders = orders;
   }
 
   void moveToNextState(Order order) async {
     final orderState = order.orderState();
     final updatedOrder = Order.clone(order, state: orderState.next);
     final updatedOrders =
-        this.orders.map((o) => o.id == order.id ? updatedOrder : o).toList();
-    this.orders = updatedOrders;
+        this._orders.map((o) => o.id == order.id ? updatedOrder : o).toList();
+    this._orders = updatedOrders;
     clearUnseenOrders();
-    //TODO: sort again
     notifyListeners();
 
     try {
@@ -66,15 +69,15 @@ class ScopedOrder extends ScopedApiModel {
       Logger.error(err);
       //TODO: save update locally to retry later instead
       final revertedOrders =
-          this.orders.map((o) => o.id == order.id ? order : o).toList();
-      this.orders = revertedOrders;
+          this._orders.map((o) => o.id == order.id ? order : o).toList();
+      this._orders = revertedOrders;
       notifyListeners();
     }
   }
 
   void markItemsDoneTime(Map<int, OrderItem> itemsById, DateTime doneAt) async {
-    final originalOrders = this.orders;
-    final updatedOrders = this.orders.map((o) {
+    final originalOrders = this._orders;
+    final updatedOrders = this._orders.map((o) {
       final updatedItems = o.items.map((i) {
         if (itemsById.containsKey(i.id)) {
           final updatedItem = OrderItem.clone(i, i.startedAtSec,
@@ -86,7 +89,7 @@ class ScopedOrder extends ScopedApiModel {
       }).toList();
       return Order.clone(o, items: updatedItems);
     }).toList();
-    this.orders = updatedOrders;
+    this._orders = updatedOrders;
     notifyListeners();
 
     final orderItemUpdates = itemsById.values
@@ -98,14 +101,13 @@ class ScopedOrder extends ScopedApiModel {
       await this.api.postOrderItemUpdates(orderItemUpdates);
     } catch (err) {
       Logger.error(err);
-      this.orders = originalOrders;
+      this._orders = originalOrders;
       notifyListeners();
     }
   }
 
   void addOrder(Order order) {
-    this.orders.add(order);
-    this.orders.sort((a, b) => compareForOrderList(a, b));
+    this._orders.add(order);
     this.newUnseenOrders[order.id] = order;
     notifyListeners();
   }

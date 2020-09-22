@@ -26,7 +26,7 @@ class OrderItems extends StatelessWidget {
   //we don't want to pass in order from order_details since it doesn't update with the scoped order, so it might not be up to date
   //this doesn't seem like the correct thing to do...
   Order _order(ScopedOrder scopedOrder) =>
-      scopedOrder.orders.where((o) => o.id == this.orderId).first;
+      scopedOrder.getOrders().where((o) => o.id == this.orderId).first;
 
   Widget _renderContent(BuildContext context, ScopedOrder scopedOrder,
       ScopedLookup scopedLookup) {

@@ -59,7 +59,7 @@ class OrderCard extends StatelessWidget {
   List<Widget> _renderInfo() {
     final orderState = this.order.orderState();
     var info = List<Widget>();
-    final forTime = DateFormat('M/dd K:mm a').format(this.order.forTime());
+    final forTime = DateFormat('M/dd h:mm a').format(this.order.forTime());
 
     info.add(_renderText("Order ID: ${this.order.orderId}"));
     info.add(_renderText("For: $forTime"));

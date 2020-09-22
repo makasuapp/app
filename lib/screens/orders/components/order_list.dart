@@ -15,7 +15,8 @@ class OrderList extends StatelessWidget {
   }
 
   List<Widget> _renderView(BuildContext context, ScopedOrder scopedOrder) {
-    return scopedOrder.orders
+    return scopedOrder
+            .getOrders()
             .where((o) => o.orderState() != OrderState.delivered())
             .map<Widget>((o) => OrderCard(o))
             .toList() +
