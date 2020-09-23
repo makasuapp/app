@@ -47,8 +47,8 @@ class ScopedDayPrep extends Model {
 
   Future<void> addFetched(List<DayPrep> fetchedPrep) async {
     this._prep = _mergePrep(fetchedPrep);
-    this._prep.sort((a, b) => compareForPrepList(a, b));
     this._recipeDependencies = mkRecipeDependencyMap();
+    this._prep.sort((a, b) => compareForPrepList(a, b));
     notifyListeners();
   }
 

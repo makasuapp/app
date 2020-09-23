@@ -29,6 +29,7 @@ class PrepList extends StatelessWidget {
                                 context, scopedPrep, scopedLookup)))));
   }
 
+  //TODO: don't re-generate subrecipeDataMap every time, pretty intense
   List<Widget> _renderView(BuildContext context, ScopedDayPrep scopedPrep,
       ScopedLookup scopedLookup) {
     var subrecipeDataMap = Map<int, SubrecipeData>();

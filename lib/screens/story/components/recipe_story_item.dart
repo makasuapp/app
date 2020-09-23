@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kitchen/models/recipe_step.dart';
 import 'package:kitchen/screens/common/components/input_with_quantity.dart';
 import 'package:kitchen/screens/common/components/submit_button.dart';
 import 'package:kitchen/services/unit_converter.dart';
@@ -46,8 +47,7 @@ class RecipeStoryItem extends StoryItem {
 
   List<Widget> _renderInfo(ScopedLookup scopedLookup, ScopedStory scopedStory) {
     return <Widget>[_renderTitle(), _orderRecipeButton(scopedStory)] +
-        _renderAllInputs(scopedLookup, scopedStory) +
-        _renderAllSteps(scopedLookup, scopedStory);
+        _renderAllRecipes(scopedLookup, scopedStory);
   }
 
   Widget _renderTitle() {
@@ -66,56 +66,96 @@ class RecipeStoryItem extends StoryItem {
         btnText: "View Order Recipe");
   }
 
-  //TODO: aggregate all ingredients across subrecipes
-  List<Widget> _renderAllInputs(
+  //TODO: aggregate subrecipes that are the same?
+  //list of all subrecipes' step inputs and steps
+  List<RecipeData> _getRecipeData(ScopedLookup scopedLookup, Recipe recipe) {
+    var recipeData = List<RecipeData>();
+    var inputs = List<StepInput>();
+    final steps =
+        recipe.stepIds.map((id) => scopedLookup.getRecipeStep(id)).toList();
+    steps.forEach((step) {
+      step.inputs.forEach((input) {
+        if (input.inputableType == InputType.Ingredient ||
+            input.inputableType == InputType.Recipe) {
+          inputs.add(input);
+        }
+
+        if (input.inputableType == InputType.Recipe) {
+          final childRecipe = scopedLookup.getRecipe(input.inputableId);
+          final childRecipeData = _getRecipeData(scopedLookup, childRecipe);
+          final numServings =
+              childRecipe.servingsProduced(input.quantity, input.unit);
+          childRecipeData.forEach((childData) =>
+              childData.scaleFactor = childData.scaleFactor * numServings);
+          recipeData.addAll(childRecipeData);
+        }
+      });
+    });
+
+    recipeData.add(RecipeData(recipe, inputs, steps));
+
+    return recipeData;
+  }
+
+  List<Widget> _renderAllRecipes(
       ScopedLookup scopedLookup, ScopedStory scopedStory) {
     var widgets = List<Widget>();
+    var recipeData = _getRecipeData(scopedLookup, this.recipe);
 
-    widgets.add(_renderHeader("Ingredients"));
-    final steps = this
-        .recipe
-        .stepIds
-        .map((id) => scopedLookup.getRecipeStep(id))
-        .toList();
-
-    var inputs = List<StepInput>();
-    steps.forEach((step) => step.inputs.forEach((input) {
-          if (input.inputableType == InputType.Ingredient ||
-              input.inputableType == InputType.Recipe) {
-            inputs.add(input);
-          }
-        }));
-
-    inputs.forEach((input) {
-      if (input.inputableType == InputType.Ingredient) {
-        widgets.add(_renderInput(scopedLookup, input));
-      } else if (input.inputableType == InputType.Recipe) {
-        final recipe = scopedLookup.getRecipe(input.inputableId);
-        widgets.add(InkWell(
-            onTap: () {
-              scopedStory.push(RecipeStoryItem(
-                recipe,
-                servingSize: _getAdjustedQty(input.quantity),
-                outputUnits: input.unit,
-              ));
-            },
-            child: _renderInput(scopedLookup, input)));
+    recipeData.forEach((data) {
+      //don't both rendering recipes for single ingredient/step recipes
+      if (data.inputs.length > 1 || data.steps.length > 1) {
+        widgets.add(_renderHeader(data.recipe.name));
+        widgets.addAll(_renderInputs(data, scopedLookup, scopedStory));
+        widgets.addAll(_renderSteps(data, scopedLookup, scopedStory));
       }
     });
 
     return widgets;
   }
 
-  //TODO: show steps of each subrecipe in sequence
-  List<Widget> _renderAllSteps(
-      ScopedLookup scopedLookup, ScopedStory scopedStory) {
+  List<Widget> _renderInputs(RecipeData recipeData, ScopedLookup scopedLookup,
+      ScopedStory scopedStory) {
     var widgets = List<Widget>();
 
-    if (this.recipe.stepIds.length > 0) {
-      widgets.add(_renderHeader("Steps"));
-      widgets
-          .addAll(_renderSteps(scopedLookup, scopedStory, this.recipe.stepIds));
-    }
+    widgets.add(_renderHeader("Ingredients"));
+
+    recipeData.inputs.forEach((input) {
+      if (input.inputableType == InputType.Ingredient) {
+        widgets.add(_renderInput(scopedLookup, input, recipeData.scaleFactor));
+      } else if (input.inputableType == InputType.Recipe) {
+        final recipe = scopedLookup.getRecipe(input.inputableId);
+        widgets.add(InkWell(
+            onTap: () {
+              scopedStory.push(RecipeStoryItem(
+                recipe,
+                servingSize: _adjustQtyForStoryServings(
+                    recipeData.scaleFactor * input.quantity),
+                outputUnits: input.unit,
+              ));
+            },
+            child: _renderInput(scopedLookup, input, recipeData.scaleFactor)));
+      }
+    });
+
+    return widgets;
+  }
+
+  List<Widget> _renderSteps(RecipeData recipeData, ScopedLookup scopedLookup,
+      ScopedStory scopedStory) {
+    var widgets = List<Widget>();
+
+    widgets.add(_renderHeader("Steps"));
+    recipeData.steps.forEach((step) {
+      widgets.add(InkWell(
+          onTap: () {
+            scopedStory.push(RecipeStepStoryItem(step,
+                servingSize:
+                    _adjustQtyForStoryServings(recipeData.scaleFactor)));
+          },
+          child: Text("${step.number}. ${step.instruction}",
+              style: StoryStyles.storyText)));
+    });
 
     return widgets;
   }
@@ -126,31 +166,15 @@ class RecipeStoryItem extends StoryItem {
         child: Text(text, style: StoryStyles.storyHeader));
   }
 
-  List<Widget> _renderSteps(
-      ScopedLookup scopedLookup, ScopedStory scopedStory, List<int> ids) {
-    return ids.map((id) {
-      final recipeStep = scopedLookup.getRecipeStep(id);
-      return InkWell(
-          onTap: () {
-            scopedStory.push(RecipeStepStoryItem(recipeStep,
-                servingSize: _getAdjustedQty(1.0)));
-          },
-          child: Text("${recipeStep.number}. ${recipeStep.instruction}",
-              style: StoryStyles.storyText));
-    }).toList();
-  }
-
-  Widget _renderInput(ScopedLookup scopedLookup, StepInput input) {
-    final servingsInRecipeUnits = UnitConverter.convert(servingSize,
-        inputUnit: this.displayedUnits,
-        outputUnit: this.recipe.unit,
-        volumeWeightRatio: this.recipe.volumeWeightRatio);
-    return InputWithQuantity.fromStepInput(
-      input,
-      adjustedInputQty: (servingsInRecipeUnits.toStringAsFixed(2) !=
-              this.recipe.outputQty.toStringAsFixed(2))
-          ? _getAdjustedQty(input.quantity)
-          : null,
+  Widget _renderInput(
+      ScopedLookup scopedLookup, StepInput input, double scaleFactor) {
+    final inputQty = input.quantity * scaleFactor;
+    return InputWithQuantity(
+      input.name,
+      inputQty,
+      input.inputableType,
+      input.unit,
+      adjustedInputQty: _adjustQtyForStoryServings(inputQty),
       adjustedInputUnit: input.unit,
       regularTextStyle: StoryStyles.storyText,
       adjustedQtyStyle: StoryStyles.adjustedQtyText,
@@ -158,11 +182,20 @@ class RecipeStoryItem extends StoryItem {
     );
   }
 
-  double _getAdjustedQty(double inputQty) {
-    double servingsInRecipeUnits = UnitConverter.convert(servingSize,
+  double _adjustQtyForStoryServings(double inputQty) {
+    double servingsInRecipeUnits = UnitConverter.convert(this.servingSize,
         inputUnit: this.displayedUnits,
         outputUnit: this.recipe.unit,
         volumeWeightRatio: this.recipe.volumeWeightRatio);
     return (inputQty * servingsInRecipeUnits) / recipe.outputQty;
   }
+}
+
+class RecipeData {
+  final Recipe recipe;
+  final List<StepInput> inputs;
+  final List<RecipeStep> steps;
+  double scaleFactor = 1;
+
+  RecipeData(this.recipe, this.inputs, this.steps);
 }

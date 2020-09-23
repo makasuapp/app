@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:kitchen/models/day_input.dart';
+import 'package:kitchen/services/unit_converter.dart';
 
 part 'recipe.g.dart';
 
@@ -29,4 +30,12 @@ class Recipe extends DayInputable {
   }
 
   factory Recipe.fromJson(Map<String, dynamic> json) => _$RecipeFromJson(json);
+
+  double servingsProduced(double usageQty, String usageUnit) {
+    final convertedQty = UnitConverter.convert(usageQty,
+        inputUnit: usageUnit,
+        outputUnit: this.unit,
+        volumeWeightRatio: this.volumeWeightRatio);
+    return convertedQty / this.outputQty;
+  }
 }
