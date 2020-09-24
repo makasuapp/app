@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:kitchen/styles.dart';
-import 'package:kitchen/models/step_input.dart';
 import 'package:kitchen/screens/common/components/input_with_quantity.dart';
 import 'package:kitchen/services/unit_converter.dart';
 import '../../common/components/swipable.dart';
@@ -13,8 +12,9 @@ import '../../../scoped_models/scoped_day_input.dart';
 
 class MorningItem extends StatelessWidget {
   final DayInput input;
+  final Function() refreshList;
 
-  MorningItem(this.input);
+  MorningItem(this.input, {this.refreshList});
 
   @override
   Widget build(BuildContext context) {
@@ -88,16 +88,22 @@ class MorningItem extends StatelessWidget {
       BuildContext originalContext,
       double setQty,
       String newUnit,
-      BuildContext qtyViewContext) {
+      BuildContext qtyViewContext) async {
     final originalQty = input.hadQty;
     final newQty = UnitConverter.convert(setQty,
         inputUnit: newUnit, outputUnit: input.unit);
 
-    scopedInput.updateInputQty(input, newQty);
+    await scopedInput.updateInputQty(input, newQty);
 
     Navigator.pop(qtyViewContext);
-    _notifyQtyUpdate(
-        "Ingredient updated", originalContext, input, scopedInput, originalQty);
+
+    //refresh list
+    if (input.inputableType == DayInputType.Recipe) {
+      this.refreshList();
+    } else {
+      _notifyQtyUpdate("Ingredient updated", originalContext, input,
+          scopedInput, originalQty);
+    }
   }
 
   void _notifyQtyUpdate(String notificationText, BuildContext context,

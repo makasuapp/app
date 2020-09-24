@@ -33,7 +33,7 @@ void main() {
   }
 
   StepInput _createInput(int inputId, {String unit, double qty}) {
-    return StepInput(1, "input", inputId, InputType.Ingredient,
+    return StepInput(1, "input", inputId, StepInputType.Ingredient,
         unit: unit, quantity: qty);
   }
 

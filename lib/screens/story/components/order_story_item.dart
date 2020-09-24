@@ -82,12 +82,12 @@ class OrderStoryItem extends StoryItem {
         .expand((step) => step.inputs)
         .where((input) =>
             //drop recipe steps
-            input.inputableType != InputType.RecipeStep);
+            input.inputableType != StepInputType.RecipeStep);
 
     return cookInputs.map((input) {
-      if (input.inputableType == InputType.Ingredient) {
+      if (input.inputableType == StepInputType.Ingredient) {
         return _renderInput(input);
-      } else if (input.inputableType == InputType.Recipe) {
+      } else if (input.inputableType == StepInputType.Recipe) {
         final recipe = scopedLookup.getRecipe(input.inputableId);
         return InkWell(
             onTap: () {
@@ -96,7 +96,7 @@ class OrderStoryItem extends StoryItem {
                   servingSize: _getAdjustedQty(input.quantity)));
             },
             child: _renderInput(input));
-      } else if (input.inputableType == InputType.RecipeStep) {
+      } else if (input.inputableType == StepInputType.RecipeStep) {
         final recipeStep = scopedLookup.getRecipeStep(input.inputableId);
         return InkWell(
           onTap: () {

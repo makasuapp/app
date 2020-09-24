@@ -146,10 +146,10 @@ class RecipeStepStoryItem extends StoryItem {
       inputsList.add(_textHeader("Inputs"));
 
       for (StepInput input in recipeStep.inputs) {
-        if (input.inputableType == InputType.Ingredient) {
+        if (input.inputableType == StepInputType.Ingredient) {
           inputsList.add(Container(
               child: _renderInput(input), padding: StoryStyles.itemPadding));
-        } else if (input.inputableType == InputType.Recipe) {
+        } else if (input.inputableType == StepInputType.Recipe) {
           final recipe = scopedLookup.getRecipe(input.inputableId);
           inputsList.add(Container(
             child: InkWell(
@@ -163,7 +163,7 @@ class RecipeStepStoryItem extends StoryItem {
                 child: _renderInput(input)),
             padding: StoryStyles.itemPadding,
           ));
-        } else if (input.inputableType == InputType.RecipeStep) {
+        } else if (input.inputableType == StepInputType.RecipeStep) {
           final recipeStep = scopedLookup.getRecipeStep(input.inputableId);
           inputsList.add(Container(
             child: InkWell(

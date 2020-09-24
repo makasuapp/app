@@ -38,6 +38,11 @@ class ScopedDayInput extends Model {
     }
   }
 
+  void clear() {
+    this.inputs = List<DayInput>();
+    notifyListeners();
+  }
+
   Future<void> addFetched(List<DayInput> fetchedInputs) async {
     this.inputs = _mergeInputs(fetchedInputs);
     notifyListeners();
@@ -53,7 +58,7 @@ class ScopedDayInput extends Model {
     }
   }
 
-  void updateInputQty(DayInput input, double qty, {int bufferMs}) {
+  Future<void> updateInputQty(DayInput input, double qty, {int bufferMs}) {
     final updatedInput = DayInput.clone(input, qty, DateTime.now());
     final updatedInputs =
         this.inputs.map((i) => i.id == input.id ? updatedInput : i).toList();
@@ -61,7 +66,13 @@ class ScopedDayInput extends Model {
     this.inputs = updatedInputs;
     notifyListeners();
 
-    _persistInput(updatedInput, bufferMs: bufferMs);
+    //want it to happen right away for recipe so we can refresh
+    if (input.inputableType == DayInputType.Recipe) {
+      return this.saveUnsavedQty();
+    } else {
+      _asyncPersistInput(updatedInput, bufferMs: bufferMs);
+      return Future.value();
+    }
   }
 
   @visibleForTesting
@@ -131,7 +142,7 @@ class ScopedDayInput extends Model {
     return inputsMap.values.toList();
   }
 
-  void _persistInput(DayInput input, {int bufferMs}) async {
+  void _asyncPersistInput(DayInput input, {int bufferMs}) async {
     this
         .unsavedUpdates
         .add(InputUpdate(input.id, input.hadQty, input.qtyUpdatedAtSec));

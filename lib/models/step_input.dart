@@ -2,7 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'step_input.g.dart';
 
-class InputType {
+class StepInputType {
   static const Recipe = "Recipe";
   static const RecipeStep = "RecipeStep";
   static const Ingredient = "Ingredient";

@@ -144,7 +144,7 @@ class SubrecipeData {
 
   addInputs(List<StepInput> inputs, DayPrep prep) {
     inputs
-        .where((element) => element.inputableType != InputType.RecipeStep)
+        .where((element) => element.inputableType != StepInputType.RecipeStep)
         .forEach((element) {
       final originalQty = prep.expectedQty * element.quantity;
       if (this.prepQtyForInput == null ||

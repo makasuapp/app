@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:kitchen/screens/common/components/list_picker.dart';
 import 'package:kitchen/services/unit_converter.dart';
-import '../adjust_quantity_styles.dart';
 
 ///onPick required
 class UnitPicker extends StatelessWidget {
@@ -13,41 +13,16 @@ class UnitPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var dropdownItems;
+    List<String> dropdownItems;
     if (this.canConvertAllUnits) {
-      dropdownItems = weightUnits.keys
-              .map((String value) => _renderDropdownItem(value))
-              .toList() +
-          volumeUnits.keys
-              .map((String value) => _renderDropdownItem(value))
-              .toList();
+      dropdownItems = weightUnits.keys.toList() + volumeUnits.keys.toList();
     } else if (weightUnits.containsKey(this.selectedUnit)) {
-      dropdownItems = weightUnits.keys
-          .map((String value) => _renderDropdownItem(value))
-          .toList();
+      dropdownItems = weightUnits.keys.toList();
     } else {
-      dropdownItems = volumeUnits.keys
-          .map((String value) => _renderDropdownItem(value))
-          .toList();
+      dropdownItems = volumeUnits.keys.toList();
     }
-    return DropdownButton<String>(
-      value: this.selectedUnit,
-      icon: AdjustQuantityStyles.unitPickerIcon,
-      iconSize: AdjustQuantityStyles.unitPickerIconSize,
-      style: AdjustQuantityStyles.unitPickerText,
-      underline: Container(
-        height: AdjustQuantityStyles.unitPickerUnderlineHeight,
-        color: AdjustQuantityStyles.unitPickerUnderlineColor,
-      ),
-      items: dropdownItems,
-      onChanged: (input) => this.onPick(input),
-    );
-  }
 
-  DropdownMenuItem<String> _renderDropdownItem(String value) {
-    return DropdownMenuItem<String>(
-      value: value,
-      child: Text(value),
-    );
+    return ListPicker(this.selectedUnit,
+        onPick: this.onPick, list: dropdownItems);
   }
 }

@@ -22,7 +22,7 @@ void main() {
     final units = null;
 
     final widget = _makeTestableWidget(
-        InputWithQuantity(inputName, qty, InputType.RecipeStep, units));
+        InputWithQuantity(inputName, qty, StepInputType.RecipeStep, units));
 
     await tester.pumpWidget(widget);
 
@@ -37,7 +37,7 @@ void main() {
     final units = null;
 
     final widget = _makeTestableWidget(
-        InputWithQuantity(inputName, qty, InputType.RecipeStep, units));
+        InputWithQuantity(inputName, qty, StepInputType.RecipeStep, units));
 
     await tester.pumpWidget(widget);
 
@@ -55,7 +55,7 @@ void main() {
     final widget = _makeTestableWidget(InputWithQuantity(
       inputName,
       qty,
-      InputType.RecipeStep,
+      StepInputType.RecipeStep,
       units,
       adjustedInputQty: adjustedQty,
     ));
@@ -83,7 +83,7 @@ void main() {
     final widget = _makeTestableWidget(InputWithQuantity(
       inputName,
       qty,
-      InputType.RecipeStep,
+      StepInputType.RecipeStep,
       units,
       adjustedInputQty: adjustedQty,
     ));
@@ -110,7 +110,7 @@ void main() {
     final widget = _makeTestableWidget(InputWithQuantity(
       inputName,
       sharedQty,
-      InputType.Ingredient,
+      StepInputType.Ingredient,
       units,
       adjustedInputQty: sharedQty,
       adjustedInputUnit: units,

@@ -1,6 +1,7 @@
 import 'dart:core';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:kitchen/api/new_input.dart';
 import '../api/input_update.dart';
 import '../api/prep_update.dart';
 import '../api/procurement_update.dart';
@@ -82,6 +83,11 @@ class WebApi {
   Future<void> postOrderItemUpdates(List<OrderItemUpdate> updates) {
     final body = jsonEncode({'updates': updates});
     return this._postJson('/orders/update_items', body);
+  }
+
+  Future<dynamic> postAddInputs(int kitchenId, List<NewInput> newInputs) {
+    final body = jsonEncode({'kitchen_id': kitchenId, 'inputs': newInputs});
+    return this._postJson('/op_days/add_inputs', body);
   }
 
   Future<void> postOrderUpdateState(Order order) {

@@ -53,7 +53,7 @@ class InputWithQuantity extends StatelessWidget {
   Widget build(BuildContext context) {
     var widgets = List<Widget>();
 
-    if (this.inputType == InputType.RecipeStep &&
+    if (this.inputType == StepInputType.RecipeStep &&
         this.originalInputUnit == null &&
         this.originalInputQty == 1 &&
         this.adjustedInputQty == null) {

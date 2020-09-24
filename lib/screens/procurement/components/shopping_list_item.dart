@@ -41,7 +41,7 @@ class ShoppingListItem extends StatelessWidget {
   //TODO: how should we render it if not yet gotten enough? crossed out is a bit confusing
   Widget _renderText(Ingredient ingredient) {
     return InputWithQuantity(ingredient.name, this.item.quantity,
-        InputType.Ingredient, this.item.unit,
+        StepInputType.Ingredient, this.item.unit,
         adjustedInputQty: this.item.gotQty,
         adjustedInputUnit: this.item.gotUnit);
   }

@@ -17,6 +17,10 @@ class ScopedLookup extends Model {
         recipes: recipes, recipeSteps: recipeSteps, ingredients: ingredients);
   }
 
+  List<Recipe> getRecipes() {
+    return this._recipesMap.values.toList();
+  }
+
   Recipe getRecipe(int recipeId) {
     return this._recipesMap[recipeId];
   }

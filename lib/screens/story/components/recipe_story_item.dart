@@ -75,12 +75,12 @@ class RecipeStoryItem extends StoryItem {
         recipe.stepIds.map((id) => scopedLookup.getRecipeStep(id)).toList();
     steps.forEach((step) {
       step.inputs.forEach((input) {
-        if (input.inputableType == InputType.Ingredient ||
-            input.inputableType == InputType.Recipe) {
+        if (input.inputableType == StepInputType.Ingredient ||
+            input.inputableType == StepInputType.Recipe) {
           inputs.add(input);
         }
 
-        if (input.inputableType == InputType.Recipe) {
+        if (input.inputableType == StepInputType.Recipe) {
           final childRecipe = scopedLookup.getRecipe(input.inputableId);
           final childRecipeData = _getRecipeData(scopedLookup, childRecipe);
           final numServings =
@@ -121,9 +121,9 @@ class RecipeStoryItem extends StoryItem {
     widgets.add(_renderHeader("Ingredients"));
 
     recipeData.inputs.forEach((input) {
-      if (input.inputableType == InputType.Ingredient) {
+      if (input.inputableType == StepInputType.Ingredient) {
         widgets.add(_renderInput(scopedLookup, input, recipeData.scaleFactor));
-      } else if (input.inputableType == InputType.Recipe) {
+      } else if (input.inputableType == StepInputType.Recipe) {
         final recipe = scopedLookup.getRecipe(input.inputableId);
         widgets.add(InkWell(
             onTap: () {
