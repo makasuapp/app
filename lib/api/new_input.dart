@@ -7,12 +7,12 @@ class NewInput {
   @JsonKey(name: "inputable_type")
   final String inputableType;
   @JsonKey(name: "inputable_id")
-  final int inputableId;
-  final double qty;
+  int inputableId;
+  double qty;
   @JsonKey(name: "unit", nullable: true)
-  final String unit;
+  String unit;
 
-  NewInput(this.inputableType, this.inputableId, this.qty, this.unit);
+  NewInput(this.inputableType, {this.inputableId, this.qty, this.unit});
 
   factory NewInput.fromJson(Map<String, dynamic> json) =>
       _$NewInputFromJson(json);

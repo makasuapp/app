@@ -58,7 +58,7 @@ class WebApi {
         },
         body: body);
 
-    if (resp.statusCode != 200) {
+    if (resp.statusCode != 200 && resp.statusCode != 201) {
       throw (resp.body);
     }
 

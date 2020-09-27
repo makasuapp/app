@@ -67,6 +67,7 @@ class ScopedDayInput extends Model {
     notifyListeners();
 
     //want it to happen right away for recipe so we can refresh
+    //TODO: this seems easy to become error prone... having different behavior for one case
     if (input.inputableType == DayInputType.Recipe) {
       return this.saveUnsavedQty();
     } else {

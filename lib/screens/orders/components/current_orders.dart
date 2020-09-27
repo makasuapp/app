@@ -15,13 +15,13 @@ class CurrentOrders extends StatefulWidget {
 }
 
 class _CurrentOrdersState extends State<CurrentOrders> {
-  static const _minHeight = 40.0;
+  static const _minHeight = 70.0;
   double _height;
 
   @override
   void initState() {
     super.initState();
-    _height = _minHeight + 30.0;
+    _height = _minHeight + 10.0;
   }
 
   @override

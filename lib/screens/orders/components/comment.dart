@@ -8,7 +8,7 @@ class Comment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (this.comment == null) {
+    if (this.comment == null || this.comment == "") {
       return Container();
     } else {
       return Wrap(

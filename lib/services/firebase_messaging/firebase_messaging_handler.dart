@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:kitchen/service_locator.dart';
@@ -50,7 +51,8 @@ class FirebaseMessagingHandler {
 
           return Future.value(message);
         },
-        onBackgroundMessage: _onBackgroundFunction,
+        //apparently background message doesn't work in ios..?
+        onBackgroundMessage: Platform.isIOS ? null : _onBackgroundFunction,
         onResume: (message) {
           print("onResume: $message");
           _getTopicMessage(message, topicMessageMap)

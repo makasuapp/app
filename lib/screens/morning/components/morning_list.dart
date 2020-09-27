@@ -46,9 +46,11 @@ class MorningList extends StatelessWidget {
       ScopedOpDay scopedOpDay) {
     var uncheckedRecipes = List<DayInput>();
     var missingRecipes = List<DayInput>();
+    var checkedRecipes = List<DayInput>();
+
     var uncheckedIngredients = List<DayInput>();
     var missingIngredients = List<DayInput>();
-    var checkedInputs = List<DayInput>();
+    var checkedIngredients = List<DayInput>();
 
     scopedDayInput.inputs.forEach((input) {
       if (input.hadQty == null) {
@@ -64,7 +66,11 @@ class MorningList extends StatelessWidget {
           missingRecipes.add(input);
         }
       } else {
-        checkedInputs.add(input);
+        if (input.inputableType == DayInputType.Ingredient) {
+          checkedIngredients.add(input);
+        } else {
+          checkedRecipes.add(input);
+        }
       }
     });
 
@@ -74,22 +80,29 @@ class MorningList extends StatelessWidget {
         _inputSection("Unchecked Recipes", uncheckedRecipes, scopedOpDay));
     viewItems
         .addAll(_inputSection("Missing Recipes", missingRecipes, scopedOpDay));
-    viewItems.add(SubmitButton(() {
+    viewItems
+        .addAll(_inputSection("Checked Recipes", checkedRecipes, scopedOpDay));
+    viewItems.add(_addRecipeButton(context));
+    viewItems.addAll(_inputSection(
+        "Unchecked Ingredients", uncheckedIngredients, scopedOpDay));
+    viewItems.addAll(
+        _inputSection("Missing Ingredients", missingIngredients, scopedOpDay));
+    viewItems.addAll(
+        _inputSection("Checked Ingredients", checkedIngredients, scopedOpDay));
+
+    viewItems.add(Container(padding: Styles.spacerPadding));
+
+    return viewItems;
+  }
+
+  Widget _addRecipeButton(BuildContext context) {
+    return SubmitButton(() {
       Navigator.push(
           context,
           MaterialPageRoute(
               settings: RouteSettings(name: "Add Recipe"),
               builder: (_) => AddRecipePage()));
-    }, btnText: "Add Recipe In Inventory"));
-    viewItems.addAll(_inputSection(
-        "Unchecked Ingredients", uncheckedIngredients, scopedOpDay));
-    viewItems.addAll(
-        _inputSection("Missing Ingredients", missingIngredients, scopedOpDay));
-    viewItems.addAll(_inputSection("Checked", checkedInputs, scopedOpDay));
-
-    viewItems.add(Container(padding: Styles.spacerPadding));
-
-    return viewItems;
+    }, btnText: "Add Recipe In Inventory");
   }
 
   List<Widget> _inputSection(

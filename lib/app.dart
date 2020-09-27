@@ -38,6 +38,7 @@ class App extends StatelessWidget {
           return ShoppingListPage(args.orderId);
         }
       },
+      debugShowCheckedModeBanner: false,
       navigatorObservers: [
         FirebaseAnalyticsObserver(analytics: locator<FirebaseAnalytics>()),
       ],
