@@ -62,12 +62,14 @@ class ScopedDayInput extends Model {
     final updatedInput = DayInput.clone(input, qty, DateTime.now());
     final updatedInputs =
         this.inputs.map((i) => i.id == input.id ? updatedInput : i).toList();
-
     this.inputs = updatedInputs;
     notifyListeners();
 
     //want it to happen right away for recipe so we can refresh
     //TODO: this seems easy to become error prone... having different behavior for one case
+    this.unsavedUpdates.add(InputUpdate(
+        updatedInput.id, updatedInput.hadQty, updatedInput.qtyUpdatedAtSec));
+    this._lastUpdateAtSec = updatedInput.qtyUpdatedAtSec;
     if (input.inputableType == DayInputType.Recipe) {
       return this.saveUnsavedQty();
     } else {
@@ -144,11 +146,6 @@ class ScopedDayInput extends Model {
   }
 
   void _asyncPersistInput(DayInput input, {int bufferMs}) async {
-    this
-        .unsavedUpdates
-        .add(InputUpdate(input.id, input.hadQty, input.qtyUpdatedAtSec));
-    this._lastUpdateAtSec = input.qtyUpdatedAtSec;
-
     final buffer = bufferMs ?? SAVE_BUFFER_SECONDS * 1000;
     await Future.delayed(Duration(milliseconds: buffer));
 

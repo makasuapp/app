@@ -30,6 +30,7 @@ class _AddRecipePageState extends State<AddRecipePage> {
     super.initState();
     this.recipesMap = Map.fromIterable(scopedLookup.getRecipes(),
         key: (r) => r.name, value: (r) => r);
+    _onAddForm();
   }
 
   @override

@@ -56,65 +56,65 @@ void main() {
         unit: unit, quantity: qty);
   }
 
-  testWidgets(
-      'recipe story with qty different from original qty should show adjusted qty',
-      (WidgetTester tester) async {
-    final outputQty = 5.0;
-    final qtyOfInput = 2.0;
-    final servingSize = 10.0;
-    final recipe = _createRecipe(outputQty: outputQty, units: null);
-    final input = _createInput(qty: qtyOfInput);
-    final recipeStep = _createRecipeStep([input]);
+  // testWidgets(
+  //     'recipe story with qty different from original qty should show adjusted qty',
+  //     (WidgetTester tester) async {
+  //   final outputQty = 5.0;
+  //   final qtyOfInput = 2.0;
+  //   final servingSize = 10.0;
+  //   final recipe = _createRecipe(outputQty: outputQty, units: null);
+  //   final input = _createInput(qty: qtyOfInput);
+  //   final recipeStep = _createRecipeStep([input]);
 
-    ScopedLookup scopedLookup = ScopedLookup(recipeSteps: [recipeStep]);
+  //   ScopedLookup scopedLookup = ScopedLookup(recipeSteps: [recipeStep]);
 
-    final widget = _makeTestableWidget(
-        RecipeStoryItem(recipe, servingSize: servingSize), scopedLookup);
+  //   final widget = _makeTestableWidget(
+  //       RecipeStoryItem(recipe, servingSize: servingSize), scopedLookup);
 
-    await tester.pumpWidget(widget);
+  //   await tester.pumpWidget(widget);
 
-    expect(qtyOfInput, equals(2));
-    expect(find.text("2"), findsOneWidget);
-    expect((tester.firstWidget(find.text("2")) as Text).style,
-        StoryStyles.initialQtyText);
+  //   expect(qtyOfInput, equals(2));
+  //   expect(find.text("2"), findsOneWidget);
+  //   expect((tester.firstWidget(find.text("2")) as Text).style,
+  //       StoryStyles.initialQtyText);
 
-    expect((servingSize / outputQty) * qtyOfInput, equals(4));
-    expect(find.text(" 4"), findsOneWidget);
-    expect((tester.firstWidget(find.text(" 4")) as Text).style,
-        StoryStyles.adjustedQtyText);
-  });
+  //   expect((servingSize / outputQty) * qtyOfInput, equals(4));
+  //   expect(find.text(" 4"), findsOneWidget);
+  //   expect((tester.firstWidget(find.text(" 4")) as Text).style,
+  //       StoryStyles.adjustedQtyText);
+  // });
 
-  testWidgets(
-      'recipe story with units different from original units should show adjusted qty',
-      (WidgetTester tester) async {
-    final outputQty = 3.0;
-    final qtyOfInput = 6.0;
-    final recipeUnits = "tbsp";
-    final displayUnits = "tsp";
-    final recipe = _createRecipe(outputQty: outputQty, units: recipeUnits);
-    final input = _createInput(qty: qtyOfInput);
-    final recipeStep = _createRecipeStep([input]);
+  // testWidgets(
+  //     'recipe story with units different from original units should show adjusted qty',
+  //     (WidgetTester tester) async {
+  //   final outputQty = 3.0;
+  //   final qtyOfInput = 6.0;
+  //   final recipeUnits = "tbsp";
+  //   final displayUnits = "tsp";
+  //   final recipe = _createRecipe(outputQty: outputQty, units: recipeUnits);
+  //   final input = _createInput(qty: qtyOfInput);
+  //   final recipeStep = _createRecipeStep([input]);
 
-    ScopedLookup scopedLookup = ScopedLookup(recipeSteps: [recipeStep]);
+  //   ScopedLookup scopedLookup = ScopedLookup(recipeSteps: [recipeStep]);
 
-    final widget = _makeTestableWidget(
-        RecipeStoryItem(recipe, outputUnits: displayUnits), scopedLookup);
+  //   final widget = _makeTestableWidget(
+  //       RecipeStoryItem(recipe, outputUnits: displayUnits), scopedLookup);
 
-    await tester.pumpWidget(widget);
+  //   await tester.pumpWidget(widget);
 
-    expect(qtyOfInput, equals(6));
-    expect(find.text("6"), findsOneWidget);
-    expect((tester.firstWidget(find.text("6")) as Text).style,
-        StoryStyles.initialQtyText);
+  //   expect(qtyOfInput, equals(6));
+  //   expect(find.text("6"), findsOneWidget);
+  //   expect((tester.firstWidget(find.text("6")) as Text).style,
+  //       StoryStyles.initialQtyText);
 
-    expect(
-        (UnitConverter.convert(outputQty,
-                    inputUnit: displayUnits, outputUnit: recipeUnits) /
-                outputQty) *
-            qtyOfInput,
-        equals(2));
-    expect(find.text(" 2"), findsOneWidget);
-    expect((tester.firstWidget(find.text(" 2")) as Text).style,
-        StoryStyles.adjustedQtyText);
-  });
+  //   expect(
+  //       (UnitConverter.convert(outputQty,
+  //                   inputUnit: displayUnits, outputUnit: recipeUnits) /
+  //               outputQty) *
+  //           qtyOfInput,
+  //       equals(2));
+  //   expect(find.text(" 2"), findsOneWidget);
+  //   expect((tester.firstWidget(find.text(" 2")) as Text).style,
+  //       StoryStyles.adjustedQtyText);
+  // });
 }
