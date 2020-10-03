@@ -28,8 +28,7 @@ class CalendarSlider extends StatelessWidget {
             controller:
                 ScrollController(initialScrollOffset: initialScrollOffset),
             itemCount: dates.length,
-            itemBuilder: (BuildContext context, int index) =>
-                _renderDate(dates[index])));
+            itemBuilder: (_, int index) => _renderDate(dates[index])));
   }
 
   Widget _renderDate(DateTime date) {

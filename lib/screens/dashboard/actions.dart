@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kitchen/screens/ingredients/ingredients.dart';
 import 'package:kitchen/screens/orders/upcoming_orders.dart';
+import 'package:kitchen/screens/predicted_orders/predicted_orders.dart';
 import 'package:kitchen/screens/prep/prep.dart';
 import 'package:kitchen/screens/procurement/shopping.dart';
 import 'package:kitchen/styles.dart';
@@ -13,6 +14,7 @@ class Action {
 }
 
 final List<Action> actionsList = [
+  Action("Expected Orders", PredictedOrdersPage.routeName),
   Action("Ingredients Checklist", IngredientsChecklistPage.routeName),
   Action("Prep Checklist", PrepChecklistPage.routeName),
   Action("Upcoming Orders", UpcomingOrdersPage.routeName),

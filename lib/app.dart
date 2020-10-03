@@ -4,6 +4,7 @@ import 'package:kitchen/screens/dashboard/unauthorized.dart';
 import 'package:kitchen/screens/ingredients/ingredients.dart';
 import 'package:kitchen/screens/orders/order_details.dart';
 import 'package:kitchen/screens/orders/upcoming_orders.dart';
+import 'package:kitchen/screens/predicted_orders/predicted_orders.dart';
 import 'package:kitchen/screens/prep/prep.dart';
 import 'package:kitchen/screens/procurement/shopping.dart';
 import 'package:kitchen/screens/procurement/shopping_list.dart';
@@ -23,6 +24,7 @@ class App extends StatelessWidget {
         AuthPage.routeName: (_) => AuthPage(),
         UnauthorizedPage.routeName: (_) => UnauthorizedPage(),
         ActionsPage.routeName: (_) => ActionsPage(),
+        PredictedOrdersPage.routeName: (_) => PredictedOrdersPage(),
         IngredientsChecklistPage.routeName: (_) => IngredientsChecklistPage(),
         PrepChecklistPage.routeName: (_) => PrepChecklistPage(),
         UpcomingOrdersPage.routeName: (_) => UpcomingOrdersPage(),
