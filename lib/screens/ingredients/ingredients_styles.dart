@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kitchen/styles.dart';
 
-class MorningStyles {
+class IngredientsStyles {
   static const _headerTopPadding = 30.0;
   static const _headerBottomPadding = 10.0;
   static final listHeaderPadding = EdgeInsets.fromLTRB(

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:kitchen/api/new_input.dart';
 import 'package:kitchen/models/predicted_order.dart';
+import 'package:kitchen/services/date_converter.dart';
 
 import 'scoped_api_model.dart';
 import 'scoped_day_input.dart';
@@ -14,7 +15,7 @@ const RETRY_WAIT_SECONDS = 2;
 const NUM_RETRIES = 3;
 
 class ScopedOpDay extends ScopedApiModel {
-  DateTime date;
+  DateTime date = DateConverter.today();
   List<PredictedOrder> predictedOrders = List();
   ScopedDayInput scopedDayInput;
   ScopedDayPrep scopedDayPrep;
@@ -27,14 +28,19 @@ class ScopedOpDay extends ScopedApiModel {
   }
 
   Future<void> loadOpDay(int kitchenId,
-      {DateTime date, forceLoad = false}) async {
+      {DateTime newDate, forceLoad = false}) async {
     loadData(() async {
-      final opDay = await _fetchOpDay(kitchenId, date: date);
+      if (newDate != null) {
+        this.date = newDate;
+        notifyListeners();
+      }
+
+      final opDay = await _fetchOpDay(kitchenId, date: this.date);
 
       this.scopedDayInput.addFetched(opDay.inputs);
       this.scopedDayPrep.addFetched(opDay.prep);
       this.predictedOrders = opDay.predictedOrders;
-      this.date = opDay.date();
+      this.date = DateConverter.startOfDay(opDay.date());
     }, forceLoad: forceLoad);
   }
 
@@ -42,7 +48,8 @@ class ScopedOpDay extends ScopedApiModel {
     this.isLoading = true;
     notifyListeners();
 
-    final opDayJson = await this.api.postAddInputs(kitchenId, newInputs);
+    final opDayJson =
+        await this.api.postAddInputs(kitchenId, newInputs, date: this.date);
 
     final opDay = OpDay.fromJson(json.decode(opDayJson));
     this.scopedDayInput.clear();

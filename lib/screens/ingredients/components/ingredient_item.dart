@@ -7,14 +7,14 @@ import 'package:kitchen/services/unit_converter.dart';
 import '../../common/components/swipable.dart';
 import '../../common/adjust_quantity.dart';
 import '../../../models/day_input.dart';
-import '../morning_styles.dart';
+import '../ingredients_styles.dart';
 import '../../../scoped_models/scoped_day_input.dart';
 
-class MorningItem extends StatelessWidget {
+class IngredientsItem extends StatelessWidget {
   final DayInput input;
   final Function() refreshList;
 
-  MorningItem(this.input, {this.refreshList});
+  IngredientsItem(this.input, {this.refreshList});
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +45,7 @@ class MorningItem extends StatelessWidget {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      settings: RouteSettings(name: 'adjust_morning_qty'),
+                      settings: RouteSettings(name: 'adjust_ingredients_qty'),
                       builder: (_) {
                         final inputable =
                             ScopedDayInput.inputableFor(this.input);
@@ -69,17 +69,17 @@ class MorningItem extends StatelessWidget {
   _renderItemText(BuildContext context) {
     return Container(
         color: input.hadQty != null && input.hadQty >= input.expectedQty
-            ? MorningStyles.checkedItemColor
+            ? IngredientsStyles.checkedItemColor
             : null,
         width: MediaQuery.of(context).size.width,
-        padding: MorningStyles.listItemPadding,
+        padding: IngredientsStyles.listItemPadding,
         child: InputWithQuantity(ScopedDayInput.inputableFor(input).name,
             input.expectedQty, input.inputableType, input.unit,
             adjustedInputQty: input.hadQty,
             adjustedInputUnit: input.unit,
-            regularTextStyle: MorningStyles.listItemText,
-            originalQtyStyle: MorningStyles.expectedItemText,
-            adjustedQtyStyle: MorningStyles.unexpectedItemText));
+            regularTextStyle: IngredientsStyles.listItemText,
+            originalQtyStyle: IngredientsStyles.expectedItemText,
+            adjustedQtyStyle: IngredientsStyles.unexpectedItemText));
   }
 
   void _onAdjustQty(

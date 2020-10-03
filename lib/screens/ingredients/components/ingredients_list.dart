@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:kitchen/scoped_models/scoped_op_day.dart';
 import 'package:kitchen/screens/common/components/submit_button.dart';
-import 'package:kitchen/screens/morning/add_recipe.dart';
 import 'package:kitchen/service_locator.dart';
 import 'package:kitchen/styles.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:kitchen/scoped_models/scoped_user.dart';
 import 'package:kitchen/scoped_models/scoped_day_input.dart';
+import '../add_recipe.dart';
 import '../../../models/day_input.dart';
-import '../morning_styles.dart';
-import './morning_item.dart';
+import '../ingredients_styles.dart';
+import 'ingredient_item.dart';
 
-class MorningList extends StatelessWidget {
+class IngredientsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<ScopedOpDay>(
@@ -110,7 +110,7 @@ class MorningList extends StatelessWidget {
     if (inputList.length > 0) {
       return <Widget>[_headerText(headerText)] +
           inputList
-              .map((i) => MorningItem(i, refreshList: () {
+              .map((i) => IngredientsItem(i, refreshList: () {
                     final user = locator<ScopedUser>();
                     scopedOpDay.loadOpDay(user.getKitchenId(), forceLoad: true);
                   }))
@@ -123,7 +123,7 @@ class MorningList extends StatelessWidget {
 
   Widget _headerText(String text) {
     return Container(
-        padding: MorningStyles.listHeaderPadding,
-        child: Text(text.toUpperCase(), style: MorningStyles.listHeader));
+        padding: IngredientsStyles.listHeaderPadding,
+        child: Text(text.toUpperCase(), style: IngredientsStyles.listHeader));
   }
 }

@@ -45,8 +45,9 @@ class WebApi {
   Future<String> fetchOpDayJson(int kitchenId, {DateTime date}) =>
       this._fetchJson('/op_days', queryParameters: {
         "kitchen_id": kitchenId.toString(),
-        "date": DateConverter.toServer(date)
+        "date": DateConverter.toServer(date).toString()
       });
+
   Future<String> fetchOrdersJson(int kitchenId) => this._fetchJson('/orders',
       queryParameters: {"kitchen_id": kitchenId.toString()});
   Future<String> fetchProcurementJson(int kitchenId) =>
@@ -89,8 +90,13 @@ class WebApi {
     return this._postJson('/orders/update_items', body);
   }
 
-  Future<dynamic> postAddInputs(int kitchenId, List<NewInput> newInputs) {
-    final body = jsonEncode({'kitchen_id': kitchenId, 'inputs': newInputs});
+  Future<dynamic> postAddInputs(int kitchenId, List<NewInput> newInputs,
+      {DateTime date}) {
+    final body = jsonEncode({
+      'kitchen_id': kitchenId,
+      'inputs': newInputs,
+      'date': DateConverter.toServer(date)
+    });
     return this._postJson('/op_days/add_inputs', body);
   }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kitchen/navigation_menu.dart';
+import 'package:kitchen/screens/common/components/op_day_selector.dart';
 import 'package:scoped_model/scoped_model.dart';
 import './components/prep_list.dart';
 import '../common/components/scoped_progress_bar.dart';
@@ -46,6 +47,7 @@ class _PrepChecklistPageState extends State<PrepChecklistPage> {
                             forceLoad: true),
                         child: Column(children: [
                           ScopedProgressBar<ScopedOpDay>(),
+                          OpDaySelector(),
                           Expanded(child: PrepList())
                         ]))))));
   }

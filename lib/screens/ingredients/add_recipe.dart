@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kitchen/api/new_input.dart';
 import 'package:kitchen/models/day_input.dart';
 import 'package:kitchen/models/recipe.dart';
-import 'package:kitchen/screens/morning/components/recipe_form.dart';
+import 'package:kitchen/screens/ingredients/components/recipe_form.dart';
 import 'package:kitchen/styles.dart';
 import '../common/components/submit_button.dart';
 import '../../service_locator.dart';

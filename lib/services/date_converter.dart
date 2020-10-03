@@ -10,4 +10,12 @@ class DateConverter {
       return date.millisecondsSinceEpoch ~/ 1000;
     }
   }
+
+  static DateTime startOfDay(DateTime date) {
+    return new DateTime(date.year, date.month, date.day);
+  }
+
+  static DateTime today() {
+    return DateConverter.startOfDay(DateTime.now());
+  }
 }

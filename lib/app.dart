@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kitchen/screens/dashboard/auth.dart';
 import 'package:kitchen/screens/dashboard/unauthorized.dart';
-import 'package:kitchen/screens/morning/morning.dart';
+import 'package:kitchen/screens/ingredients/ingredients.dart';
 import 'package:kitchen/screens/orders/order_details.dart';
 import 'package:kitchen/screens/orders/upcoming_orders.dart';
 import 'package:kitchen/screens/prep/prep.dart';
@@ -23,7 +23,7 @@ class App extends StatelessWidget {
         AuthPage.routeName: (_) => AuthPage(),
         UnauthorizedPage.routeName: (_) => UnauthorizedPage(),
         ActionsPage.routeName: (_) => ActionsPage(),
-        MorningChecklistPage.routeName: (_) => MorningChecklistPage(),
+        IngredientsChecklistPage.routeName: (_) => IngredientsChecklistPage(),
         PrepChecklistPage.routeName: (_) => PrepChecklistPage(),
         UpcomingOrdersPage.routeName: (_) => UpcomingOrdersPage(),
         OrderDetailsPage.routeName: (context) {
