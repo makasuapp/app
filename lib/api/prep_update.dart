@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:kitchen/services/date_converter.dart';
 
 part 'prep_update.g.dart';
 
@@ -19,11 +20,11 @@ class PrepUpdate {
       _$PrepUpdateFromJson(json);
 
   factory PrepUpdate.withDate(int id, double hadQty, DateTime time) {
-    return PrepUpdate(id, hadQty, time.millisecondsSinceEpoch ~/ 1000);
+    return PrepUpdate(id, hadQty, DateConverter.toServer(time));
   }
 
   DateTime time() {
-    return DateTime.fromMillisecondsSinceEpoch(this.timeSec * 1000);
+    return DateConverter.fromServer(this.timeSec);
   }
 
   String id() {

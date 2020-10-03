@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:kitchen/services/date_converter.dart';
 import 'package:meta/meta.dart';
 import '../api/load_orders_response.dart';
 import '../api/order_item_update.dart';
@@ -80,8 +81,8 @@ class ScopedOrder extends ScopedApiModel {
     final updatedOrders = this._orders.map((o) {
       final updatedItems = o.items.map((i) {
         if (itemsById.containsKey(i.id)) {
-          final updatedItem = OrderItem.clone(i, i.startedAtSec,
-              doneAt != null ? doneAt.millisecondsSinceEpoch ~/ 1000 : null);
+          final updatedItem = OrderItem.clone(
+              i, i.startedAtSec, DateConverter.toServer(doneAt));
           return updatedItem;
         } else {
           return i;

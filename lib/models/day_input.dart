@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:kitchen/services/date_converter.dart';
 
 part 'day_input.g.dart';
 
@@ -42,13 +43,10 @@ class DayInput {
         orig.id, orig.inputableId, orig.inputableType, orig.expectedQty,
         hadQty: hadQty,
         unit: orig.unit,
-        qtyUpdatedAtSec: updatedAt.millisecondsSinceEpoch ~/ 1000);
+        qtyUpdatedAtSec: DateConverter.toServer(updatedAt));
   }
 
   DateTime qtyUpdatedAt() {
-    if (this.qtyUpdatedAtSec == null) {
-      return null;
-    }
-    return DateTime.fromMillisecondsSinceEpoch(this.qtyUpdatedAtSec * 1000);
+    return DateConverter.fromServer(this.qtyUpdatedAtSec);
   }
 }

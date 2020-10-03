@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:kitchen/services/date_converter.dart';
 
 part 'input_update.g.dart';
 
@@ -17,11 +18,11 @@ class InputUpdate {
       _$InputUpdateFromJson(json);
 
   factory InputUpdate.withDate(int id, double hadQty, DateTime time) {
-    return InputUpdate(id, hadQty, time.millisecondsSinceEpoch ~/ 1000);
+    return InputUpdate(id, hadQty, DateConverter.toServer(time));
   }
 
   DateTime time() {
-    return DateTime.fromMillisecondsSinceEpoch(this.timeSec * 1000);
+    return DateConverter.fromServer(this.timeSec);
   }
 
   Map<String, dynamic> toJson() => _$InputUpdateToJson(this);

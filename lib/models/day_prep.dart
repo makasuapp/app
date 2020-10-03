@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:kitchen/services/date_converter.dart';
 
 part 'day_prep.g.dart';
 
@@ -27,7 +28,6 @@ class DayPrep {
   factory DayPrep.clone(DayPrep orig, double madeQty, DateTime updatedAt) {
     return DayPrep(
         orig.id, orig.expectedQty, orig.recipeStepId, orig.minNeededAtSec,
-        madeQty: madeQty,
-        qtyUpdatedAtSec: updatedAt.millisecondsSinceEpoch ~/ 1000);
+        madeQty: madeQty, qtyUpdatedAtSec: DateConverter.toServer(updatedAt));
   }
 }

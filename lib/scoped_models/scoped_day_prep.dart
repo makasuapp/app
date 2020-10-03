@@ -1,3 +1,4 @@
+import 'package:kitchen/services/date_converter.dart';
 import 'package:scoped_model/scoped_model.dart';
 import '../models/day_prep.dart';
 import '../models/recipe_step.dart';
@@ -38,7 +39,13 @@ class ScopedDayPrep extends Model {
   }
 
   static RecipeStep recipeStepFor(DayPrep prep) {
-    return _scopedLookup.getRecipeStep(prep.recipeStepId);
+    final recipeStep = _scopedLookup.getRecipeStep(prep.recipeStepId);
+    if (recipeStep != null) {
+      return recipeStep;
+    } else {
+      throw Exception(
+          "no recipe step found with id ${prep.recipeStepId} for prep ${prep.id}");
+    }
   }
 
   List<DayPrep> getPrep() {
@@ -155,7 +162,7 @@ class ScopedDayPrep extends Model {
     notifyListeners();
     this.unsavedUpdates.addAll(prepIdsWithQtysToUpdate.entries.map((e) {
           return PrepUpdate(
-              e.key, e.value, timeOfUpdate.millisecondsSinceEpoch ~/ 1000);
+              e.key, e.value, DateConverter.toServer(timeOfUpdate));
         }).toList());
 
     await _saveUnsavedQty();

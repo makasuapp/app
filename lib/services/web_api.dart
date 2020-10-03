@@ -8,6 +8,7 @@ import '../api/procurement_update.dart';
 import '../api/order_item_update.dart';
 import '../models/order.dart';
 import '../env.dart';
+import './date_converter.dart';
 
 class WebApi {
   String apiScheme;
@@ -41,8 +42,11 @@ class WebApi {
     return resp.body;
   }
 
-  Future<String> fetchOpDayJson(int kitchenId) => this._fetchJson('/op_days',
-      queryParameters: {"kitchen_id": kitchenId.toString()});
+  Future<String> fetchOpDayJson(int kitchenId, {DateTime date}) =>
+      this._fetchJson('/op_days', queryParameters: {
+        "kitchen_id": kitchenId.toString(),
+        "date": DateConverter.toServer(date)
+      });
   Future<String> fetchOrdersJson(int kitchenId) => this._fetchJson('/orders',
       queryParameters: {"kitchen_id": kitchenId.toString()});
   Future<String> fetchProcurementJson(int kitchenId) =>

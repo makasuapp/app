@@ -1,3 +1,4 @@
+import 'package:kitchen/services/date_converter.dart';
 import 'package:scoped_model/scoped_model.dart';
 import '../models/day_input.dart';
 import '../services/web_api.dart';
@@ -81,7 +82,7 @@ class ScopedDayInput extends Model {
   @visibleForTesting
   Future<void> saveUnsavedQty() async {
     if (this.savingAtSec == null) {
-      final savingAtSec = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+      final savingAtSec = DateConverter.toServer(DateTime.now());
       this.savingAtSec = savingAtSec;
 
       try {

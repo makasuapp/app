@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:kitchen/services/date_converter.dart';
 
 part 'order_item_update.g.dart';
 
@@ -17,17 +18,16 @@ class OrderItemUpdate {
       {this.doneAtSec, this.clearDoneAt});
 
   factory OrderItemUpdate.forDoneAt(int id, DateTime time, DateTime doneAt) {
-    return OrderItemUpdate(id, time.millisecondsSinceEpoch ~/ 1000,
-        doneAtSec: doneAt.millisecondsSinceEpoch ~/ 1000);
+    return OrderItemUpdate(id, DateConverter.toServer(time),
+        doneAtSec: DateConverter.toServer(doneAt));
   }
 
   factory OrderItemUpdate.clearDoneAt(int id, DateTime time) {
-    return OrderItemUpdate(id, time.millisecondsSinceEpoch ~/ 1000,
-        clearDoneAt: true);
+    return OrderItemUpdate(id, DateConverter.toServer(time), clearDoneAt: true);
   }
 
   DateTime time() {
-    return DateTime.fromMillisecondsSinceEpoch(this.timeSec * 1000);
+    return DateConverter.fromServer(this.timeSec);
   }
 
   Map<String, dynamic> toJson() => _$OrderItemUpdateToJson(this);

@@ -7,7 +7,7 @@
 # Running
 
 1. Install any new packages: `flutter pub get`
-2. Re-serialize any changed JSON models: `flutter packages pub run build_runner build --delete-conflicting-outputs`
+2. Re-serialize any changed JSON models: `flutter packages pub run build_runner build --delete-conflicting-outputs --verbose`
 
 Then in Visual Studio Code do Run -> Start Debugging
 

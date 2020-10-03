@@ -1,6 +1,7 @@
 import 'package:kitchen/api/input_update.dart';
 import 'package:kitchen/models/day_input.dart';
 import 'package:kitchen/scoped_models/scoped_day_input.dart';
+import 'package:kitchen/services/date_converter.dart';
 import 'package:kitchen/services/web_api.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
@@ -36,7 +37,7 @@ void main() {
     var fetched = List<DayInput>();
     fetched.add(DayInput(1, 1, DayInputType.Ingredient, 2));
     fetched.add(DayInput(2, 2, DayInputType.Ingredient, 2,
-        hadQty: 1.8, qtyUpdatedAtSec: hourAgo.millisecondsSinceEpoch ~/ 1000));
+        hadQty: 1.8, qtyUpdatedAtSec: DateConverter.toServer(hourAgo)));
 
     final scopedInput = ScopedDayInput(unsavedUpdates: updates);
 
@@ -44,12 +45,10 @@ void main() {
     final loaded = scopedInput.inputs;
     expect(loaded[0].id, equals(1));
     expect(loaded[0].hadQty, equals(1.4));
-    expect(
-        loaded[0].qtyUpdatedAtSec, equals(now.millisecondsSinceEpoch ~/ 1000));
+    expect(loaded[0].qtyUpdatedAtSec, equals(DateConverter.toServer(now)));
     expect(loaded[1].id, equals(2));
     expect(loaded[1].hadQty, equals(1.8));
-    expect(loaded[1].qtyUpdatedAtSec,
-        equals(hourAgo.millisecondsSinceEpoch ~/ 1000));
+    expect(loaded[1].qtyUpdatedAtSec, equals(DateConverter.toServer(hourAgo)));
   });
 
   group('updateInputQty', () {
