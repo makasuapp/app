@@ -1,28 +1,19 @@
 import 'dart:convert';
 import 'package:kitchen/services/date_converter.dart';
 import 'package:meta/meta.dart';
-import '../api/load_orders_response.dart';
 import '../api/order_item_update.dart';
 import '../services/web_api.dart';
 import '../services/logger.dart';
-import '../service_locator.dart';
 import '../models/order.dart';
 import '../models/order_item.dart';
 import './scoped_api_model.dart';
-import 'scoped_lookup.dart';
 
 class ScopedOrder extends ScopedApiModel {
   List<Order> _orders;
   Map<int, Order> newUnseenOrders = Map();
-  static ScopedLookup _scopedLookup = locator<ScopedLookup>();
 
-  ScopedOrder({List<Order> orders, WebApi api, ScopedLookup scopedLookup})
-      : super(api: api) {
+  ScopedOrder({List<Order> orders, WebApi api}) : super(api: api) {
     this._orders = orders ?? List();
-
-    if (scopedLookup != null) {
-      _scopedLookup = scopedLookup;
-    }
   }
 
   Future<void> loadOrders(int kitchenId, {forceLoad = false}) async {
@@ -45,13 +36,10 @@ class ScopedOrder extends ScopedApiModel {
   Future<void> _fetchOrders(int kitchenId) async {
     final resp = await this.api.fetchOrdersJson(kitchenId);
     final decodedResp = json.decode(resp);
-    final loadOrdersResp = LoadOrdersResponse.fromJson(decodedResp);
 
-    _scopedLookup.addData(
-        recipes: loadOrdersResp.recipes,
-        recipeSteps: loadOrdersResp.recipeSteps,
-        ingredients: loadOrdersResp.ingredients);
-    var orders = loadOrdersResp.orders;
+    final orders = (decodedResp['orders'] as List)
+        .map((e) => Order.fromJson(e as Map<String, dynamic>))
+        .toList();
     this._orders = orders;
   }
 

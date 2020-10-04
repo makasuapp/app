@@ -21,6 +21,7 @@ class _PrepChecklistPageState extends State<PrepChecklistPage> {
   final opDay = locator<ScopedOpDay>();
   final data = locator<ScopedLookup>();
   final user = locator<ScopedUser>();
+  final scopedDayPrep = locator<ScopedDayPrep>();
 
   _PrepChecklistPageState();
 
@@ -39,7 +40,7 @@ class _PrepChecklistPageState extends State<PrepChecklistPage> {
         body: ScopedModel<ScopedOpDay>(
             model: this.opDay,
             child: ScopedModel<ScopedDayPrep>(
-                model: this.opDay.scopedDayPrep,
+                model: this.scopedDayPrep,
                 child: ScopedModel<ScopedLookup>(
                     model: this.data,
                     child: RefreshIndicator(

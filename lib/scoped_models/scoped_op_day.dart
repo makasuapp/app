@@ -4,6 +4,7 @@ import 'package:kitchen/models/predicted_order.dart';
 import 'package:kitchen/services/date_converter.dart';
 
 import 'scoped_api_model.dart';
+import 'scoped_lookup.dart';
 import 'scoped_day_input.dart';
 import './scoped_day_prep.dart';
 import '../models/op_day.dart';
@@ -17,14 +18,19 @@ const NUM_RETRIES = 3;
 class ScopedOpDay extends ScopedApiModel {
   DateTime date = DateConverter.today();
   List<PredictedOrder> predictedOrders = List();
-  ScopedDayInput scopedDayInput;
-  ScopedDayPrep scopedDayPrep;
+  ScopedDayInput _scopedDayInput;
+  ScopedDayPrep _scopedDayPrep;
+  ScopedLookup _scopedLookup;
 
   ScopedOpDay(
-      {ScopedDayInput scopedDayInput, ScopedDayPrep scopedDayPrep, WebApi api})
+      {ScopedDayInput scopedDayInput,
+      ScopedDayPrep scopedDayPrep,
+      ScopedLookup scopedLookup,
+      WebApi api})
       : super(api: api) {
-    this.scopedDayInput = scopedDayInput ?? locator<ScopedDayInput>();
-    this.scopedDayPrep = scopedDayPrep ?? locator<ScopedDayPrep>();
+    this._scopedDayInput = scopedDayInput ?? locator<ScopedDayInput>();
+    this._scopedDayPrep = scopedDayPrep ?? locator<ScopedDayPrep>();
+    this._scopedLookup = scopedLookup ?? locator<ScopedLookup>();
   }
 
   Future<void> loadOpDay(int kitchenId,
@@ -34,12 +40,18 @@ class ScopedOpDay extends ScopedApiModel {
         this.date = newDate;
         notifyListeners();
       }
-
       final opDay = await _fetchOpDay(kitchenId, date: this.date);
 
-      this.scopedDayInput.addFetched(opDay.inputs);
-      this.scopedDayPrep.addFetched(opDay.prep);
+      //might want this to reset instead of just add to not overload memory
+      _scopedLookup.addData(
+          recipes: opDay.recipes,
+          recipeSteps: opDay.recipeSteps,
+          ingredients: opDay.ingredients);
+
+      this._scopedDayInput.addFetched(opDay.inputs);
+      this._scopedDayPrep.addFetched(opDay.prep);
       this.predictedOrders = opDay.predictedOrders;
+
       this.date = DateConverter.startOfDay(opDay.date());
     }, forceLoad: forceLoad);
   }
@@ -52,11 +64,11 @@ class ScopedOpDay extends ScopedApiModel {
         await this.api.postAddInputs(kitchenId, newInputs, date: this.date);
 
     final opDay = OpDay.fromJson(json.decode(opDayJson));
-    this.scopedDayInput.clear();
-    this.scopedDayPrep.clear();
+    this._scopedDayInput.clear();
+    this._scopedDayPrep.clear();
 
-    this.scopedDayInput.addFetched(opDay.inputs);
-    this.scopedDayPrep.addFetched(opDay.prep);
+    this._scopedDayInput.addFetched(opDay.inputs);
+    this._scopedDayPrep.addFetched(opDay.prep);
 
     this.isLoading = false;
     notifyListeners();

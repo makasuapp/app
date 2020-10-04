@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kitchen/scoped_models/scoped_user.dart';
 import 'package:kitchen/scoped_models/scoped_order.dart';
+import 'package:kitchen/scoped_models/scoped_op_day.dart';
 import 'package:kitchen/screens/dashboard/unauthorized.dart';
 import 'package:kitchen/service_locator.dart';
 import 'package:kitchen/services/web_api.dart';
@@ -56,7 +57,10 @@ class _AuthPageState extends State<AuthPage> {
         scopedUser.setKitchenId(kitchenId);
         scopedUser.setKitchenToken(token);
 
-        //can now load orders for the authed kitchen
+        //can now load data for the authed kitchen
+        final scopedOpDay = locator<ScopedOpDay>();
+        await scopedOpDay.loadOpDay(kitchenId);
+
         final scopedOrder = locator<ScopedOrder>();
         await scopedOrder.loadOrders(kitchenId);
 

@@ -19,6 +19,7 @@ class IngredientsChecklistPage extends StatefulWidget {
 class _IngredientsChecklistPageState extends State<IngredientsChecklistPage> {
   final opDay = locator<ScopedOpDay>();
   final user = locator<ScopedUser>();
+  final scopedDayInput = locator<ScopedDayInput>();
 
   _IngredientsChecklistPageState();
 
@@ -37,7 +38,7 @@ class _IngredientsChecklistPageState extends State<IngredientsChecklistPage> {
         body: ScopedModel<ScopedOpDay>(
             model: this.opDay,
             child: ScopedModel<ScopedDayInput>(
-                model: this.opDay.scopedDayInput,
+                model: this.scopedDayInput,
                 child: RefreshIndicator(
                     onRefresh: () =>
                         opDay.loadOpDay(user.getKitchenId(), forceLoad: true),

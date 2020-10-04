@@ -18,6 +18,15 @@ OpDay _$OpDayFromJson(Map<String, dynamic> json) {
     (json['predicted_orders'] as List)
         .map((e) => PredictedOrder.fromJson(e as Map<String, dynamic>))
         .toList(),
+    (json['recipes'] as List)
+        .map((e) => Recipe.fromJson(e as Map<String, dynamic>))
+        .toList(),
+    (json['ingredients'] as List)
+        .map((e) => Ingredient.fromJson(e as Map<String, dynamic>))
+        .toList(),
+    (json['recipe_steps'] as List)
+        .map((e) => RecipeStep.fromJson(e as Map<String, dynamic>))
+        .toList(),
   );
 }
 
@@ -26,4 +35,7 @@ Map<String, dynamic> _$OpDayToJson(OpDay instance) => <String, dynamic>{
       'inputs': instance.inputs,
       'prep': instance.prep,
       'predicted_orders': instance.predictedOrders,
+      'recipes': instance.recipes,
+      'ingredients': instance.ingredients,
+      'recipe_steps': instance.recipeSteps,
     };
