@@ -56,7 +56,7 @@ class OrderDetailsPage extends StatelessWidget {
     final forTime = DateFormat('M/dd h:mm a').format(order.forTime());
 
     return <Widget>[
-      _renderText("Order ID: ${order.orderId}"),
+      _renderText("Order ID: ${order.externalId}"),
       _renderText("For: $forTime"),
       _renderText("Status: ${orderState.text}"),
       _renderText("Type: ${order.orderType}"),

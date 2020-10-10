@@ -35,8 +35,8 @@ class WebApi {
     final uri = this.uri(endpoint, queryParameters: queryParameters);
     final resp = await http.get(uri.toString());
 
-    if (resp.statusCode != 200) {
-      throw (resp.body);
+    if (resp.statusCode != 200 && resp.statusCode != 201) {
+      throw ("Got unexpected resp code=${resp.statusCode} body=${resp.body}");
     }
 
     return resp.body;
@@ -80,16 +80,6 @@ class WebApi {
     return this._postJson('/op_days/save_prep_qty', body);
   }
 
-  Future<void> postProcurementItemUpdates(List<ProcurementUpdate> updates) {
-    final body = jsonEncode({'updates': updates});
-    return this._postJson('/procurement/update_items', body);
-  }
-
-  Future<void> postOrderItemUpdates(List<OrderItemUpdate> updates) {
-    final body = jsonEncode({'updates': updates});
-    return this._postJson('/orders/update_items', body);
-  }
-
   Future<dynamic> postAddInputs(int kitchenId, List<NewInput> newInputs,
       {DateTime date}) {
     final body = jsonEncode({
@@ -100,6 +90,16 @@ class WebApi {
     return this._postJson('/op_days/add_inputs', body);
   }
 
+  Future<void> postProcurementItemUpdates(List<ProcurementUpdate> updates) {
+    final body = jsonEncode({'updates': updates});
+    return this._postJson('/procurement/update_items', body);
+  }
+
+  Future<void> postOrderItemUpdates(List<OrderItemUpdate> updates) {
+    final body = jsonEncode({'updates': updates});
+    return this._postJson('/orders/update_items', body);
+  }
+
   Future<void> postOrderUpdateState(Order order) {
     final orderState = order.orderState();
     if (orderState.nextAction != null) {
@@ -108,6 +108,10 @@ class WebApi {
     } else {
       return Future.value(null);
     }
+  }
+
+  Future<void> postOrderConfirm(Order order) {
+    return this._postJson('/orders/${order.id}/confirm', jsonEncode({}));
   }
 
   Future<dynamic> postVerifyUser(int kitchenId, String token) {

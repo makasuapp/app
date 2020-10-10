@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:kitchen/screens/orders/components/comment.dart';
+import 'package:kitchen/services/date_converter.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:kitchen/scoped_models/scoped_order.dart';
 import '../../../models/order.dart';
@@ -60,9 +61,16 @@ class OrderCard extends StatelessWidget {
     final orderState = this.order.orderState();
     var info = List<Widget>();
     final forTime = DateFormat('M/dd h:mm a').format(this.order.forTime());
+    final startOfTomorrow = DateConverter.today().add(Duration(days: 1));
 
-    info.add(_renderText("Order ID: ${this.order.orderId}"));
-    info.add(_renderText("For: $forTime"));
+    info.add(_renderText("Order ID: ${this.order.externalId}"));
+    if (this.order.forTime().millisecondsSinceEpoch >=
+        startOfTomorrow.millisecondsSinceEpoch) {
+      info.add(
+          _renderText("For: $forTime", customStyle: OrderStyles.laterDayText));
+    } else {
+      info.add(_renderText("For: $forTime"));
+    }
     info.add(_renderText("Status: ${orderState.text}"));
 
     if (orderState == OrderState.done()) {
@@ -73,8 +81,8 @@ class OrderCard extends StatelessWidget {
     return info;
   }
 
-  Widget _renderText(String text) {
-    return Text(text);
+  Widget _renderText(String text, {TextStyle customStyle}) {
+    return Text(text, style: customStyle);
   }
 
   List<Widget> _renderButtons(ScopedOrder scopedOrder) {

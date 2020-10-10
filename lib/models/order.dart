@@ -47,7 +47,7 @@ class OrderState {
 class Order {
   final int id;
   @JsonKey(name: "order_id")
-  final String orderId;
+  final String externalId;
   final String state;
   @JsonKey(name: "order_type")
   final String orderType;
@@ -64,7 +64,7 @@ class Order {
   final Customer customer;
 
   Order(this.id, this.state, this.orderType, this.createdAtSec, this.items,
-      this.customer, this.orderId,
+      this.customer, this.externalId,
       {this.integrationType, this.forSec, this.comment});
 
   factory Order.fromJson(Map<String, dynamic> json) => _$OrderFromJson(json);
@@ -85,7 +85,7 @@ class Order {
         createdAtSec ?? orig.createdAtSec,
         items ?? orig.items,
         customer ?? orig.customer,
-        orig.orderId,
+        orig.externalId,
         integrationType: orig.integrationType,
         forSec: forSec ?? orig.forSec,
         comment: orig.comment);

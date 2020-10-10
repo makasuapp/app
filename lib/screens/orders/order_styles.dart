@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kitchen/styles.dart';
 
 class OrderStyles {
+  static final Color orderLaterDayColor = Colors.red;
   static final Color orderOverdueColor = Colors.red;
   static final Color orderStartedColor = Colors.amber[200];
   static final Color orderDefaultColor = Colors.white;
@@ -26,6 +27,7 @@ class OrderStyles {
     fontSize: Styles.textSizeLarge,
     color: Styles.textColorDefault,
   );
+  static final laterDayText = TextStyle(color: orderLaterDayColor);
   static final doneItemText = TextStyle(
       fontSize: Styles.textSizeLarge,
       color: Styles.textColorDefault,

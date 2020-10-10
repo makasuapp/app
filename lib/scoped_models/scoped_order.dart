@@ -8,6 +8,8 @@ import '../models/order.dart';
 import '../models/order_item.dart';
 import './scoped_api_model.dart';
 
+const RETRY_WAIT_SECONDS = 5;
+
 class ScopedOrder extends ScopedApiModel {
   List<Order> _orders;
   Map<int, Order> newUnseenOrders = Map();
@@ -95,10 +97,28 @@ class ScopedOrder extends ScopedApiModel {
     }
   }
 
+  void confirmOrder(Order order) async {
+    try {
+      await this.api.postOrderConfirm(order);
+    } catch (err) {
+      Logger.error(err);
+
+      await Future.delayed(Duration(seconds: RETRY_WAIT_SECONDS));
+      //might want a retry count to end this at?
+      this.confirmOrder(order);
+    }
+  }
+
   void addOrder(Order order) {
-    this._orders.add(order);
-    this.newUnseenOrders[order.id] = order;
-    notifyListeners();
+    final existingOrder = this._orders.where((o) => o.id == order.id).toList();
+    //message might get duped
+    if (existingOrder.length == 0) {
+      this._orders.add(order);
+      this.newUnseenOrders[order.id] = order;
+      notifyListeners();
+    }
+
+    this.confirmOrder(order);
   }
 
   void clearUnseenOrders() {
