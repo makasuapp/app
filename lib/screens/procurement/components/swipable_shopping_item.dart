@@ -55,17 +55,30 @@ class SwipableShoppingItem extends StatelessWidget {
   Widget _renderItem(BuildContext context, ScopedLookup scopedLookup,
       ScopedProcurement scopedProcurement) {
     return Swipable(
-        canSwipeLeft: () => Future.value(this.item.gotQty != null),
+        canSwipeLeft: () => Future.value(true),
         canSwipeRight: () => Future.value(
             this.item.gotQty == null || this.item.gotQty < this.item.quantity),
         onSwipeRight: (_) => _updateGotten(scopedProcurement, context),
-        onSwipeLeft: (_) => _undoGotten(scopedProcurement),
-        child: ShoppingListItem(this.item, (bool nowChecked) {
-          if (nowChecked) {
-            _updateGotten(scopedProcurement, context);
-          } else {
+        onSwipeLeft: (_) {
+          if (this.item.gotQty != null) {
             _undoGotten(scopedProcurement);
+          } else {
+            //don't prompt dialog, we don't actually need this
+            scopedProcurement.updateItem(
+              item,
+              gotQty: item.quantity,
+              gotUnit: item.unit,
+            );
           }
-        }));
+        },
+        child: InkWell(
+            onTap: () => _updateGotten(scopedProcurement, context),
+            child: ShoppingListItem(this.item, (bool nowChecked) {
+              if (nowChecked) {
+                _updateGotten(scopedProcurement, context);
+              } else {
+                _undoGotten(scopedProcurement);
+              }
+            })));
   }
 }
