@@ -6,7 +6,7 @@ import '../../common/components/submit_button.dart';
 ///onSubmit and onCancel required
 class GotDialog extends StatefulWidget {
   final void Function(double gotQty, String gotUnit, int priceCents,
-      String priceUnit, BuildContext dialogContext) onSubmit;
+      BuildContext dialogContext) onSubmit;
   final void Function(BuildContext dialogContext) onCancel;
   final double initQty;
   final String initUnit;
@@ -23,7 +23,6 @@ class _GotDialogState extends State<GotDialog> {
   double _gotQty;
   String _gotUnit;
   int _priceCents;
-  String _priceUnit;
 
   @override
   void initState() {
@@ -42,8 +41,8 @@ class _GotDialogState extends State<GotDialog> {
         CancelButton(() => this.widget.onCancel(context)),
         SubmitButton(() {
           if (this._gotQty != null) {
-            this.widget.onSubmit(this._gotQty, this._gotUnit, this._priceCents,
-                this._priceUnit, context);
+            this.widget.onSubmit(
+                this._gotQty, this._gotUnit, this._priceCents, context);
           } else
             this.widget.onCancel(context);
         })
@@ -72,10 +71,6 @@ class _GotDialogState extends State<GotDialog> {
             "4.99",
             (input) => setState(() =>
                 this._priceCents = (double.tryParse(input) * 100).toInt())),
-        Text(" per "),
-        _renderInputField(
-            "450g", (input) => setState(() => this._priceUnit = input),
-            keyboardType: TextInputType.text),
       ],
     );
   }
@@ -86,7 +81,8 @@ class _GotDialogState extends State<GotDialog> {
         width: 70,
         child: TextField(
           decoration: InputDecoration(hintText: hintText),
-          keyboardType: keyboardType ?? TextInputType.numberWithOptions(decimal: true),
+          keyboardType:
+              keyboardType ?? TextInputType.numberWithOptions(decimal: true),
           onChanged: (input) => onChanged(input),
         ));
   }

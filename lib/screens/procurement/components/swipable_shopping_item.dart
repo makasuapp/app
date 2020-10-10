@@ -38,16 +38,12 @@ class SwipableShoppingItem extends StatelessWidget {
               scopedProcurement.updateItem(item,
                   gotQty: item.gotQty,
                   gotUnit: item.gotUnit,
-                  priceCents: item.priceCents,
-                  priceUnit: item.priceUnit);
+                  priceCents: item.priceCents);
               Navigator.of(dialogContext).pop();
             },
-            onSubmit: (gotQty, gotUnit, priceCents, priceUnit, dialogContext) {
+            onSubmit: (gotQty, gotUnit, priceCents, dialogContext) {
               scopedProcurement.updateItem(item,
-                  gotQty: gotQty,
-                  gotUnit: gotUnit,
-                  priceCents: priceCents,
-                  priceUnit: priceUnit);
+                  gotQty: gotQty, gotUnit: gotUnit, priceCents: priceCents);
               Navigator.of(dialogContext).pop();
             }));
   }

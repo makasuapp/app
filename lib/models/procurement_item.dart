@@ -19,12 +19,10 @@ class ProcurementItem {
   final String gotUnit;
   @JsonKey(name: "price_cents", nullable: true)
   final int priceCents;
-  @JsonKey(name: "price_unit", nullable: true)
-  final String priceUnit;
 
   ProcurementItem(
       this.id, this.ingredientId, this.procurementOrderId, this.quantity,
-      {this.unit, this.gotQty, this.gotUnit, this.priceCents, this.priceUnit});
+      {this.unit, this.gotQty, this.gotUnit, this.priceCents});
 
   factory ProcurementItem.fromJson(Map<String, dynamic> json) =>
       _$ProcurementItemFromJson(json);
@@ -47,13 +45,12 @@ class ProcurementItem {
   }
 
   factory ProcurementItem.clone(ProcurementItem orig,
-      {double gotQty, String gotUnit, int priceCents, String priceUnit}) {
+      {double gotQty, String gotUnit, int priceCents}) {
     return ProcurementItem(
         orig.id, orig.ingredientId, orig.procurementOrderId, orig.quantity,
         unit: orig.unit,
         gotQty: gotQty,
         gotUnit: gotUnit,
-        priceCents: priceCents,
-        priceUnit: priceUnit);
+        priceCents: priceCents);
   }
 }

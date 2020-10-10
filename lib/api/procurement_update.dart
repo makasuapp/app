@@ -12,15 +12,13 @@ class ProcurementUpdate {
   final String gotUnit;
   @JsonKey(name: "price_cents", nullable: true)
   final int priceCents;
-  @JsonKey(name: "price_unit", nullable: true)
-  final String priceUnit;
 
   ProcurementUpdate(this.procurementItemId,
-      {this.gotQty, this.gotUnit, this.priceCents, this.priceUnit});
+      {this.gotQty, this.gotUnit, this.priceCents});
 
   Map<String, dynamic> toJson() => _$ProcurementUpdateToJson(this);
 
   String id() {
-    return "$procurementItemId $gotQty $gotUnit $priceCents $priceUnit";
+    return "$procurementItemId $gotQty $gotUnit $priceCents";
   }
 }

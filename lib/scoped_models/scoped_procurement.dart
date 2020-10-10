@@ -71,12 +71,9 @@ class ScopedProcurement extends ScopedApiModel {
   }
 
   Future<void> updateItem(ProcurementItem item,
-      {double gotQty, String gotUnit, int priceCents, String priceUnit}) async {
+      {double gotQty, String gotUnit, int priceCents}) async {
     final updatedItem = ProcurementItem.clone(item,
-        gotQty: gotQty,
-        gotUnit: gotUnit,
-        priceCents: priceCents,
-        priceUnit: priceUnit);
+        gotQty: gotQty, gotUnit: gotUnit, priceCents: priceCents);
     final updatedOrders = this.orders.map((o) {
       if (o.id == item.procurementOrderId) {
         final updatedItems =
@@ -92,13 +89,9 @@ class ScopedProcurement extends ScopedApiModel {
     //only make api call if something is different
     if (gotQty != item.gotQty ||
         gotUnit != item.gotUnit ||
-        priceCents != item.priceCents ||
-        priceUnit != item.priceUnit) {
+        priceCents != item.priceCents) {
       this.unsavedUpdates.add(ProcurementUpdate(item.id,
-          gotQty: gotQty,
-          gotUnit: gotUnit,
-          priceCents: priceCents,
-          priceUnit: priceUnit));
+          gotQty: gotQty, gotUnit: gotUnit, priceCents: priceCents));
       await _saveUnsavedQty();
     }
   }

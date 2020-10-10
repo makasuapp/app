@@ -16,7 +16,6 @@ ProcurementItem _$ProcurementItemFromJson(Map<String, dynamic> json) {
     gotQty: (json['got_qty'] as num)?.toDouble(),
     gotUnit: json['got_unit'] as String,
     priceCents: json['price_cents'] as int,
-    priceUnit: json['price_unit'] as String,
   );
 }
 
@@ -30,5 +29,4 @@ Map<String, dynamic> _$ProcurementItemToJson(ProcurementItem instance) =>
       'got_qty': instance.gotQty,
       'got_unit': instance.gotUnit,
       'price_cents': instance.priceCents,
-      'price_unit': instance.priceUnit,
     };

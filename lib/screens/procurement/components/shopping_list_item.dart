@@ -49,11 +49,7 @@ class ShoppingListItem extends StatelessWidget {
   Widget _renderPrice() {
     if (this.item.priceCents != null) {
       final price = (this.item.priceCents.toDouble() / 100).toStringAsFixed(2);
-      if (this.item.priceUnit != null) {
-        return Text(" - \$$price / ${this.item.priceUnit}");
-      } else {
-        return Text(" - \$$price");
-      }
+      return Text(" - \$$price");
     } else
       return Container();
   }
